@@ -1,0 +1,69 @@
+.nameCard {
+    width: 100%;
+    max-width: 440px;
+    background: #840032;
+    height: 162px;
+    border-radius: 13px;
+    position: relative;
+  }
+  
+  .rowContent {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  
+  .nameCard p {
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: 500;
+    padding-top: 37px;
+    padding-left: 15px;
+  }
+  .nameCard img {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    position: absolute;
+    top: 0;
+    right: -10px;
+  }
+  
+  .contentCard {
+    width: 100%;
+    max-width: 350px;
+    background: #D33F49;
+    height: 162px;
+    border-radius: 13px;
+    position: relative;
+  }
+  
+  .contentWrapper {
+    padding-left: 55px;
+    
+  }
+  
+  .contentCard .contentWrapper > p:first-child {
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 39px;
+    margin: 0;
+    margin-left: 15px;
+    padding-top: 20px;
+  }
+  .contentCard .contentWrapper > p:last-child {
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 20px;
+    width: 100px;
+    text-align: center;
+  }
+  .contentCard img {
+    width: 84px;
+    height: 72px;
+    object-fit: contain;
+    position: absolute;
+    right: -14px;
+    top: 42px;
+  }
+  

@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+/* Fully hide scrollbar, but keep scrolling */
+.sidebar-scroll {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE 10+ */
+  }
+  .sidebar-scroll::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+  }
+  .carousel .control-arrow {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+  }
+  
+  .carousel .control-arrow:hover {
+    background: rgba(0, 0, 0, 0.6);
+  }
+  
+  .carousel .control-next.control-arrow:before,
+  .carousel .control-prev.control-arrow:before {
+    color: white;
+    font-size: 24px;
+  }
+
+    /* Gradient background */
+    .bg-primary {
+  @apply bg-gradient-to-r from-[#03045E] via-[#0077B6] to-[#00B4D8];
+}
+
+.custom-select .ant-select-selector {
+  height: 42px !important;     /* same as input */
+  border-radius: 6px !important;
+  border: 1px solid hsl(240, 4%, 5%) !important; /* tailwind gray-300 */
+  display: flex;
+  align-items: center;
+}
+
+.custom-select .ant-select-selection-placeholder {
+  line-height: 42px !important;
+}
+
+.custom-select .ant-select-selection-item {
+  line-height: 42px !important;
+}
+
+
+/* ✅ Match input UI */
+.custom-select .ant-select-selector {
+  height: 40px !important;
+  border-radius: 12px !important;
+  border: 1px solid #000000 !important; /* same as input */
+  display: flex;
+  align-items: center;
+  padding: 0 12px !important;
+}
+
+/* text alignment */
+.custom-select .ant-select-selection-item {
+  line-height: 40px !important;
+}
+
+/* placeholder alignment */
+.custom-select .ant-select-selection-placeholder {
+  line-height: 40px !important;
+}
+
+/* focus effect like input */
+.custom-select.ant-select-focused .ant-select-selector {
+  border-color: #050505 !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+/* hover */
+.custom-select .ant-select-selector:hover {
+  border-color: #000000 !important;
+}
+
+  /* .bg-primary {
+    @apply bg-gradient-to-r from-[#03045E] to- via-[#023E8A] ;
+  }
+ */
