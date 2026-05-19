@@ -122,6 +122,7 @@ import DriverBookingDetails from "./Pages/Driver/DriverAllTripDetails";
 import ProfilePage from "./loginpage/MyProfile";
 import SectionNameList from "./Pages/Membermaster/MemberMasterList";
 import CreateMember from "./Pages/Member/CreateMember";
+import UpdateMember from "./Pages/Member/UpdateMember";
 import HourlyPackageList from "./Pages/HourlyPackages/HourlyPackagesList";
 
 // import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
@@ -165,14 +166,15 @@ const router = createBrowserRouter([
       // { path: "my-profile", element: <ProfilePage /> }, 
 
       // Banner routes
-      // { path: "banner", element: <BannerList /> },
-      // { path: "banner/createbanner", element: <CreateBanner /> },
-      // { path: "banner/updatebanner/:id", element: <UpdateBanner /> }, 
-      // { path: "banner/bannerview/:id", element: <BannerView /> },
+      { path: "banner", element: <BannerList /> },
+      { path: "banner/createbanner", element: <CreateBanner /> },
+      { path: "banner/updatebanner/:id", element: <UpdateBanner /> }, 
+      { path: "banner/bannerview/:id", element: <BannerView /> },
 
       //Member route
-      // { path: "member", element: <MemberList /> },
-      // { path: "member/createmember", element: <CreateMember /> },
+      { path: "member", element: <MemberList /> },
+      { path: "member/createmember", element: <CreateMember /> },
+      { path: "member/edit/:id", element: <UpdateMember /> },
 
       // role
       // { path: "role", element: <RoleList /> },
@@ -215,11 +217,11 @@ const router = createBrowserRouter([
       // { path: "pricing/update/:id", element: <PricingUpdate /> },
 
       //vehicle
-      // { path: "vehicle", element: <VehicleList /> },
-      // { path: "vehicle/vehicledetails/:id", element: <VehicleDetails /> },
-      // { path: "vehicle/vehicleBooking/:id", element: <VehicleBookingDetails /> }, 
-      // { path: "vehicle/create", element: <CreateVehicle /> },
-      // { path: "vehicle/updateVehicle/:id", element: <UpdateVehicle /> },
+      { path: "vehicle", element: <VehicleList /> },
+      { path: "vehicle/vehicledetails/:id", element: <VehicleDetails /> },
+      { path: "vehicle/vehicleBooking/:id", element: <VehicleBookingDetails /> }, 
+      { path: "vehicle/create", element: <CreateVehicle /> },
+      { path: "vehicle/updateVehicle/:id", element: <UpdateVehicle /> },
 
       //Booking
       // { path: "booking", element: <BookingList /> },

@@ -128,7 +128,7 @@ const BannerView = () => {
           <div className="flex justify-end">
             <button
               onClick={handleBackClick}
-              className="bg-gradient-to-l from-[#5F0099] to-[#9F00FF] text-white font-semibold py-3 px-6 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-300"
+              className="bg-primary text-white font-semibold py-3 px-6 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-300"
             >
               Back
             </button>

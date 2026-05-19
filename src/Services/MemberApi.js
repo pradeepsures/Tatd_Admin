@@ -116,3 +116,49 @@ export const getAllMemberExcell = async ({ searchQuery = '' } = {}) => {
     throw new Error(err.message || 'Something went wrong!');
   }
 };
+
+export const updateMemberApi = async (data, isFormData = false) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/profile`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(isFormData ? {} : { "Content-Type": "application/json" }),
+      },
+      body: isFormData ? data : JSON.stringify(data),
+    });
+
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Something went wrong!");
+    throw err;
+  }
+};
+
+
+
+export const getSingleMemberApi = async (id) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/members/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await res.json();
+
+    if (!res.ok) throw new Error(result.message);
+
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Something went wrong!");
+    throw new Error(err.message || "Something went wrong!");
+  }
+};

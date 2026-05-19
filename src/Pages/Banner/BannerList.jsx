@@ -34,7 +34,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
+    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
     color: theme.palette.common.white,
     fontWeight: 600,
     fontSize: "0.95rem",
@@ -178,7 +178,7 @@ export default function BannerList() {
     }
     setIsExporting(true);
     const settings = {
-      fileName: "Mann_Fleet_Partners_Banners",
+      fileName: "Tatd_Banners",
       extraLength: 3,
       writeMode: "writeFile",
       writeOptions: {},

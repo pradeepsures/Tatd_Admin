@@ -83,24 +83,24 @@ const Sidebar = () => {
     //   ],
     // },
 
-    // {
-    //   name: "Vehicle",
-    //   icon: FaCar,
-    //   dropdownIcon: RiArrowDropDownLine,
-    //   subMenus: [
-    //     {
-    //       name: "Vehicle",
-    //       link: "/home/vehicle",
-    //       sectionName: "Vehicle",
-    //     },
-    //     {
-    //       name: "FuelLogs",
-    //       link: "/home/fuelLogs",
-    //       sectionName: "FuelLogs",
-    //     },
+    {
+      name: "Vehicle",
+      icon: FaCar,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "Vehicle",
+          link: "/home/vehicle",
+          sectionName: "Vehicle",
+        },
+        // {
+        //   name: "FuelLogs",
+        //   link: "/home/fuelLogs",
+        //   sectionName: "FuelLogs",
+        // },
 
-    //   ],
-    // },
+      ],
+    },
 
     // {
     //   name: "Pricing",
@@ -203,115 +203,113 @@ const Sidebar = () => {
     //   ],
     // },
 
-    // {
-    //   name: "Settings",
-    //   icon: MdOutlineSettingsSuggest,
-    //   dropdownIcon: RiArrowDropDownLine,
-    //   subMenus: [
-    //     {
-    //       name: "Member",
-    //       link: "/home/member",
-    //       sectionName: "Member",
-    //     },
-    //     {
-    //       name: "Section Master",
-    //       link: "/home/memberMaster",
-    //       sectionName: "SectionMaster",
-    //     },
-    //     {
-    //       name: "Role",
-    //       link: "/home/role",
-    //       sectionName: "Role",
-    //     },
-    //     {
-    //       name: "My Profile",
-    //       link: "/home/my-profile",
-    //       sectionName: "MyProfile",
-    //     },
-    //     {
-    //       name: "Segment",
-    //       link: "/home/segment",
-    //       sectionName: "Segment",
-    //     },
-    //     {
-    //       name: "Region",
-    //       link: "/home/region",
-    //       sectionName: "Region",
-    //     },
-    //     {
-    //       name: "Platform Dependencies",
-    //       link: "/home/platformdependencies",
-    //       sectionName: "PlatformDependencies",
-    //     },
-    //     {
-    //       name: "Holidays",
-    //       link: "/home/holidays",
-    //       sectionName: "Holidays",
-    //     },
-    //     {
-    //       name: "Airport Regions",
-    //       link: "/home/airportRegions",
-    //       icon: MdOutlineAssignmentTurnedIn,
-    //       sectionName: "AirportRegions",
-    //     },
+    {
+      name: "Settings",
+      icon: MdOutlineSettingsSuggest,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "Member",
+          link: "/home/member",
+          sectionName: "Member",
+        },
+        // {
+        //   name: "Section Master",
+        //   link: "/home/memberMaster",
+        //   sectionName: "SectionMaster",
+        // },
+        // {
+        //   name: "Role",
+        //   link: "/home/role",
+        //   sectionName: "Role",
+        // },
+        // {
+        //   name: "My Profile",
+        //   link: "/home/my-profile",
+        //   sectionName: "MyProfile",
+        // },
+        // {
+        //   name: "Segment",
+        //   link: "/home/segment",
+        //   sectionName: "Segment",
+        // },
+        // {
+        //   name: "Region",
+        //   link: "/home/region",
+        //   sectionName: "Region",
+        // },
+        // {
+        //   name: "Platform Dependencies",
+        //   link: "/home/platformdependencies",
+        //   sectionName: "PlatformDependencies",
+        // },
+        // {
+        //   name: "Holidays",
+        //   link: "/home/holidays",
+        //   sectionName: "Holidays",
+        // },
+        // {
+        //   name: "Airport Regions",
+        //   link: "/home/airportRegions",
+        //   icon: MdOutlineAssignmentTurnedIn,
+        //   sectionName: "AirportRegions",
+        // },
 
-    //     {
-    //       name: "Punch Region",
-    //       link: "/home/punchRegion",
-    //       icon: GiPunch,
-    //       sectionName: "PunchRegion",
-    //     },
+        // {
+        //   name: "Punch Region",
+        //   link: "/home/punchRegion",
+        //   icon: GiPunch,
+        //   sectionName: "PunchRegion",
+        // },
 
-    //     {
-    //       name: "Hourly Packages",
-    //       link: "/home/hourlyPackages",
-    //       icon: GiPunch,
-    //       sectionName: "HourlyPackages",
-    //     },
+        // {
+        //   name: "Hourly Packages",
+        //   link: "/home/hourlyPackages",
+        //   icon: GiPunch,
+        //   sectionName: "HourlyPackages",
+        // },
 
-    //     {
-    //       name: "CMS",
-    //       icon: IoMdHome,
-    //       dropdownIcon: RiArrowDropDownLine,
-    //       subMenus: [
-    //         { name: "Banner", link: "/home/banner", sectionName: "Banner" },
+        {
+          name: "CMS",
+          icon: IoMdHome,
+          dropdownIcon: RiArrowDropDownLine,
+          subMenus: [
+            { name: "Banner", link: "/home/banner", sectionName: "Banner" },
+            // {
+            //   name: "Term And Conditions",
+            //   link: "/home/TermAndCondition",
+            //   sectionName: "Term And Condition",
+            // }, 
+            // {
+            //   name: "Privacy Policy",
+            //   link: "/home/PrivacyPolicy",
+            //   sectionName: "PrivacyPolicy",
+            // },
+            // {
+            //   name: "About Us",
+            //   link: "/home/AboutUs",
+            //   icon: FaBlog,
+            //   sectionName: "AboutUs",
+            // },
 
-    //         //Term And Condition
-    //         {
-    //           name: "Term And Conditions",
-    //           link: "/home/TermAndCondition",
-    //           sectionName: "Term And Condition",
-    //         }, //PrivacyPolicy
-    //         {
-    //           name: "Privacy Policy",
-    //           link: "/home/PrivacyPolicy",
-    //           sectionName: "PrivacyPolicy",
-    //         },
-    //         {
-    //           name: "About Us",
-    //           link: "/home/AboutUs",
-    //           icon: FaBlog,
-    //           sectionName: "AboutUs",
-    //         },
+            // {
+            //   name: "Refund Policy",
+            //   link: "/home/RefundPolicy",
+            //   icon: FaBlog,
+            //   sectionName: "RefundPolicy",
+            // },
 
-    //         {
-    //           name: "Refund Policy",
-    //           link: "/home/RefundPolicy",
-    //           icon: FaBlog,
-    //           sectionName: "RefundPolicy",
-    //         },
+            // {
+            //   name: "FAQ",
+            //   link: "/home/Faq",
+            //   icon: FaBlog,
+            //   sectionName: "Faq",
+            // },
+          ],
+        },
 
-    //         {
-    //           name: "FAQ",
-    //           link: "/home/Faq",
-    //           icon: FaBlog,
-    //           sectionName: "Faq",
-    //         },
-    //       ],
-    //     },
-
-    //   ],
-    // },
+      ],
+    },
   ];
 
   // Filter menus and submenus by read permission

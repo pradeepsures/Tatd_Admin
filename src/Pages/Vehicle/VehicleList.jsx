@@ -39,7 +39,7 @@ import { reassignCancelRequestApi } from "../../Services/RequestApi";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
+    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
     color: theme.palette.common.white,
     fontWeight: 600,
     fontSize: "0.95rem",
@@ -332,7 +332,7 @@ export default function VehicleList() {
 
         {stats && (
           <div className="flex justify-end mb-2">
-            <div className="bg-gradient-to-r from-[#03045E] to-[#0077B6] text-white shadow-md rounded-lg px-4 py-2 text-sm flex items-center gap-3">
+            <div className="bg-primary text-white shadow-md rounded-lg px-4 py-2 text-sm flex items-center gap-3">
 
               <span>
                 <span className="opacity-80">Total:</span>{" "}
