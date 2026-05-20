@@ -49,8 +49,10 @@ import { BsFillFuelPumpFill } from "react-icons/bs";
 import { GiPunchingBag } from "react-icons/gi";
 import { GiHumanTarget } from "react-icons/gi";
 import { MdOutlineSettingsSuggest } from "react-icons/md";
+import { GiFlowerStar } from "react-icons/gi";
+import { MdRoomPreferences } from "react-icons/md";
 const Sidebar = () => {
-  const { hasPermission } = useAuth();
+  // const { hasPermission } = useAuth();
   const [open, setOpen] = useState(true);
   const [activeMenu, setActiveMenu] = useState(null);
   const [activeSubMenu, setActiveSubMenu] = useState(null);
@@ -83,24 +85,65 @@ const Sidebar = () => {
     //   ],
     // },
 
-    {
-      name: "Vehicle",
-      icon: FaCar,
+     {
+      name: "Region Master",
+      icon: GiFlowerStar,
       dropdownIcon: RiArrowDropDownLine,
       subMenus: [
         {
-          name: "Vehicle",
-          link: "/home/vehicle",
-          sectionName: "Vehicle",
+          name: "States",
+          link: "/home/states",
+          sectionName: "States",
         },
-        // {
-        //   name: "FuelLogs",
-        //   link: "/home/fuelLogs",
-        //   sectionName: "FuelLogs",
-        // },
-
+          {
+          name: "Cities",
+          link: "/home/Cities",
+          sectionName: "Cities",
+        },
       ],
     },
+
+     {
+      name: "Vehicle Preference",
+      icon: MdRoomPreferences,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "Vehicle Preference",
+          link: "/home/VehiclePreference",
+          sectionName: "VehiclePreference",
+        },
+         {
+          name: "Vehicle Preference Category",
+          link: "/home/VehiclePreferenceCategory",
+          sectionName: "VehiclePreferenceCategory",
+        },
+        {
+          name: "Night Time",
+          link: "/home/NightTimes",
+          sectionName: "NightTime",
+        },
+      ],
+    },
+
+    // {
+    //   name: "Vehicle",
+    //   icon: FaCar,
+    //   dropdownIcon: RiArrowDropDownLine,
+    //   subMenus: [
+    //     {
+    //       name: "Vehicle",
+    //       link: "/home/vehicle",
+    //       sectionName: "Vehicle",
+    //     },
+    //     // {
+    //     //   name: "FuelLogs",
+    //     //   link: "/home/fuelLogs",
+    //     //   sectionName: "FuelLogs",
+    //     // },
+
+    //   ],
+    // },
 
     // {
     //   name: "Pricing",
@@ -274,7 +317,7 @@ const Sidebar = () => {
           icon: IoMdHome,
           dropdownIcon: RiArrowDropDownLine,
           subMenus: [
-            { name: "Banner", link: "/home/banner", sectionName: "Banner" },
+            // { name: "Banner", link: "/home/banner", sectionName: "Banner" },
             // {
             //   name: "Term And Conditions",
             //   link: "/home/TermAndCondition",
@@ -352,7 +395,8 @@ const Sidebar = () => {
       .filter(Boolean);
   };
 
-  const filteredMenus = filterMenu(menus);
+  // const filteredMenus = filterMenu(menus);
+  const filteredMenus = menus;
 
   const handleMenuClick = (index) => {
     setActiveMenu(activeMenu === index ? null : index);

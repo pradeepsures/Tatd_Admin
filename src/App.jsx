@@ -124,6 +124,11 @@ import SectionNameList from "./Pages/Membermaster/MemberMasterList";
 import CreateMember from "./Pages/Member/CreateMember";
 import UpdateMember from "./Pages/Member/UpdateMember";
 import HourlyPackageList from "./Pages/HourlyPackages/HourlyPackagesList";
+import StatesList from "./Pages/States/StatesList";
+import CitiesList from "./Pages/Cities/CitiesList";
+import VehiclePreferenceList from "./Pages/VehiclePreference/VehiclePreferenceList";
+import VehiclePreferenceCategoryList from "./Pages/VehiclePreferenceCategory/VehivlePreferenceCategoryList";
+import NightTimesList from "./Pages/NightTime/NightTimeList";
 
 // import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
 
@@ -182,13 +187,13 @@ const router = createBrowserRouter([
       // { path: "role/updaterole/:id", element: <UpdateRole /> },
 
       //segment
-      // { path: "segment", element: <SegmentList /> },
-      // { path: "segment/segmentview/:id", element: <SegmentView /> },
-      // { path: "segment/createsegment", element: <CreateSegment /> },
-      // { path: "segment/updateSegment/:id", element: <UpdateSegment /> },
+      { path: "segment", element: <SegmentList /> },
+      { path: "segment/segmentview/:id", element: <SegmentView /> },
+      { path: "segment/createsegment", element: <CreateSegment /> },
+      { path: "segment/updateSegment/:id", element: <UpdateSegment /> },
 
       //region
-      // { path: "region", element: <RegionList /> },
+      { path: "region", element: <RegionList /> },
 
       //driver
       // { path: "driver", element: <DriverList /> },
@@ -199,22 +204,22 @@ const router = createBrowserRouter([
 
 
       //terms and condition, privacy policy, about us   
-      // { path: "TermAndCondition", element: <List /> },
-      // { path: "PrivacyPolicy", element: <PrivacyPolicy /> },
+      { path: "TermAndCondition", element: <List /> },
+      { path: "PrivacyPolicy", element: <PrivacyPolicy /> },
       // { path: "AboutUs", element: <AboutUs /> },
       // { path: "RefundPolicy", element: <RefundPolicy /> },
 
       // FAQ
-      // { path: "FAQ", element: <FaqList /> },
-      // { path: "FAQ/createfaq", element: <CreateFAQ /> },
-      // { path: "FAQ/updatefaq/:id", element: <UpdateFAQ /> },
-      // { path: "FAQ/viewfaq/:id", element: <FaqDetails /> },
+      { path: "FAQ", element: <FaqList /> },
+      { path: "FAQ/createfaq", element: <CreateFAQ /> },
+      { path: "FAQ/updatefaq/:id", element: <UpdateFAQ /> },
+      { path: "FAQ/viewfaq/:id", element: <FaqDetails /> },
 
       //pricing
-      // { path: "pricing", element: <PricingList /> },
-      // { path: "pricing/pricingview/:id", element: <PricingDetails /> },
-      // { path: "pricing/create", element: <PricingCreate /> },
-      // { path: "pricing/update/:id", element: <PricingUpdate /> },
+      { path: "pricing", element: <PricingList /> },
+      { path: "pricing/pricingview/:id", element: <PricingDetails /> },
+      { path: "pricing/create", element: <PricingCreate /> },
+      { path: "pricing/update/:id", element: <PricingUpdate /> },
 
       //vehicle
       { path: "vehicle", element: <VehicleList /> },
@@ -324,6 +329,21 @@ const router = createBrowserRouter([
 
       //hourly packages
       // { path: "hourlyPackages", element: <HourlyPackageList /> },
+
+      //states
+      { path:"states", element: <StatesList/> },
+
+      //cities
+      { path:"Cities", element: <CitiesList/> },
+
+      //vehicle Preference
+      { path: "VehiclePreference", element: <VehiclePreferenceList/> },
+
+      //vehicle preference category
+     { path: "VehiclePreferenceCategory", element: <VehiclePreferenceCategoryList/> },
+
+     //night Times
+     { path: "NightTimes", element: <NightTimesList/> }
 
 
     ],

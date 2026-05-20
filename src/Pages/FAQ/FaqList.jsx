@@ -27,11 +27,13 @@ import toast from "react-hot-toast";
 import xlsx from "json-as-xlsx";
 import { useAuth } from "../../auth/AuthContext";
 import { Select } from "antd";
+import Breaker from "../../compoents/Breaker"
 const { Option } = Select;
+
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
+    background: "linear-gradient(to right,#1E3A8A, #023E8A, #3B82F6)",
     color: theme.palette.common.white,
     fontWeight: 600,
     fontSize: "0.95rem",
@@ -202,6 +204,7 @@ export default function FaqList() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
+      <Breaker/>
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <input
@@ -223,24 +226,6 @@ export default function FaqList() {
           </button>
         </div>
         <div className="flex gap-4">
-{/* 
-          <Select
-            value={selectedLanguage}
-            onChange={(value) => {
-              setSelectedLanguage(value);
-              setPage(1);
-            }}
-            style={{ width: 150 }}
-          >
-            <Option value="en">English</Option>
-            <Option value="hi">Hindi</Option>
-            <Option value="pa">Punjabi</Option>
-            <Option value="bn">Bengali</Option>
-            <Option value="ta">Tamil</Option>
-            <Option value="te">Telugu</Option>
-            <Option value="gu">Gujarati</Option>
-            <Option value="mr">Marathi</Option>
-          </Select> */}
 
           <motion.button
             whileTap={{ scale: 0.95 }}

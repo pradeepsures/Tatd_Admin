@@ -36,7 +36,7 @@ import { useAuth } from "../../auth/AuthContext";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
+    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
     color: theme.palette.common.white,
     fontWeight: 600,
     fontSize: "0.95rem",

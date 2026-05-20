@@ -4,6 +4,7 @@ import { Card, Spin, Tag } from "antd";
 import { getFAQByIdApi } from "../../Services/FaqApi";
 import toast from "react-hot-toast";
 import { useAuth } from "../../auth/AuthContext";
+import Breaker from "../../compoents/Breaker"
 
 export default function FaqDetails() {
   const { id } = useParams();
@@ -48,6 +49,7 @@ export default function FaqDetails() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
+      <Breaker/>
       <Card
         title="FAQ Details"
         bordered={false}
