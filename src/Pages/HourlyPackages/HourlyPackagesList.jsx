@@ -39,7 +39,7 @@ import {
 // ────────────────────────────────────────────────
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
+    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
     color: theme.palette.common.white,
     fontWeight: 600,
     fontSize: "0.95rem",
@@ -65,7 +65,7 @@ const StyledTableRow = styled(TableRow)(() => ({
 }));
 
 export default function searchHourlyPackageList() {
-  const { auth, hasPermission, loading: authLoading } = useAuth();
+  const { auth, loading: authLoading } = useAuth();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -331,7 +331,7 @@ export default function searchHourlyPackageList() {
           </button>
         </div>
 
-        {hasPermission("HourlyPackages", "create") && (
+        {/* {hasPermission("HourlyPackages", "create") && ( */}
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={openCreateModal}
@@ -339,7 +339,7 @@ export default function searchHourlyPackageList() {
           >
             Add Hourly Package
           </motion.button>
-        )}
+        {/* )} */}
       </div>
 
       {/* Table */}
@@ -397,33 +397,33 @@ export default function searchHourlyPackageList() {
                   </StyledTableCell>
 
                   <StyledTableCell align="center">
-                    {(hasPermission("HourlyPackages", "update") ||
-                      hasPermission("HourlyPackages", "delete")) && (
+                    {/* {(hasPermission("HourlyPackages", "update") ||
+                      hasPermission("HourlyPackages", "delete")) && ( */}
                       <IconButton
                         onClick={(e) => handleMenuOpen(e, row.id)}
                       >
                         <MoreVertIcon />
                       </IconButton>
-                    )}
+                    {/* )} */}
 
                     <Menu
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl) && selectedRowId === row.id}
                       onClose={handleMenuClose}
                     >
-                      {hasPermission("HourlyPackages", "update") && (
+                      {/* {hasPermission("HourlyPackages", "update") && ( */}
                         <MenuItem onClick={() => openEditModal(row.id)}>
                           <PencilIcon className="h-5 w-5 text-green-600 mr-2" />
                           Edit
                         </MenuItem>
-                      )}
+                      {/* )} */}
 
-                      {hasPermission("HourlyPackages", "delete") && (
+                      {/* {hasPermission("HourlyPackages", "delete") && ( */}
                         <MenuItem onClick={() => deleteHandler(row.id)}>
                           <TrashIcon className="h-5 w-5 text-red-600 mr-2" />
                           Delete
                         </MenuItem>
-                      )}
+                      {/* )} */}
                     </Menu>
                   </StyledTableCell>
                 </StyledTableRow>

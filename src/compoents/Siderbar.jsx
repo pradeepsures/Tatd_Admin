@@ -61,29 +61,29 @@ const Sidebar = () => {
   const menus = [
     { name: "Dashboard", link: "/home", icon: MdOutlineDashboard },
 
-    // {
-    //   name: "Chauffeur",
-    //   icon: GiHumanTarget,
-    //   dropdownIcon: RiArrowDropDownLine,
-    //   subMenus: [
-    //     {
-    //       name: "Master",
-    //       link: "/home/driver",
-    //       sectionName: "Driver",
-    //     },
-    //     {
-    //       name: "Attendance",
-    //       link: "/home/punches",
-    //       sectionName: "Punches",
-    //     },
-    //     {
-    //       name: "Today Attendance",
-    //       link: "/home/punches/today-summary",
-    //       sectionName: "PunchesTodaySummary",
-    //     },
+    {
+      name: "Driver",
+      icon: GiHumanTarget,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "Master",
+          link: "/home/driver",
+          sectionName: "Driver",
+        },
+        // {
+        //   name: "Attendance",
+        //   link: "/home/punches",
+        //   sectionName: "Punches",
+        // },
+        // {
+        //   name: "Today Attendance",
+        //   link: "/home/punches/today-summary",
+        //   sectionName: "PunchesTodaySummary",
+        // },
 
-    //   ],
-    // },
+      ],
+    },
 
      {
       name: "Region Master",
@@ -305,12 +305,19 @@ const Sidebar = () => {
         //   sectionName: "PunchRegion",
         // },
 
-        // {
-        //   name: "Hourly Packages",
-        //   link: "/home/hourlyPackages",
-        //   icon: GiPunch,
-        //   sectionName: "HourlyPackages",
-        // },
+        {
+          name: "Hourly Packages",
+          link: "/home/hourlyPackages",
+          icon: GiPunch,
+          sectionName: "HourlyPackages",
+        },
+
+        {
+          name: "Hourly Pricing",
+          link: "/home/hourlyPricing",
+          icon: GiPunch,
+          sectionName: "HourlyPricing",
+        },
 
         {
           name: "CMS",

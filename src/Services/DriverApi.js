@@ -24,58 +24,41 @@ export const createDriverApi = async (formData) => {
 
 
 // GET ALL DRIVERS
-// export const getAllDrivers = async ({ page, rowsPerPage, searchQuery }) => {
+export const getAllDrivers = async ({
+    page,
+    limit,
+    search,
+    isVerified,
+    isOnline,
+    isAvailable,
+    startDate,
+    endDate
+}) => {
+    const token = localStorage.getItem("token");
 
-//   const token = localStorage.getItem("token");
+    try {
+        let url = `${BASE_URL}/api/admin/drivers?page=${page}&limit=${limit}`;
 
-//   try {
+        if (search) url += `&search=${search}`;
+        if (isVerified !== undefined) url += `&isVerified=${isVerified}`;
+        if (isOnline !== undefined) url += `&isOnline=${isOnline}`;
+        if (isAvailable !== undefined) url += `&isAvailable=${isAvailable}`;
+        if (startDate) url += `&startDate=${startDate}`;
+        if (endDate) url += `&endDate=${endDate}`;
 
-//     const res = await fetch(
-//       `${BASE_URL}/api/admin/drivers?page=${page}&limit=${rowsPerPage}&search=${searchQuery}`,
-//       {
-//         method: "GET",
-//         headers: {
-//           Authorization: `Bearer ${token}`,
-//         },
-//       }
-//     );
+        const res = await fetch(url, {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        });
 
-//     const result = await res.json();
-//     return result;
+        return await res.json();
 
-//   } catch (err) {
-//     toast.error(err.message || "Failed to fetch drivers");
-//     throw err;
-//   }
-
-// };
-export const getAllDrivers = async ({ page, rowsPerPage, searchQuery }) => {
-
-  const token = localStorage.getItem("token");
-
-  try {
-
-    let url = `${BASE_URL}/api/admin/drivers?page=${page}&limit=${rowsPerPage}`;
-
-    // ✅ only add search if exists
-    if (searchQuery) {
-      url += `&search=${searchQuery}`;
+    } catch (err) {
+        toast.error(err.message || "Failed to fetch drivers");
+        throw err;
     }
-
-    const res = await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const result = await res.json();
-    return result;
-
-  } catch (err) {
-    toast.error(err.message || "Failed to fetch drivers");
-    throw err;
-  }
 };
 
 // GET SINGLE DRIVER

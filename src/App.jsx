@@ -196,11 +196,11 @@ const router = createBrowserRouter([
       { path: "region", element: <RegionList /> },
 
       //driver
-      // { path: "driver", element: <DriverList /> },
-      // { path: "driver/createDriver", element: <CreateDriver /> },
-      // { path: "driver/driverView/:id", element: <DriverDetail /> },
-      // { path: "driver/driverBookingView/:id", element: <DriverBookingDetails /> },
-      // { path: "driver/updateDriver/:id", element: <UpdateDriver /> },
+      { path: "driver", element: <DriverList /> },
+      { path: "driver/createDriver", element: <CreateDriver /> },
+      { path: "driver/driverView/:id", element: <DriverDetail /> },
+      { path: "driver/driverBookingView/:id", element: <DriverBookingDetails /> },
+      { path: "driver/updateDriver/:id", element: <UpdateDriver /> },
 
 
       //terms and condition, privacy policy, about us   
@@ -328,7 +328,7 @@ const router = createBrowserRouter([
       // { path: "memberMaster", element: <SectionNameList/> },
 
       //hourly packages
-      // { path: "hourlyPackages", element: <HourlyPackageList /> },
+      { path: "hourlyPackages", element: <HourlyPackageList /> },
 
       //states
       { path:"states", element: <StatesList/> },
