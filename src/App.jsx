@@ -129,6 +129,7 @@ import CitiesList from "./Pages/Cities/CitiesList";
 import VehiclePreferenceList from "./Pages/VehiclePreference/VehiclePreferenceList";
 import VehiclePreferenceCategoryList from "./Pages/VehiclePreferenceCategory/VehivlePreferenceCategoryList";
 import NightTimesList from "./Pages/NightTime/NightTimeList";
+import HourlyPricingList from "./Pages/HourlyPricing/HourlyPricingList";
 
 // import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
 
@@ -329,6 +330,9 @@ const router = createBrowserRouter([
 
       //hourly packages
       { path: "hourlyPackages", element: <HourlyPackageList /> },
+
+      //hourly pricing 
+      { path: "hourlyPricing", element: <HourlyPricingList/> },
 
       //states
       { path:"states", element: <StatesList/> },

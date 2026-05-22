@@ -319,44 +319,44 @@ const Sidebar = () => {
           sectionName: "HourlyPricing",
         },
 
-        {
-          name: "CMS",
-          icon: IoMdHome,
-          dropdownIcon: RiArrowDropDownLine,
-          subMenus: [
-            // { name: "Banner", link: "/home/banner", sectionName: "Banner" },
-            // {
-            //   name: "Term And Conditions",
-            //   link: "/home/TermAndCondition",
-            //   sectionName: "Term And Condition",
-            // }, 
-            // {
-            //   name: "Privacy Policy",
-            //   link: "/home/PrivacyPolicy",
-            //   sectionName: "PrivacyPolicy",
-            // },
-            // {
-            //   name: "About Us",
-            //   link: "/home/AboutUs",
-            //   icon: FaBlog,
-            //   sectionName: "AboutUs",
-            // },
+        // {
+        //   name: "CMS",
+        //   icon: IoMdHome,
+        //   dropdownIcon: RiArrowDropDownLine,
+        //   subMenus: [
+        //     { name: "Banner", link: "/home/banner", sectionName: "Banner" },
+        //     {
+        //       name: "Term And Conditions",
+        //       link: "/home/TermAndCondition",
+        //       sectionName: "Term And Condition",
+        //     }, 
+        //     {
+        //       name: "Privacy Policy",
+        //       link: "/home/PrivacyPolicy",
+        //       sectionName: "PrivacyPolicy",
+        //     },
+        //     {
+        //       name: "About Us",
+        //       link: "/home/AboutUs",
+        //       icon: FaBlog,
+        //       sectionName: "AboutUs",
+        //     },
 
-            // {
-            //   name: "Refund Policy",
-            //   link: "/home/RefundPolicy",
-            //   icon: FaBlog,
-            //   sectionName: "RefundPolicy",
-            // },
+        //     {
+        //       name: "Refund Policy",
+        //       link: "/home/RefundPolicy",
+        //       icon: FaBlog,
+        //       sectionName: "RefundPolicy",
+        //     },
 
-            // {
-            //   name: "FAQ",
-            //   link: "/home/Faq",
-            //   icon: FaBlog,
-            //   sectionName: "Faq",
-            // },
-          ],
-        },
+        //     {
+        //       name: "FAQ",
+        //       link: "/home/Faq",
+        //       icon: FaBlog,
+        //       sectionName: "Faq",
+        //     },
+        //   ],
+        // },
 
       ],
     },

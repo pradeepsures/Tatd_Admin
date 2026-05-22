@@ -3,18 +3,13 @@ import toast from 'react-hot-toast';
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // ────────────────────────────────────────────────
-// Get All hourlyPricing (with pagination & search)
+// Get Hourly Pricing
 // ────────────────────────────────────────────────
-export const getAllhourlyPricing = async ({
-  page = 1,
-  rowsPerPage = 10,
-}) => {
+export const getHourlyPricing = async () => {
   const token = localStorage.getItem('token');
 
   try {
-    let url = `${BASE_URL}/api/admin/hourlyPricing?page=${page}&limit=${rowsPerPage}`;
-    
-    const res = await fetch(url, {
+    const res = await fetch(`${BASE_URL}/api/admin/hourlyPricing`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -23,7 +18,7 @@ export const getAllhourlyPricing = async ({
 
     const result = await res.json();
 
-    if (!res.ok || result.status !== 'success') {
+    if (!res.ok || result.status !== true) {
       throw new Error(result.message || 'Failed to fetch hourly pricing');
     }
 
@@ -52,22 +47,22 @@ export const getHourlyPricingById = async (id) => {
 
     const result = await res.json();
 
-    if (!res.ok || result.status !== 'success') {
+    if (!res.ok || result.status !== true) {
       throw new Error(result.message || 'Failed to fetch hourly pricing');
     }
 
     return result;
   } catch (err) {
-    console.error('Error fetching hourly Pricing:', err);
+    console.error('Error fetching hourly pricing:', err);
     toast.error(err.message || 'Failed to load details');
     throw err;
   }
 };
 
 // ────────────────────────────────────────────────
-// Create New Hourly Pricing
+// Create Hourly Pricing
 // ────────────────────────────────────────────────
-export const createHourlyPricing= async (data) => {
+export const createHourlyPricing = async (data) => {
   const token = localStorage.getItem('token');
 
   try {
@@ -78,26 +73,25 @@ export const createHourlyPricing= async (data) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
-      // expected: { name, hours, includedKms, status }
     });
 
     const result = await res.json();
 
-    if (!res.ok || result.status !== 'success') {
-      throw new Error(result.message || 'Failed to create pricing');
+    if (!res.ok || result.status !== true) {
+      throw new Error(result.message || 'Failed to create hourly pricing');
     }
 
     toast.success('Hourly pricing created successfully!');
     return result;
   } catch (err) {
     console.error('Error creating hourly pricing:', err);
-    toast.error(err.message || 'Failed to create pricing');
+    toast.error(err.message || 'Failed to create hourly pricing');
     throw err;
   }
 };
 
 // ────────────────────────────────────────────────
-// Update Hourly Pricing (PATCH)
+// Update Hourly Pricing
 // ────────────────────────────────────────────────
 export const updateHourlyPricing = async (id, data) => {
   const token = localStorage.getItem('token');
@@ -110,22 +104,38 @@ export const updateHourlyPricing = async (id, data) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(data),
-      // partial update allowed
     });
 
     const result = await res.json();
 
-    if (!res.ok || result.status !== 'success') {
-      throw new Error(result.message || 'Failed to update pricing');
+    if (!res.ok || result.status !== true) {
+      throw new Error(result.message || 'Failed to update hourly pricing');
     }
 
     toast.success('Hourly pricing updated successfully!');
     return result;
   } catch (err) {
     console.error('Error updating hourly pricing:', err);
-    toast.error(err.message || 'Failed to update pricing');
+    toast.error(err.message || 'Failed to update hourly pricing');
     throw err;
   }
+};
+
+// ────────────────────────────────────────────────
+// Toggle Hourly Pricing Status
+// ────────────────────────────────────────────────
+
+export const toggleHourlyPricingStatus = async (id) => {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch(`${BASE_URL}/api/admin/hourlyPricing/${id}/toggle`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return await res.json();
 };
 
 // ────────────────────────────────────────────────
@@ -145,15 +155,15 @@ export const deleteHourlyPricing = async (id) => {
 
     const result = await res.json();
 
-    if (!res.ok || result.status !== 'success') {
-      throw new Error(result.message || 'Failed to delete pricing');
+    if (!res.ok || result.status !== true) {
+      throw new Error(result.message || 'Failed to delete hourly pricing');
     }
 
     toast.success('Hourly pricing deleted successfully!');
     return result;
   } catch (err) {
     console.error('Error deleting hourly pricing:', err);
-    toast.error(err.message || 'Failed to delete pricing');
+    toast.error(err.message || 'Failed to delete hourly pricing');
     throw err;
   }
 };
