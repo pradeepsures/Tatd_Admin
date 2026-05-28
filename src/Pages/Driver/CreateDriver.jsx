@@ -198,16 +198,16 @@ const CreateDriver = () => {
       const res = await createDriverApi(formDataToSend);
 
       if (res?.status) {
-        toast.success("Chauffeur created successfully!");
+        toast.success("Driver created successfully!");
         navigate(-1);
       } else {
-        const errorMsg = res?.message || "Failed to create chauffeur";
+        const errorMsg = res?.message || "Failed to create Driver";
         toast.error(errorMsg);
       }
     } catch (error) {
       const errMsg =
         error?.response?.data?.message || error?.message || "Server error";
-      console.error("Error creating chauffeur:", error);
+      console.error("Error creating Driver:", error);
       toast.error(errMsg);
     } finally {
       setLoading(false);
@@ -773,7 +773,7 @@ const CreateDriver = () => {
               disabled={loading}
               className="bg-primary text-white py-2 px-6 rounded-2xl"
             >
-              {loading ? "Creating..." : "Create Chauffeur"}
+              {loading ? "Creating..." : "Create Driver"}
             </button>
           </div>
         </form>

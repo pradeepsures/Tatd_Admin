@@ -130,6 +130,8 @@ import VehiclePreferenceList from "./Pages/VehiclePreference/VehiclePreferenceLi
 import VehiclePreferenceCategoryList from "./Pages/VehiclePreferenceCategory/VehivlePreferenceCategoryList";
 import NightTimesList from "./Pages/NightTime/NightTimeList";
 import HourlyPricingList from "./Pages/HourlyPricing/HourlyPricingList";
+import HourlyBookingList from "./Pages/hourlyBooking/HourlyBookingList";
+import HourlyBookingDetails from "./Pages/hourlyBooking/HourlyBookingDetails";
 
 // import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
 
@@ -347,7 +349,11 @@ const router = createBrowserRouter([
      { path: "VehiclePreferenceCategory", element: <VehiclePreferenceCategoryList/> },
 
      //night Times
-     { path: "NightTimes", element: <NightTimesList/> }
+     { path: "NightTimes", element: <NightTimesList/> },
+
+     //hourly booking
+     { path: "hourlyBooking", element: <HourlyBookingList/> },
+     { path: "hourlyBooking/view/:id", element: <HourlyBookingDetails/> }
 
 
     ],

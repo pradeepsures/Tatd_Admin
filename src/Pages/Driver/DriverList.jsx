@@ -94,7 +94,7 @@ export default function DriverList() {
   });
 
   const [page, setPage] = useState(1);
-  const rowsPerPage = 7;
+  const rowsPerPage = 10;
 
   const navigate = useNavigate();
 
@@ -105,7 +105,7 @@ export default function DriverList() {
 
       const result = await getAllDrivers({
         page,
-        rowsPerPage,
+        limit: rowsPerPage,
         search: searchQuery,
         isVerified: appliedFilters.isVerified || undefined,
         isOnline: appliedFilters.isOnline || undefined,

@@ -126,6 +126,27 @@ const Sidebar = () => {
       ],
     },
 
+    
+    {
+      name: "Hourly Booking",
+      icon: TbBrandBooking,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+         {
+          name: "Hourly Booking",
+          link: "/home/hourlyBooking",
+          sectionName: "HourlyBooking",
+        },
+      ],
+    },
+
+      //  {
+      //     name: "Hourly Booking",
+      //     link: "/home/hourlyBooking",
+      //     icon: TbBrandBooking,
+      //     sectionName: "HourlyBooking",
+      //   },
+
     // {
     //   name: "Vehicle",
     //   icon: FaCar,
