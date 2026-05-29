@@ -208,10 +208,10 @@ const HourlyBookingFilters = ({ filters, setFilters, onApply }) => {
           className={inputClass}
         />
 
-   <div className="flex flex-wrap gap-3">
-        <button
-          onClick={handleApplyFilters}
-          className="
+        <div className="flex flex-wrap gap-3">
+          <button
+            onClick={handleApplyFilters}
+            className="
     bg-gradient-to-r
     from-[#1E3A8A]
     to-[#3B82F6]
@@ -227,13 +227,13 @@ const HourlyBookingFilters = ({ filters, setFilters, onApply }) => {
     duration-300
     shadow-sm
   "
-        >
-          Apply Filters
-        </button>
+          >
+            Apply Filters
+          </button>
 
-        <button
-          onClick={clearFilters}
-          className="
+          <button
+            onClick={clearFilters}
+            className="
             bg-gray-600
             hover:bg-gray-900
             text-white
@@ -244,10 +244,10 @@ const HourlyBookingFilters = ({ filters, setFilters, onApply }) => {
             font-medium
             transition-all
           "
-        >
-          Clear Filters
-        </button>
-      </div>
+          >
+            Clear Filters
+          </button>
+        </div>
 
       </div>
 

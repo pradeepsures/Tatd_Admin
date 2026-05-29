@@ -16,14 +16,15 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
-import { Modal } from "antd";
+import { Modal, Select } from "antd";
 
 import toast from "react-hot-toast";
 
@@ -32,10 +33,17 @@ import * as XLSX from "xlsx";
 import Breaker from "../../compoents/Breaker";
 import Loader from "../../compoents/Loader";
 
-import { getAllHourlyBookings } from "../../Services/HourlyBookingApi";
+import {
+  getAllHourlyBookings,
+  getUnassignedHourlyDrivers,
+  assignHourlyDriver,
+  reassignHourlyDriver,
+} from "../../Services/HourlyBookingApi";
 
 import HourlyBookingFilters from "../hourlyBooking/HourlyBookingFilter";
 import { useNavigate } from "react-router-dom";
+
+const { Option } = Select;
 
 // ─────────────────────────────────────────────
 // TABLE STYLE
@@ -46,7 +54,18 @@ const StyledTableCell = styled(TableCell)(() => ({
     background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
     color: "#fff",
     fontWeight: 600,
-    fontSize: "14px",
+    fontSize: "11px",
+    padding: "10px 6px",
+    whiteSpace: "nowrap",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    padding: "10px 6px",
+    fontSize: "11px",
+    color: "#374151",
+    verticalAlign: "top",
+    overflowWrap: "anywhere",
+    wordBreak: "break-word",
+    whiteSpace: "normal",
   },
 }));
 
@@ -92,6 +111,13 @@ export default function HourlyBookingList() {
   const [selectedItem, setSelectedItem] = useState(null);
 
   const [stats, setStats] = useState(null);
+
+  const [driverModalOpen, setDriverModalOpen] = useState(false);
+  const [driverOptions, setDriverOptions] = useState([]);
+  const [selectedDriverId, setSelectedDriverId] = useState("");
+  const [driverAction, setDriverAction] = useState("assign");
+  const [driverSubmitting, setDriverSubmitting] = useState(false);
+  const [activeBooking, setActiveBooking] = useState(null);
 
   // FILTERS
   const [filters, setFilters] = useState({
@@ -214,6 +240,72 @@ export default function HourlyBookingList() {
     setSelectedItem(null);
   };
 
+  const fetchUnassignedDrivers = async (bookingId, mode = "assign") => {
+    try {
+      const res = await getUnassignedHourlyDrivers({
+        page: 1,
+        limit: 100,
+        bookingId,
+      });
+
+      if (res?.status) {
+        setDriverOptions(res.data || []);
+        if (!res.data?.length) {
+          toast.error(
+            mode === "reassign"
+              ? "No drivers available for reassignment"
+              : "No drivers available for assignment"
+          );
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load driver list");
+    }
+  };
+
+  const openDriverModal = async (booking, mode = "assign") => {
+    setActiveBooking(booking);
+    setDriverAction(mode);
+    setSelectedDriverId("");
+    setDriverModalOpen(true);
+    await fetchUnassignedDrivers(booking._id, mode);
+    closeMenu();
+  };
+
+  const handleDriverSubmit = async () => {
+    if (!activeBooking?._id) return;
+    if (!selectedDriverId) {
+      toast.error("Please select a driver");
+      return;
+    }
+
+    try {
+      setDriverSubmitting(true);
+
+      if (driverAction === "reassign") {
+        await reassignHourlyDriver({
+          bookingId: activeBooking._id,
+          driverId: selectedDriverId,
+        });
+      } else {
+        await assignHourlyDriver({
+          bookingId: activeBooking._id,
+          driverId: selectedDriverId,
+        });
+      }
+
+      setDriverModalOpen(false);
+      setSelectedDriverId("");
+      setActiveBooking(null);
+      await fetchBookings();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setDriverSubmitting(false);
+    }
+  };
+
   // ─────────────────────────────────────────────
   // LOADER
   // ─────────────────────────────────────────────
@@ -221,7 +313,7 @@ export default function HourlyBookingList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="w-full max-w-full overflow-x-hidden p-4 md:p-6 bg-gray-50 min-h-screen">
       {/* HEADER */}
       <div className="flex items-center justify-between mb-5">
         <Breaker />
@@ -317,36 +409,43 @@ export default function HourlyBookingList() {
       <HourlyBookingFilters filters={filters} setFilters={setFilters} />
 
       {/* TABLE */}
-      <TableContainer component={Paper}>
-        <Table>
+      <TableContainer
+        component={Paper}
+        sx={{ width: "100%", maxWidth: "100%", overflowX: "auto", overflowY: "hidden" }}
+      >
+        <Table sx={{ width: "100%", minWidth: 1100, tableLayout: "fixed" }}>
           {/* HEAD */}
           <TableHead>
             <TableRow>
               <StyledTableCell>S.No</StyledTableCell>
 
               {/* BOOKING + PAYMENT (reduced width feel) */}
-              <StyledTableCell sx={{ minWidth: 140 }}>
-                BOOKING No.&PAYMENT
+              <StyledTableCell sx={{ width: "16%" }}>
+                BOOKING / PAYMENT
               </StyledTableCell>
 
               {/* INFORMATION (moved up) */}
-              <StyledTableCell sx={{ minWidth: 260 }}>
+              <StyledTableCell sx={{ width: "24%" }}>
                 INFORMATION
               </StyledTableCell>
 
               {/* TRIP + FARE */}
-              <StyledTableCell>TRIP TYPE</StyledTableCell>
+              <StyledTableCell sx={{ width: "9%" }}>TRIP TYPE</StyledTableCell>
 
               {/* VEHICLE */}
-              <StyledTableCell>VEHICLE PREF. Category</StyledTableCell>
+              <StyledTableCell sx={{ width: "10%" }}>
+                VEHICLE PREF.
+              </StyledTableCell>
 
-              <StyledTableCell>TRIP STATUS</StyledTableCell>
+              <StyledTableCell sx={{ width: "9%" }}>TRIP STATUS</StyledTableCell>
 
-              <StyledTableCell>ASSIGNMENT</StyledTableCell>
+              <StyledTableCell sx={{ width: "9%" }}>ASSIGNMENT</StyledTableCell>
 
-              <StyledTableCell>DRIVER INFO</StyledTableCell>
+              <StyledTableCell sx={{ width: "15%" }}>DRIVER INFO</StyledTableCell>
 
-              <StyledTableCell align="center">ACTION</StyledTableCell>
+              <StyledTableCell align="center" sx={{ width: "6%" }}>
+                ACTION
+              </StyledTableCell>
             </TableRow>
           </TableHead>
 
@@ -367,20 +466,19 @@ export default function HourlyBookingList() {
                   </StyledTableCell>
 
                   {/* BOOKING + PAYMENT (compact) */}
-                  <StyledTableCell sx={{ minWidth: 140 }}>
+                  <StyledTableCell sx={{ width: "16%" }}>
                     <div className="space-y-1">
-                      <div className="font-semibold text-sm text-gray-800 truncate">
+                      <div className="font-semibold text-gray-800 break-all">
                         {booking.bookingNumber}
                       </div>
 
                       <span
                         className={`
                     px-2 py-0.5 rounded-full text-[11px] font-semibold
-                    ${
-                      booking.paymentStatus === "paid"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }
+                    ${booking.paymentStatus === "paid"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-yellow-100 text-yellow-700"
+                          }
                   `}
                       >
                         {formatText(booking.paymentStatus)}
@@ -389,54 +487,40 @@ export default function HourlyBookingList() {
                   </StyledTableCell>
 
                   {/* INFORMATION (pickup + drop moved here) */}
-                  <StyledTableCell sx={{ minWidth: 260 }}>
-                    <div className="space-y-2">
-                      {/* USER */}
-                      <div className="text-xs text-gray-700 font-medium truncate">
+                  <StyledTableCell sx={{ width: "24%", minWidth: 0 }}>
+                    <div className="space-y-1.5 text-[11px] text-gray-700">
+                      <div className="font-semibold text-gray-800 break-all">
                         {formatText(booking.user?.name)}
                       </div>
 
-                      {/* PICKUP */}
-                      <div className="flex gap-2 items-start">
-                        <span className="bg-green-100 text-green-700 text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
-                          Pickup:-
-                        </span>
-                        <div className="text-xs text-gray-600 break-words">
-                          {booking.pickup?.address}
-                        </div>
+                      <div className="rounded-md bg-green-50 p-1.5">
+                        <div className="text-[10px] font-semibold text-green-700">Pickup</div>
+                        <div className="text-[11px] text-gray-700 break-all">{booking.pickup?.address || "-"}</div>
+                        <div className="text-[10px] text-gray-500">Lat: {booking.pickup?.lat ?? "-"} • Lng: {booking.pickup?.lng ?? "-"}</div>
                       </div>
 
-                      {/* DROP */}
-                      <div className="flex gap-2 items-start">
-                        <span className="bg-red-100 text-red-700 text-[9px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap">
-                          Drop:-
-                        </span>
-                        <div className="text-xs text-gray-600 break-words">
-                          {booking.dropoff?.address}
-                        </div>
+                      <div className="rounded-md bg-red-50 p-1.5">
+                        <div className="text-[10px] font-semibold text-red-700">Drop</div>
+                        <div className="text-[11px] text-gray-700 break-all">{booking.dropoff?.address || "-"}</div>
+                        <div className="text-[10px] text-gray-500">Lat: {booking.dropoff?.lat ?? "-"} • Lng: {booking.dropoff?.lng ?? "-"}</div>
                       </div>
 
-                      {/* TIME */}
                       <div className="text-[10px] text-gray-500">
-                        <span className="font-semibold text-gray-600">
-                          Pickup Time:-
-                        </span>{" "}
-                        {booking.scheduledAtIST}
+                        <span className="font-semibold text-gray-600">Pickup Time:</span> {booking.scheduledAtIST || "-"}
                       </div>
                     </div>
                   </StyledTableCell>
 
                   {/* TRIP + FARE */}
                   <StyledTableCell>
-                    <div className="space-y-2 min-w-[120px]">
+                    <div className="space-y-1.5 w-full">
                       <span
                         className={`
                     px-3 py-1 rounded-full text-xs font-semibold
-                    ${
-                      booking.tripType === "round_trip"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-purple-100 text-purple-700"
-                    }
+                    ${booking.tripType === "round_trip"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-purple-100 text-purple-700"
+                          }
                   `}
                       >
                         {formatText(booking.tripType)}
@@ -460,11 +544,10 @@ export default function HourlyBookingList() {
                     <span
                       className={`
                   px-3 py-1 rounded-full text-xs font-semibold
-                  ${
-                    booking.tripStatus === "completed"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-blue-100 text-blue-700"
-                  }
+                  ${booking.tripStatus === "completed"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-blue-100 text-blue-700"
+                        }
                 `}
                     >
                       {formatText(booking.tripStatus)}
@@ -476,11 +559,10 @@ export default function HourlyBookingList() {
                     <span
                       className={`
                   px-3 py-1 rounded-full text-xs font-semibold
-                  ${
-                    booking.assignmentStatus === "assigned"
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }
+                  ${booking.assignmentStatus === "assigned"
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                        }
                 `}
                     >
                       {formatText(booking.assignmentStatus)}
@@ -490,32 +572,39 @@ export default function HourlyBookingList() {
                   {/* DRIVER INFO */}
                   <StyledTableCell>
                     {booking.driver ? (
-                      <div className="flex items-center gap-3">
-                        {/* PROFILE PIC */}
-                        <img
-                          src={
-                            booking.driver.profilePic ||
-                            "https://via.placeholder.com/40"
-                          }
-                          alt="driver"
-                          className="w-10 h-10 rounded-full object-cover border"
-                        />
-
-                        {/* DETAILS */}
+                      <div className="space-y-2">
                         <div className="text-xs space-y-1">
                           <div className="font-semibold text-gray-800">
-                            {booking.driver.name}
+                            {[booking.driver.name, booking.driver.midName, booking.driver.lastName]
+                              .filter(Boolean)
+                              .join(" ")}
                           </div>
-
-                          <div className="text-gray-500">
-                            {booking.driver.phone}
-                          </div>
+                          <div className="text-gray-600">{booking.driver.email}</div>
+                          <div className="text-gray-600">{booking.driver.phone}</div>
                         </div>
+
+                        <Button
+                          variant="contained"
+                          size="small"
+                          startIcon={<PersonAddAltIcon />}
+                          onClick={() => openDriverModal(booking, "reassign")}
+                          sx={{
+                            textTransform: "none",
+                            borderRadius: 2,
+                            background: "linear-gradient(135deg, #eb252f, #9e2626)",
+                            boxShadow: "none",
+                            fontSize: "11px",
+                            py: 0.4,
+                            px: 1.2,
+                          }}
+                        >
+                          Reassign
+                        </Button>
                       </div>
                     ) : (
-                      <span className="text-gray-400 text-xs">
-                        Not Assigned
-                      </span>
+                      <div className="space-y-2">
+                        <span className="text-gray-400 text-xs">Not Assigned</span>
+                      </div>
                     )}
                   </StyledTableCell>
 
@@ -553,7 +642,47 @@ export default function HourlyBookingList() {
           <VisibilityIcon fontSize="small" className="mr-2 text-green-600" />
           View
         </MenuItem>
+
+        {selectedItem?.assignmentStatus !== "assigned" && (
+          <MenuItem onClick={() => openDriverModal(selectedItem, "assign")}>
+            <PersonAddAltIcon fontSize="small" className="mr-2 text-blue-600" />
+            Assign Driver
+          </MenuItem>
+        )}
       </Menu>
+
+      <Modal
+        title={driverAction === "reassign" ? "Reassign Driver" : "Assign Driver"}
+        open={driverModalOpen}
+        onCancel={() => {
+          setDriverModalOpen(false);
+          setSelectedDriverId("");
+          setActiveBooking(null);
+        }}
+        onOk={handleDriverSubmit}
+        confirmLoading={driverSubmitting}
+        okText={driverAction === "reassign" ? "Reassign Driver" : "Assign Driver"}
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-gray-600">
+            {activeBooking?.bookingNumber || "Select a driver for this booking."}
+          </p>
+          <Select
+            showSearch
+            placeholder="Select driver"
+            className="w-full"
+            value={selectedDriverId || undefined}
+            onChange={(value) => setSelectedDriverId(value)}
+            optionFilterProp="children"
+          >
+            {driverOptions.map((driver) => (
+              <Option key={driver._id} value={driver._id}>
+                {driver.name} {driver.phone ? `- ${driver.phone}` : ""}
+              </Option>
+            ))}
+          </Select>
+        </div>
+      </Modal>
     </div>
   );
 }

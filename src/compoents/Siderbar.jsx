@@ -71,6 +71,16 @@ const Sidebar = () => {
           link: "/home/driver",
           sectionName: "Driver",
         },
+          {
+          name: "Assigned Driver",
+          link: "/home/assignedDriver",
+          sectionName: "AssignedDriver",
+        },
+          {
+          name: "Unassigned Driver",
+          link: "/home/unassignedDriver",
+          sectionName: "UnassignedDriver",
+        },
         // {
         //   name: "Attendance",
         //   link: "/home/punches",

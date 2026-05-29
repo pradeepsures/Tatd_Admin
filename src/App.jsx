@@ -132,6 +132,7 @@ import NightTimesList from "./Pages/NightTime/NightTimeList";
 import HourlyPricingList from "./Pages/HourlyPricing/HourlyPricingList";
 import HourlyBookingList from "./Pages/hourlyBooking/HourlyBookingList";
 import HourlyBookingDetails from "./Pages/hourlyBooking/HourlyBookingDetails";
+import AssignedDriversList from "./Pages/Driver/AssignedDriverList";
 
 // import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
 
@@ -204,6 +205,7 @@ const router = createBrowserRouter([
       { path: "driver/driverView/:id", element: <DriverDetail /> },
       { path: "driver/driverBookingView/:id", element: <DriverBookingDetails /> },
       { path: "driver/updateDriver/:id", element: <UpdateDriver /> },
+      { path: "assignedDriver", element: <AssignedDriversList /> },
 
 
       //terms and condition, privacy policy, about us   

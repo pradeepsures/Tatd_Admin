@@ -213,12 +213,20 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { Modal, Select } from "antd";
 import toast from "react-hot-toast";
 
 import Breaker from "../../compoents/Breaker";
 import Loader from "../../compoents/Loader";
 
-import { getHourlyBookingById } from "../../Services/HourlyBookingApi";
+import {
+  getHourlyBookingById,
+  getUnassignedHourlyDrivers,
+  assignHourlyDriver,
+  reassignHourlyDriver,
+} from "../../Services/HourlyBookingApi";
+
+const { Option } = Select;
 
 export default function HourlyBookingDetails() {
   const { id } = useParams();
@@ -226,6 +234,10 @@ export default function HourlyBookingDetails() {
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [driverModalOpen, setDriverModalOpen] = useState(false);
+  const [driverOptions, setDriverOptions] = useState([]);
+  const [selectedDriverId, setSelectedDriverId] = useState("");
+  const [driverSubmitting, setDriverSubmitting] = useState(false);
 
   const fetchDetails = async () => {
     try {
@@ -243,6 +255,51 @@ export default function HourlyBookingDetails() {
   useEffect(() => {
     if (id) fetchDetails();
   }, [id]);
+
+  const fetchUnassignedDrivers = async () => {
+    try {
+      const res = await getUnassignedHourlyDrivers({
+        page: 1,
+        limit: 100,
+        bookingId: id,
+      });
+
+      if (res?.status) {
+        setDriverOptions(res.data || []);
+        if (!res.data?.length) {
+          toast.error("No drivers available for assignment");
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to load driver list");
+    }
+  };
+
+  const handleDriverAction = async () => {
+    if (!selectedDriverId) {
+      toast.error("Please select a driver");
+      return;
+    }
+
+    try {
+      setDriverSubmitting(true);
+
+      if (data?.assignmentStatus === "assigned") {
+        await reassignHourlyDriver({ bookingId: id, driverId: selectedDriverId });
+      } else {
+        await assignHourlyDriver({ bookingId: id, driverId: selectedDriverId });
+      }
+
+      setDriverModalOpen(false);
+      setSelectedDriverId("");
+      await fetchDetails();
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setDriverSubmitting(false);
+    }
+  };
 
   if (loading) return <Loader />;
   if (!data) return null;
@@ -321,6 +378,19 @@ export default function HourlyBookingDetails() {
         >
           ← Back
         </button>
+
+        <div className="mt-3 flex gap-3">
+          <button
+            onClick={async () => {
+              setSelectedDriverId("");
+              setDriverModalOpen(true);
+              await fetchUnassignedDrivers();
+            }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm shadow"
+          >
+            {data?.assignmentStatus === "assigned" ? "Reassign Driver" : "Assign Driver"}
+          </button>
+        </div>
       </div>
 
       {/* BOOKING INFO */}
@@ -351,7 +421,7 @@ export default function HourlyBookingDetails() {
 
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {renderField("name", data.user?.name)}
-          {("email", data.user?.email)}
+          {renderField("email", data.user?.email)}
           {renderField("travellerPhone", data.travellerPhone)}
         </div>
       </div>
@@ -422,6 +492,33 @@ export default function HourlyBookingDetails() {
           </div>
         </div>
       )}
+
+      <Modal
+        title={data?.assignmentStatus === "assigned" ? "Reassign Driver" : "Assign Driver"}
+        open={driverModalOpen}
+        onCancel={() => setDriverModalOpen(false)}
+        onOk={handleDriverAction}
+        confirmLoading={driverSubmitting}
+        okText={data?.assignmentStatus === "assigned" ? "Reassign Driver" : "Assign Driver"}
+      >
+        <div className="space-y-3">
+          <p className="text-sm text-gray-600">Select a driver for this booking.</p>
+          <Select
+            showSearch
+            placeholder="Select driver"
+            className="w-full"
+            value={selectedDriverId || undefined}
+            onChange={(value) => setSelectedDriverId(value)}
+            optionFilterProp="children"
+          >
+            {driverOptions.map((driver) => (
+              <Option key={driver._id} value={driver._id}>
+                {driver.name} {driver.phone ? `- ${driver.phone}` : ""}
+              </Option>
+            ))}
+          </Select>
+        </div>
+      </Modal>
 
       {/* SCHEDULE */}
       {(data.scheduledAtIST || data.createdAtIST) && (
