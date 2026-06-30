@@ -7,7 +7,7 @@ const App = () => {
   const location = useLocation();
   const pathSnippets = location.pathname.split('/').filter((i) => i);
 
-  const breadcrumbItems = [
+  const breadcrumbItems = [ 
     {
       title: (
         <Link to="/">

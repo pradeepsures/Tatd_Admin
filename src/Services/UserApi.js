@@ -92,7 +92,7 @@ export const getAllAdmins = async ({
       data: result.data || result.users || [],
       totalPage: result.totalPages || result.totalPage || 0,
       totalResult: result.total || result.totalRecords || result.count || 0,
-      // ... add any other fields your component expects
+      stats: result.stats || null,
     };
 
   } catch (err) {
@@ -175,7 +175,7 @@ export const getAllUserExcell = async ({ searchQuery = '', startDate = '', endDa
       }
     });
     const result = await res.json();
-    if (!res.status) throw new Error(result.message);
+    if (!res.ok) throw new Error(result.message);
     return result;
   } catch (err) {
     toast.error(err.message || 'Something went wrong!');

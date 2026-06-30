@@ -1,10 +1,9 @@
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -26,14 +25,7 @@ import Breaker from "../../compoents/Breaker";
 import ComplaintFilter from "./ComplaintFilter"; // <-- Import your filter component
 
 import { getAllComplaints } from "../../Services/ComplaintApi";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
-    color: "#fff",
-    fontWeight: 600,
-  },
-}));
+import { StyledTableCell } from "../../compoents/TableComponents";
 
 export default function ComplaintList() {
   const [data, setData] = useState([]);

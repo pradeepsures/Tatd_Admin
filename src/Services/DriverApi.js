@@ -49,7 +49,7 @@ export const createDriverApi = async (formData) => {
 //   }
 
 // };
-export const getAllDrivers = async ({ page, rowsPerPage, searchQuery }) => {
+export const getAllDrivers = async ({ page, rowsPerPage, searchQuery, isVerified }) => {
 
   const token = localStorage.getItem("token");
 
@@ -57,9 +57,13 @@ export const getAllDrivers = async ({ page, rowsPerPage, searchQuery }) => {
 
     let url = `${BASE_URL}/api/admin/drivers?page=${page}&limit=${rowsPerPage}`;
 
-    // ✅ only add search if exists
     if (searchQuery) {
-      url += `&search=${searchQuery}`;
+      url += `&search=${encodeURIComponent(searchQuery)}`;
+    }
+    if (isVerified === false) {
+      url += `&isVerified=false`;
+    } else if (isVerified === true) {
+      url += `&isVerified=true`;
     }
 
     const res = await fetch(url, {

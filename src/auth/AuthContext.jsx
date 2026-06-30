@@ -64,7 +64,17 @@ export const AuthProvider = ({ children }) => {
     setAuth({ token: null, user: null });
   };
 
+  const isSuperAdmin = () => {
+    const roleName = auth.user?.role?.name?.toLowerCase() || "";
+    return (
+      roleName.includes("super") ||
+      roleName === "administrator" ||
+      roleName === "admin"
+    );
+  };
+
   const hasPermission = (sectionName, action) => {
+    if (isSuperAdmin()) return true;
     if (!auth.user?.role?.permission) return false;
     const section = auth.user.role.permission.find(
       (p) => p.sectionName.toLowerCase() === sectionName.toLowerCase()
@@ -75,7 +85,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout, hasPermission, loading }}>
+    <AuthContext.Provider value={{ auth, login, logout, hasPermission, isSuperAdmin, loading }}>
       {children}
     </AuthContext.Provider>
   );

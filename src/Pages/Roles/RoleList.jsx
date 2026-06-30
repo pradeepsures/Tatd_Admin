@@ -30,23 +30,7 @@ import { useAuth } from "../../auth/AuthContext";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    // background: "linear-gradient(to right, #5F0099, #9F00FF)",
-    background: "linear-gradient(90deg, #03045E 0%, #0077B6 50%, #00B4D8 100%)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: '0.95rem',
-    padding: '12px 16px',
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: '0.9rem',
-    color: '#374151',
-    padding: '12px 16px',
-  },
-}));
+import { StyledTableCell } from '../../compoents/TableComponents';
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {

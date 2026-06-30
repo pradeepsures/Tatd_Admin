@@ -30,18 +30,15 @@ import BookingFilter from "./BookingFilter";
 import { getAllBookings, assignDriver as assignDriverApi, getUnassignedDriversBySegment } from "../../Services/BookingApi";
 import { getAllDrivers } from "../../Services/DriverApi";
 import { reassignCancelRequestApi } from "../../Services/RequestApi";
+import { StyledTableCell } from "../../compoents/TableComponents";
 
 const { Option } = Select;
 
-const StyledTableCell = styled(TableCell)(() => ({
-  [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
-    color: "#fff",
-    fontWeight: 600,
-  },
-}));
-
-export default function BookingList() {
+export default function BookingList({
+  pageTitle = "All Trips",
+  pageDescription = "View all ride bookings. Assign drivers to unassigned trips.",
+  presetFilters = {},
+}) {
   const navigate = useNavigate();
 
   const [data, setData] = useState([]);
@@ -70,6 +67,7 @@ export default function BookingList() {
     driverName: "",
     driverPhone: "",
     carNumber: "",
+    ...presetFilters,
   });
 
   const [isExporting, setIsExporting] = useState(false);
@@ -303,7 +301,11 @@ export default function BookingList() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      {/* <Breaker /> */}
+
+      <div className="mb-4">
+        <h1 className="text-xl font-bold text-gray-900">{pageTitle}</h1>
+        <p className="text-sm text-gray-500 mt-1">{pageDescription}</p>
+      </div>
 
       <div className="flex justify-between items-center mb-4">
 
@@ -506,9 +508,20 @@ export default function BookingList() {
                   </TableCell>
 
                   <TableCell align="center">
-                    <IconButton onClick={(e) => handleMenuOpen(e, row._id)}>
-                      <MoreVertIcon />
-                    </IconButton>
+                    <div className="flex flex-col items-center gap-1">
+                      {row.assignmentStatus === "unassigned" &&
+                        row.tripStatus?.toLowerCase() !== "completed" && (
+                          <button
+                            onClick={() => handleAssignDriver(row._id, row.segment?._id)}
+                            className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-blue-700"
+                          >
+                            Assign Driver
+                          </button>
+                        )}
+                      <IconButton size="small" onClick={(e) => handleMenuOpen(e, row._id)}>
+                        <MoreVertIcon />
+                      </IconButton>
+                    </div>
 
                     <Menu
                       anchorEl={anchorEl}
@@ -528,13 +541,10 @@ export default function BookingList() {
                         row.tripStatus?.toLowerCase() !== "completed" && (
                           <MenuItem
                             onClick={() =>
-                              handleAssignDriver(
-                                row._id,
-                                row.segment?._id
-                              )
+                              handleAssignDriver(row._id, row.segment?._id)
                             }
                           >
-                            🚗 Assign Chauffeur
+                            Assign Chauffeur
                           </MenuItem>
                         )}
 
@@ -560,10 +570,12 @@ export default function BookingList() {
 
       {/* MODAL */}
       <Modal
-        title="Assign Chauffeur"
-        // open={isAssignModalOpen}
+        title={isReassignModalOpen ? "Reassign Chauffeur" : "Assign Chauffeur"}
         open={isAssignModalOpen || isReassignModalOpen}
-        onCancel={() => setIsAssignModalOpen(false)}
+        onCancel={() => {
+          setIsAssignModalOpen(false);
+          setIsReassignModalOpen(false);
+        }}
         onOk={handleAssignSubmit}
       >
         <Select

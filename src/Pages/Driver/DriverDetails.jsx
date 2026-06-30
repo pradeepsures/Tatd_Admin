@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getSingleDriver } from "../../Services/DriverApi";
+import { getSingleDriver, updateDriver } from "../../Services/DriverApi";
 import Loader from "../../compoents/Loader";
 
 export default function DriverDetail() {
@@ -28,6 +28,22 @@ export default function DriverDetail() {
       toast.error("Failed to load chauffeur details");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVerify = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("isVerified", !driver.isVerified);
+      
+      toast.loading("Updating verification status...", { id: "verify" });
+      const result = await updateDriver(id, formData);
+      if (result?.status) {
+        toast.success("Verification status updated", { id: "verify" });
+        setDriver(result.data); // Update local state with new driver data
+      }
+    } catch (error) {
+      toast.error("Failed to update verification status", { id: "verify" });
     }
   };
 
@@ -79,13 +95,26 @@ export default function DriverDetail() {
             <p className="text-gray-600">{driver.email}</p>
             <p className="text-gray-600">{driver.phone}</p>
 
-            <span className={`mt-2 inline-block px-3 py-1 text-sm rounded-full ${
-              driver.isVerified
-                ? "bg-green-100 text-green-700"
-                : "bg-yellow-100 text-yellow-700"
-            }`}>
-              {driver.isVerified ? "Verified Driver" : "Not Verified"}
-            </span>
+            <div className="flex items-center gap-4 mt-2">
+              <span className={`inline-block px-3 py-1 text-sm rounded-full ${
+                driver.isVerified
+                  ? "bg-green-100 text-green-700"
+                  : "bg-yellow-100 text-yellow-700"
+              }`}>
+                {driver.isVerified ? "Verified Driver" : "Not Verified"}
+              </span>
+
+              <button
+                onClick={handleVerify}
+                className={`px-4 py-1 text-sm font-medium rounded-lg text-white transition-colors ${
+                  driver.isVerified
+                    ? "bg-red-500 hover:bg-red-600"
+                    : "bg-green-600 hover:bg-green-700"
+                }`}
+              >
+                {driver.isVerified ? "Revoke Verification" : "Verify Driver"}
+              </button>
+            </div>
 
           </div>
 

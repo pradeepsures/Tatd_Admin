@@ -38,10 +38,10 @@ export default function VehicleDetails() {
       }
     };
 
-    if (!authLoading.profile && auth.user) {
+    if (!authLoading && auth.user) {
       fetchVehicle();
     }
-  }, [id, authLoading.profile, auth.user]);
+  }, [id, authLoading, auth.user]);
 
   const formatDate = (dateStr) => {
     if (!dateStr) return "—";
@@ -52,7 +52,7 @@ export default function VehicleDetails() {
     }
   };
 
-  if (authLoading.profile || loading) return <Loader />;
+  if (authLoading || loading) return <Loader />;
   if (!auth.user) {
     navigate("/login");
     return null;

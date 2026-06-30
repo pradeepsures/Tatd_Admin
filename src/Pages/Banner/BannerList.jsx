@@ -32,22 +32,7 @@ import { getImageUrl } from "../../utils/imageUtils";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
-    color: "#374151",
-    padding: "12px 16px",
-  },
-}));
+import { StyledTableCell } from "../../compoents/TableComponents";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -103,10 +88,10 @@ export default function BannerList() {
   }, [page, rowsPerPage, searchQuery]);
 
   useEffect(() => {
-    if (!authLoading.profile && auth.user) {
+    if (!authLoading && auth.user) {
       fetchData();
     }
-  }, [fetchData, authLoading.profile, auth.user]);
+  }, [fetchData, authLoading, auth.user]);
 
   useEffect(() => {
     AOS.init({
@@ -218,7 +203,7 @@ export default function BannerList() {
   };
 
   // Handle loading and authentication states
-  if (authLoading.profile) return <Loader />;
+  if (authLoading) return <Loader />;
   if (!auth.user) {
     navigate("/login");
     return null;

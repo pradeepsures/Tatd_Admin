@@ -37,9 +37,7 @@ import { useAuth } from "../../auth/AuthContext";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { getImageUrl } from "../../utils/imageUtils";
-
-const BASE_URL =
-  import.meta.env.VITE_BASE_URL || "https://your-default-base-url.com";
+import { StyledTableCell } from "../../compoents/TableComponents";
 
 // Local date format (timezone safe)
 const formatLocalDate = (date) => {
@@ -50,27 +48,9 @@ const formatLocalDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-const StyledTableCell = styled(TableCell)(() => ({
-  [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #5F0099, #9F00FF)",
-    color: "white",
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "10px 12px",
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.95rem",
-    color: "#374151",
-    padding: "8px 10px",
-  },
-}));
-
 const StyledTableRow = styled(TableRow)(() => ({
-  "&:nth-of-type(odd)": { backgroundColor: "#f9fafb" },
   "&:hover": {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "#f9fafb",
     transition: "background-color 0.2s ease",
   },
   "&:last-child td, &:last-child th": { border: 0 },
@@ -166,8 +146,8 @@ export default function AdminList() {
   ]);
 
   useEffect(() => {
-    if (!authLoading.profile && auth.user) fetchData();
-  }, [fetchData, authLoading.profile, auth.user]);
+    if (!authLoading && auth.user) fetchData();
+  }, [fetchData, authLoading, auth.user]);
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true, disable: "mobile" });
@@ -292,7 +272,7 @@ export default function AdminList() {
   const exportToExcel = (allUsersData) => {
     const today = new Date().toISOString().slice(0, 10);
     const settings = {
-      fileName: `Mann_Admins_${today}`,
+      fileName: `Tatd_AppUsers_${today}`,
       extraLength: 3,
       writeMode: "writeFile",
     };
@@ -336,7 +316,7 @@ export default function AdminList() {
     }
   };
 
-  if (authLoading.profile) return <Loader />;
+  if (authLoading) return <Loader />;
   if (!auth.user) {
     navigate("/login");
     return null;
@@ -508,10 +488,10 @@ export default function AdminList() {
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <LoderBtn /> Add Admin
+                  <LoderBtn /> Add User
                 </span>
               ) : (
-                "Add Admin"
+                "Add User"
               )}
             </motion.button>
           )}
@@ -567,7 +547,8 @@ export default function AdminList() {
             <TableRow>
               <StyledTableCell>S.No</StyledTableCell>
               <StyledTableCell>Name & Contact</StyledTableCell>
-              <StyledTableCell>Wallet Balance</StyledTableCell>
+              <StyledTableCell>Total Trips</StyledTableCell>
+              <StyledTableCell>Total Spent</StyledTableCell>
               <StyledTableCell>Gender</StyledTableCell>
               <StyledTableCell>Created At</StyledTableCell>
               <StyledTableCell>Status</StyledTableCell>
@@ -578,11 +559,11 @@ export default function AdminList() {
             {data.length === 0 ? (
               <StyledTableRow>
                 <StyledTableCell
-                  colSpan={7}
+                  colSpan={8}
                   align="center"
                   className="py-12 text-gray-500"
                 >
-                  No admins found
+                  No app users found
                 </StyledTableCell>
               </StyledTableRow>
             ) : (
@@ -603,9 +584,10 @@ export default function AdminList() {
                     </div>
                   </StyledTableCell>
                   <StyledTableCell className="font-medium">
-                    {row.wallet?.balance != null
-                      ? `₹${row.wallet.balance}`
-                      : "—"}
+                    {row.totalTrips ?? 0}
+                  </StyledTableCell>
+                  <StyledTableCell className="font-medium text-green-700">
+                    {row.totalSpent != null ? `₹${row.totalSpent}` : "₹0"}
                   </StyledTableCell>
                   <StyledTableCell>{row.gender || "—"}</StyledTableCell>
                   <StyledTableCell>

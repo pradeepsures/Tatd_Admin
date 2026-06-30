@@ -6,7 +6,6 @@ import {
     Table, TableBody, TableCell, TableContainer,
     TableHead, TableRow, Paper, IconButton, Menu, MenuItem
 } from "@mui/material";
-import TableCellBase, { tableCellClasses } from "@mui/material/TableCell";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Pagination from "@mui/material/Pagination";
@@ -20,15 +19,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { getAllPricing, deletePricingApi } from "../../Services/PricingApi";
 import xlsx from "json-as-xlsx";
 import LoderBtn from "../../compoents/LoderBtn"; // your loader button
-
-// ✅ TABLE HEADER STYLE
-const StyledTableCell = styled(TableCellBase)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
-        color: theme.palette.common.white,
-        fontWeight: 600,
-    },
-}));
+import { StyledTableCell } from "../../compoents/TableComponents";
 
 export default function PricingList() {
     const { auth, hasPermission, loading: authLoading } = useAuth();
@@ -84,10 +75,10 @@ export default function PricingList() {
 
     // ✅ AUTO FETCH
     useEffect(() => {
-        if (!authLoading.profile && auth.user) {
+        if (!authLoading && auth.user) {
             fetchData();
         }
-    }, [fetchData, authLoading.profile, auth.user]);
+    }, [fetchData, authLoading, auth.user]);
 
     // MENU
     const handleMenuOpen = (e, id) => {
@@ -156,7 +147,7 @@ export default function PricingList() {
         }
     };
 
-    if (authLoading.profile || loading) return <Loader />;
+    if (authLoading || loading) return <Loader />;
     if (!auth.user) return null;
 
     return (

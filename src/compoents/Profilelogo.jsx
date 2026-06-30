@@ -52,9 +52,17 @@ export default function BasicMenu() {
   };
 
   const user = auth?.user;
-  const profileImage = user?.profileImage
-    ? `${BASE_URL}/${user.profileImage}`
-    : profileFallback;
+
+  const getProfileImage = () => {
+    if (!user?.profileImage) return profileFallback;
+    if (user.profileImage.startsWith('http')) return user.profileImage;
+    // Remove leading slash if BASE_URL already has trailing slash (or vice-versa) to avoid double slashes
+    const cleanBase = BASE_URL.replace(/\/$/, "");
+    const cleanPath = user.profileImage.replace(/^\//, "");
+    return `${cleanBase}/${cleanPath}`;
+  };
+
+  const profileImage = getProfileImage();
 
   return (
     <div>
@@ -67,15 +75,18 @@ export default function BasicMenu() {
         onClick={handleClick}
         sx={{
           borderRadius: "50%",
-          padding: "4px",
-          background: "linear-gradient(to bottom, #1E3A8A, #3B82F6)",
+          padding: "2px",
+          background: "transparent",
+          "&:hover": {
+            background: "rgba(0,0,0,0.05)"
+          }
         }}
       >
         <Avatar
           sx={{
-            width: 56,
-            height: 56,
-            border: "2px solid white",
+            width: 44,
+            height: 44,
+            border: "2px solid #e5e7eb",
           }}
           alt={user?.userName || "Profile"}
           src={profileImage}
@@ -90,24 +101,40 @@ export default function BasicMenu() {
         onClose={handleCloseMenu}
         MenuListProps={{ "aria-labelledby": "basic-button" }}
         PaperProps={{
+          elevation: 3,
           sx: {
-            borderRadius: 3,
-            background: "linear-gradient(to bottom, #1E3A8A, #3B82F6)",
-            color: "white",
-            minWidth: 150,
+            borderRadius: 2,
+            mt: 1.5,
+            minWidth: 180,
+            overflow: 'visible',
+            filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))',
+            '&:before': {
+              content: '""',
+              display: 'block',
+              position: 'absolute',
+              top: 0,
+              right: 14,
+              width: 10,
+              height: 10,
+              bgcolor: 'background.paper',
+              transform: 'translateY(-50%) rotate(45deg)',
+              zIndex: 0,
+            },
           },
         }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleProfileOpen} sx={{ color: "white" }}>
+        <MenuItem onClick={handleProfileOpen} sx={{ color: "#374151", py: 1.5, fontWeight: 500 }}>
           Profile
         </MenuItem>
 
         {/* ✅ UPDATED */}
-        <MenuItem onClick={handleMyAccount} sx={{ color: "white" }}>
+        <MenuItem onClick={handleMyAccount} sx={{ color: "#374151", py: 1.5, fontWeight: 500 }}>
           My Account
         </MenuItem>
 
-        <MenuItem onClick={handleLogout} sx={{ color: "white" }}>
+        <MenuItem onClick={handleLogout} sx={{ color: "#EF4444", py: 1.5, fontWeight: 500 }}>
           Logout
         </MenuItem>
       </Menu>
@@ -126,15 +153,17 @@ export default function BasicMenu() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: "linear-gradient(to bottom, #1E3A8A, #3B82F6)",
-            color: "white",
+            background: "white",
+            color: "#111827",
+            borderBottom: "1px solid #e5e7eb",
+            fontWeight: 600,
           }}
         >
           Admin Profile
           <IconButton
             aria-label="close"
             onClick={handleProfileClose}
-            sx={{ color: "white" }}
+            sx={{ color: "#6b7280" }}
           >
             <CloseIcon />
           </IconButton>

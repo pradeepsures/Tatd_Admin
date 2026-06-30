@@ -179,3 +179,289 @@ export const getUnassignedDriversBySegment = async (segmentId, search = "") => {
     throw err;
   }
 };
+
+export const getTripCancelRequests = async ({ page = 1, limit = 10, status = "" } = {}) => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams({ page, limit });
+  if (status) params.append("status", status);
+
+  const res = await fetch(`${BASE_URL}/api/admin/tripCancelRequests?${params}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const updateTripCancelRequest = async (id, body) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/tripCancelRequests/${id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(body),
+  });
+  const result = await res.json();
+  if (!res.ok) throw new Error(result.message);
+  return result;
+};
+
+// ==========================================
+// HOURLY BOOKINGS API
+// ==========================================
+
+export const getAllHourlyBookings = async (filters) => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  Object.keys(filters).forEach((key) => {
+    if (filters[key] !== undefined && filters[key] !== null && filters[key] !== "") {
+      params.append(key, filters[key]);
+    }
+  });
+
+  const res = await fetch(`${BASE_URL}/api/admin/hourlyBookings?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const getHourlyBookingDetail = async (id) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/hourlyBookings/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const assignHourlyDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/hourlyBookings/${id}/assign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const reassignHourlyDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/hourlyBookings/${id}/reassign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const getUnassignedHourlyDrivers = async (bookingId, search = "") => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  if (bookingId) params.append("bookingId", bookingId);
+  if (search) params.append("search", search);
+
+  const res = await fetch(`${BASE_URL}/api/admin/unassignedHourlyDrivers?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+// ==========================================
+// WEEKLY BOOKINGS API
+// ==========================================
+
+export const getAllWeeklyBookings = async (filters) => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  Object.keys(filters).forEach((key) => {
+    if (filters[key] !== undefined && filters[key] !== null && filters[key] !== "") {
+      params.append(key, filters[key]);
+    }
+  });
+
+  const res = await fetch(`${BASE_URL}/api/admin/weeklyBookings?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const getWeeklyBookingDetail = async (id) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/weeklyBookings/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const assignWeeklyDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/weeklyBookings/${id}/assign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const reassignWeeklyDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/weeklyBookings/${id}/reassign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const getUnassignedWeeklyDrivers = async (bookingId, search = "") => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  if (bookingId) params.append("bookingId", bookingId);
+  if (search) params.append("search", search);
+
+  const res = await fetch(`${BASE_URL}/api/admin/unassignedweeklyDrivers?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+// ==========================================
+// MONTHLY BOOKINGS API
+// ==========================================
+
+export const getAllMonthlyBookings = async (filters) => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  Object.keys(filters).forEach((key) => {
+    if (filters[key] !== undefined && filters[key] !== null && filters[key] !== "") {
+      params.append(key, filters[key]);
+    }
+  });
+
+  const res = await fetch(`${BASE_URL}/api/admin/monthlyBookings?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const getMonthlyBookingDetail = async (id) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/monthlyBookings/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const assignMonthlyDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/monthlyBookings/${id}/assign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const reassignMonthlyDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/monthlyBookings/${id}/reassign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const getUnassignedMonthlyDrivers = async (bookingId, search = "") => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  if (bookingId) params.append("bookingId", bookingId);
+  if (search) params.append("search", search);
+
+  const res = await fetch(`${BASE_URL}/api/admin/unassignedmonthlyDrivers?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+// ==========================================
+// OUTSTATION BOOKINGS API
+// ==========================================
+
+export const getAllOutstationBookings = async (filters) => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  Object.keys(filters).forEach((key) => {
+    if (filters[key] !== undefined && filters[key] !== null && filters[key] !== "") {
+      params.append(key, filters[key]);
+    }
+  });
+
+  const res = await fetch(`${BASE_URL}/api/admin/outstationBookings?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const getOutstationBookingDetail = async (id) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/outstationBookings/${id}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};
+
+export const assignOutstationDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/outstationBookings/${id}/assign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const reassignOutstationDriver = async (id, driverId) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/outstationBookings/${id}/reassign-driver`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ driverId }),
+  });
+  return res.json();
+};
+
+export const getUnassignedOutstationDrivers = async (bookingId, search = "") => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  if (bookingId) params.append("bookingId", bookingId);
+  if (search) params.append("search", search);
+
+  const res = await fetch(`${BASE_URL}/api/admin/unassignedoutstationDrivers?${params.toString()}`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return res.json();
+};

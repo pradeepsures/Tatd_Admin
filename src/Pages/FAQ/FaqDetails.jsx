@@ -15,10 +15,10 @@ export default function FaqDetails() {
 
   // 🔐 Redirect properly
   useEffect(() => {
-    if (!authLoading.profile && !auth.user) {
+    if (!authLoading && !auth.user) {
       navigate("/login");
     }
-  }, [authLoading.profile, auth.user, navigate]);
+  }, [authLoading, auth.user, navigate]);
 
   useEffect(() => {
     fetchFaq();
@@ -42,7 +42,7 @@ export default function FaqDetails() {
     }
   };
 
-  if (loading || authLoading.profile) return <Spin size="large" />;
+  if (loading || authLoading) return <Spin size="large" />;
 
   if (!faq) return null;
 

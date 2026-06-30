@@ -1,9 +1,6 @@
-import * as React from "react";
-import { useEffect, useState, useCallback } from "react";
-import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -20,25 +17,16 @@ import { motion } from "framer-motion";
 import xlsx from "json-as-xlsx";  
 
 import Loader from "../../compoents/Loader";
-
+import { StyledTableCell } from "../../compoents/TableComponents";
 import {
   getCancelRequestsApi,
   approveCancelRequestApi,
   rejectCancelRequestApi,
   reassignCancelRequestApi,
 } from "../../Services/RequestApi";
-
 import { getAllDrivers } from "../../Services/DriverApi";
 
 const { Option } = Select;
-
-const StyledTableCell = styled(TableCell)(() => ({
-  [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
-    color: "#fff",
-    fontWeight: 600,
-  },
-}));
 
 export default function CancelRequestList() {
   const [data, setData] = useState([]);
@@ -195,6 +183,14 @@ export default function CancelRequestList() {
 
     <div className="p-6 bg-gray-50 min-h-screen">
 
+      <div className="mb-6">
+        <h1 className="text-xl font-bold text-gray-900">Driver Cancel Requests</h1>
+        <p className="text-sm text-gray-500 mt-1">
+          When an assigned driver requests to cancel a trip mid-ride, requests appear here.
+          Approve, reject, or reassign another driver.
+        </p>
+      </div>
+
 <div className="flex justify-between mb-6">
   <div />
 
@@ -224,8 +220,8 @@ export default function CancelRequestList() {
           <TableBody>
             {!data.length ? (
               <TableRow>
-                <TableCell colSpan={7} align="center">
-                  No Requests Found
+                <TableCell colSpan={7} align="center" sx={{ py: 6, color: "#6b7280" }}>
+                  No driver cancel requests. Empty list is normal — requests appear when a driver asks to cancel an assigned trip.
                 </TableCell>
               </TableRow>
             ) : (

@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
+import TableCell from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -16,7 +16,7 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import toast from "react-hot-toast";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 import { Modal } from "antd";
 import xlsx from "json-as-xlsx";
@@ -25,20 +25,12 @@ import Loader from "../../compoents/Loader";
 import LoderBtn from "../../compoents/LoderBtn";
 import Breaker from "../../compoents/Breaker";
 
-import { getAllDrivers, deleteDriver } from "../../Services/DriverApi";
+import { getAllDrivers, deleteDriver, updateDriver } from "../../Services/DriverApi";
 import { useAuth } from "../../auth/AuthContext";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        background: "linear-gradient(to right, #03045E, #023E8A, #0077B6)",
-        color: "#fff",
-        fontWeight: 600,
-        fontSize: "0.95rem",
-    },
-}));
+import { StyledTableCell } from "../../compoents/TableComponents";
 
 export default function DriverList() {
-    const { hasPermission } = useAuth();
+    const { hasPermission, loading: authLoading } = useAuth();
     const SECTION = "Driver";
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -54,10 +46,12 @@ export default function DriverList() {
     const [isExporting, setIsExporting] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
-    const [anchorEl, setAnchorEl] = useState(null);
     const [selectedRowId, setSelectedRowId] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
     const [stats, setStats] = useState(null);
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const showUnverifiedOnly = searchParams.get("verified") === "pending";
 
     const fetchDrivers = useCallback(async () => {
 
@@ -68,7 +62,8 @@ export default function DriverList() {
             const result = await getAllDrivers({
                 page,
                 rowsPerPage,
-                searchQuery
+                searchQuery,
+                isVerified: showUnverifiedOnly ? false : undefined,
             });
 
             if (result?.status) {
@@ -95,18 +90,18 @@ export default function DriverList() {
 
         }
 
-    }, [page, rowsPerPage, searchQuery]);
+    }, [page, rowsPerPage, searchQuery, showUnverifiedOnly]);
 
     useEffect(() => {
         fetchDrivers();
     }, [fetchDrivers]);
 
-    const handleMenuOpen = (event, id) => {
+    const handleActionOpen = (event, id) => {
         setAnchorEl(event.currentTarget);
         setSelectedRowId(id);
     };
 
-    const handleMenuClose = () => {
+    const handleActionClose = () => {
         setAnchorEl(null);
         setSelectedRowId(null);
     };
@@ -118,8 +113,8 @@ export default function DriverList() {
     const deleteHandler = (id) => {
 
         Modal.confirm({
-            title: "Delete Chauffeur",
-            content: "Are you sure you want to delete this Chauffeur?",
+            title: "Delete Driver",
+            content: "Are you sure you want to delete this Driver?",
             okType: "danger",
 
             onOk: async () => {
@@ -130,14 +125,14 @@ export default function DriverList() {
 
                     if (result?.status) {
 
-                        toast.success("Chauffeur deleted");
+                        toast.success("Driver deleted");
                         fetchDrivers();
 
                     }
 
                 } catch (err) {
 
-                    toast.error("Error deleting Chauffeur");
+                    toast.error("Error deleting Driver");
 
                 }
 
@@ -157,6 +152,22 @@ export default function DriverList() {
 
         }, 300);
 
+    };
+
+    const toggleVerifyDriver = async (id, currentStatus) => {
+        try {
+            const formData = new FormData();
+            formData.append("isVerified", !currentStatus);
+            
+            const result = await updateDriver(id, formData);
+            if(result?.status) {
+                toast.success(`Driver ${!currentStatus ? 'Verified' : 'Unverified'}`);
+                fetchDrivers();
+            }
+        } catch(err) {
+            toast.error("Failed to update driver status");
+        }
+        handleActionClose();
     };
 
     const exportExcel = async () => {
@@ -204,6 +215,7 @@ export default function DriverList() {
 
     };
 
+    if (authLoading) return <Loader />;
     if (loading) return <Loader />;
 
     return (
@@ -214,6 +226,12 @@ export default function DriverList() {
 
                 {/* LEFT */}
                 <Breaker />
+
+                {showUnverifiedOnly && (
+                    <span className="text-sm font-medium text-orange-700 bg-orange-50 border border-orange-200 px-3 py-1 rounded-lg">
+                        Showing unverified drivers only
+                    </span>
+                )}
 
                 {/* RIGHT */}
                 {stats && (
@@ -353,7 +371,7 @@ export default function DriverList() {
                         onClick={handleAddDriver}
                         className="bg-primary text-white px-5 py-2 rounded-lg"
                     >
-                        {isLoading ? <LoderBtn /> : "Add Chauffeur"}
+                        {isLoading ? <LoderBtn /> : "Add Driver"}
                     </motion.button> */}
 
                     {hasPermission(SECTION, "create") && (
@@ -362,7 +380,7 @@ export default function DriverList() {
                             onClick={handleAddDriver}
                             className="bg-primary text-white px-5 py-2 rounded-lg"
                         >
-                            {isLoading ? <LoderBtn /> : "Add Chauffeur"}
+                            {isLoading ? <LoderBtn /> : "Add Driver"}
                         </motion.button>
                     )}
 
@@ -384,11 +402,9 @@ export default function DriverList() {
 
                             <StyledTableCell>DETAILS</StyledTableCell>
 
-                            <StyledTableCell>TRIP</StyledTableCell>
+                            <StyledTableCell>RIDES</StyledTableCell>
 
-                            <StyledTableCell>REGION</StyledTableCell>
-
-                            <StyledTableCell>ADDRESS</StyledTableCell>
+                            <StyledTableCell>STATUS</StyledTableCell>
 
                             <StyledTableCell>VERIFIED</StyledTableCell>
 
@@ -402,7 +418,7 @@ export default function DriverList() {
                         {data.length === 0 ? (
 
                             <TableRow>
-                                <TableCell colSpan={6} align="center">
+                                <TableCell colSpan={7} align="center">
                                     No Drivers Found
                                 </TableCell>
                             </TableRow>
@@ -451,36 +467,33 @@ export default function DriverList() {
 
                                     </TableCell>
 
-                                    {/* Trip */}
+                                    {/* RIDES */}
                                     <TableCell>
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-semibold text-gray-700">{row.totalRides || 0} Rides</span>
+                                            <button
+                                                onClick={() => {
+                                                    navigate(`driverBookingView/${row.id}`);
+                                                }}
+                                                className="p-1.5 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                                                title="View Trips"
+                                            >
+                                                <EyeIcon className="h-4 w-4" />
+                                            </button>
+                                        </div>
+                                    </TableCell>
 
-                                        <MenuItem
-                                            onClick={() => {
-                                                navigate(`driverBookingView/${row.id}`);
-                                            }}
+                                    {/* STATUS */}
+                                    <TableCell>
+                                        <span
+                                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                                row.isOnline
+                                                    ? "bg-green-100 text-green-700"
+                                                    : "bg-gray-100 text-gray-600"
+                                            }`}
                                         >
-                                            <EyeIcon className="h-5 w-5 text-blue-600 mr-2" />
-
-                                        </MenuItem>
-
-                                    </TableCell>
-
-
-                                    {/* REGION ADDRESS */}
-                                    <TableCell>
-
-                                        <span className="text-gray-700">
-                                            {row?.region?.name || "N/A"}
+                                            {row.isOnline ? "🟢 Online" : "⚫ Offline"}
                                         </span>
-
-                                    </TableCell>
-
-                                    <TableCell>
-
-                                        <span className="text-gray-700">
-                                            {row?.permanentAddress || "N/A"}
-                                        </span>
-
                                     </TableCell>
 
                                     {/* VERIFIED */}
@@ -499,62 +512,76 @@ export default function DriverList() {
 
                                     {/* ACTIONS */}
                                     <TableCell align="center">
-
                                         <IconButton
-                                            onClick={(e) => handleMenuOpen(e, row.id)}
+                                            size="small"
+                                            onClick={(e) => handleActionOpen(e, row.id)}
+                                            aria-label="Driver actions"
                                         >
-                                            <MoreVertIcon />
+                                            <MoreVertIcon fontSize="small" />
                                         </IconButton>
-
                                         <Menu
                                             anchorEl={anchorEl}
                                             open={Boolean(anchorEl) && selectedRowId === row.id}
-                                            onClose={handleMenuClose}
+                                            onClose={handleActionClose}
                                         >
-
-                                            {/* <MenuItem
-                                                onClick={() => {
-                                                    navigate(`driverView/${row.id}`);
-                                                }}
-                                            >
-                                                <EyeIcon className="h-5 w-5 text-blue-600 mr-2" />
-                                                View
-                                            </MenuItem> */}
                                             {hasPermission(SECTION, "read") && (
-                                                <MenuItem onClick={() => navigate(`driverView/${row.id}`)}>
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        navigate(`driverView/${row.id}`);
+                                                        handleActionClose();
+                                                    }}
+                                                >
                                                     <EyeIcon className="h-5 w-5 text-blue-600 mr-2" />
-                                                    View
+                                                    View Profile
                                                 </MenuItem>
                                             )}
-
-                                            {/* <MenuItem
-                                                onClick={() => {
-                                                    navigate(`updateDriver/${row.id}`);
-                                                }}
-                                            >
-                                                <PencilIcon className="h-5 w-5 text-green-600 mr-2" />
-                                                Edit
-                                            </MenuItem> */}
                                             {hasPermission(SECTION, "update") && (
-                                                <MenuItem onClick={() => navigate(`updateDriver/${row.id}`)}>
-                                                    <PencilIcon className="h-5 w-5 text-green-600 mr-2" />
-                                                    Edit
+                                                <>
+                                                    <MenuItem
+                                                        onClick={() => {
+                                                            navigate(`updateDriver/${row.id}`);
+                                                            handleActionClose();
+                                                        }}
+                                                    >
+                                                        <PencilIcon className="h-5 w-5 text-green-600 mr-2" />
+                                                        Edit Driver
+                                                    </MenuItem>
+                                                    <MenuItem
+                                                        onClick={() => toggleVerifyDriver(row.id, row.isVerified)}
+                                                    >
+                                                        {row.isVerified ? (
+                                                            <XCircleIcon className="h-5 w-5 text-orange-600 mr-2" />
+                                                        ) : (
+                                                            <CheckCircleIcon className="h-5 w-5 text-orange-600 mr-2" />
+                                                        )}
+                                                        {row.isVerified ? "Revoke Verification" : "Verify Driver"}
+                                                    </MenuItem>
+                                                </>
+                                            )}
+                                            {hasPermission(SECTION, "read") && (
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        navigate(`driverBookingView/${row.id}`);
+                                                        handleActionClose();
+                                                    }}
+                                                >
+                                                    <EyeIcon className="h-5 w-5 text-indigo-600 mr-2" />
+                                                    View Trips
                                                 </MenuItem>
                                             )}
-
-                                            {/* <MenuItem onClick={() => deleteHandler(row.id)}>
-                                                <TrashIcon className="h-5 w-5 text-red-600 mr-2" />
-                                                Delete
-                                            </MenuItem> */}
                                             {hasPermission(SECTION, "delete") && (
-                                                <MenuItem onClick={() => deleteHandler(row.id)}>
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        handleActionClose();
+                                                        deleteHandler(row.id);
+                                                    }}
+                                                    sx={{ color: "error.main" }}
+                                                >
                                                     <TrashIcon className="h-5 w-5 text-red-600 mr-2" />
-                                                    Delete
+                                                    Delete Driver
                                                 </MenuItem>
                                             )}
-
                                         </Menu>
-
                                     </TableCell>
 
                                 </TableRow>
