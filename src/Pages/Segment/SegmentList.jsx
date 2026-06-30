@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
@@ -14,25 +14,21 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import Breaker from "../../compoents/Breaker";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { motion } from "framer-motion";
 import Loader from "../../compoents/Loader";
 import LoderBtn from "../../compoents/LoderBtn";
-import { getAllFaqs, deleteFaq } from "../../Services/FaqApi"; // ✅ implement these API functions
+import { getAllSegment, SegmentDelete } from "../../Services/SegmentApi";
 import { Modal } from "antd";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import toast from "react-hot-toast";
 import xlsx from "json-as-xlsx";
 import { useAuth } from "../../auth/AuthContext";
-import { Select } from "antd";
-import Breaker from "../../compoents/Breaker"
-const { Option } = Select;
 
-<<<<<<< HEAD
-import { StyledTableCell } from "../../compoents/TableComponents";
-=======
+import { getImageUrl } from "../../utils/imageUtils";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,7 +46,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     padding: "12px 16px",
   },
 }));
->>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
@@ -65,51 +60,70 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function FaqList() {
+export default function SegmentList() {
   const { auth, hasPermission, loading: authLoading } = useAuth();
-  const [data, setData] = useState([]);
+  const [data, setData] = useState([]);                    // raw data from backend (current page)
+  const [filteredData, setFilteredData] = useState([]);    // client-side filtered
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-  const [totalRecord, setTotalRecord] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [search, setSearch] = useState("");                // search input value
   const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(7);
-  const [search, setSearch] = useState("");
+  const [rowsPerPage] = useState(7);
+  const [isLoading, setIsLoading] = useState(false);       // add button loading
   const [isExporting, setIsExporting] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
+
   const navigate = useNavigate();
 
+  // ─── Fetch data from backend (pagination only) ───────────────────────────────
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const result = await getAllFaqs({ page, rowsPerPage, searchQuery, lang: selectedLanguage });
+      // We do NOT send search param → full page data, filter on frontend
+      const result = await getAllSegment({ page, rowsPerPage });
+
       if (result?.status) {
-        toast.success("FAQs fetched successfully!");
-        const transformedData = (result.data || []).map((item) => ({
+        const transformed = (result.data || []).map((item) => ({
           ...item,
           id: item._id,
         }));
-        setData(transformedData);
-        setTotalPages(result.totalPage || 0);
-        setTotalRecord(result.totalResult || 0);
+        setData(transformed);
+        setFilteredData(transformed); // initial filter = full data
+        setTotalPages(result.totalPage || 1);
       } else {
-        toast.error(result?.message || "Failed to fetch FAQs.");
+        toast.error(result?.message || "Failed to load segments");
       }
     } catch (error) {
-      console.error("Error fetching FAQs:", error);
-      toast.error("Error fetching FAQs.");
+      console.error("Error fetching segments:", error);
+      toast.error("Error loading segments");
     } finally {
       setLoading(false);
     }
-  }, [page, rowsPerPage, searchQuery, selectedLanguage]);
+  }, [page, rowsPerPage]);
 
   useEffect(() => {
-    if (!authLoading && auth.user) {
+    if (!authLoading.profile && auth.user) {
       fetchData();
     }
-  }, [fetchData, authLoading, auth.user]);
+  }, [fetchData, authLoading.profile, auth.user]);
+
+  // ─── Client-side search filtering ────────────────────────────────────────────
+  useEffect(() => {
+    const term = search.trim().toLowerCase();
+    if (!term) {
+      setFilteredData(data);
+      return;
+    }
+
+    const filtered = data.filter((item) =>
+      item.name?.toLowerCase().includes(term)
+      // You can add more fields if needed, e.g.:
+      // || item.description?.toLowerCase().includes(term)
+    );
+
+    setFilteredData(filtered);
+  }, [search, data]);
 
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
@@ -131,8 +145,8 @@ export default function FaqList() {
 
   const deleteHandler = (id) => {
     Modal.confirm({
-      title: "Delete FAQ",
-      content: "Are you sure you want to delete this FAQ?",
+      title: "Delete Segment",
+      content: "Are you sure you want to delete this segment? This cannot be undone.",
       okText: loading ? "Deleting..." : "Delete",
       okType: "danger",
       cancelText: "Cancel",
@@ -140,16 +154,16 @@ export default function FaqList() {
       onOk: async () => {
         try {
           setLoading(true);
-          const result = await deleteFaq(id);
+          const result = await SegmentDelete(id);
           if (result?.status) {
-            toast.success("FAQ deleted successfully!");
+            toast.success("Segment deleted successfully!");
             fetchData();
           } else {
-            toast.error(result?.message || "Failed to delete FAQ.");
+            toast.error(result?.message || "Failed to delete.");
           }
         } catch (error) {
-          console.error("Error deleting FAQ:", error);
-          toast.error("Error deleting FAQ.");
+          console.error("Delete error:", error);
+          toast.error("Error deleting segment");
         } finally {
           setLoading(false);
         }
@@ -158,199 +172,232 @@ export default function FaqList() {
     handleMenuClose();
   };
 
-  const exportFunc = async (allFaqData) => {
-    if (allFaqData.length < 1) {
-      return toast.error("FAQ list is empty!");
+  const handleAddClick = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate("createSegment");
+      setIsLoading(false);
+    }, 300);
+  };
+
+  const exportFunc = async () => {
+    const exportSource = filteredData.length > 0 ? filteredData : data;
+
+    if (exportSource.length < 1) {
+      return toast.error("No segments to export!");
     }
+
     setIsExporting(true);
+
     const settings = {
-      fileName: "Mann_FAQs",
+      fileName: "Segments_List",
       extraLength: 3,
       writeMode: "writeFile",
       writeOptions: {},
       RTL: false,
     };
-    const dataToExport = [
+
+    const exportSheet = [
       {
-        sheet: "FAQ List",
+        sheet: "Segments",
         columns: [
           { label: "ID", value: (row) => row?._id || "" },
-          { label: "Question", value: (row) => row?.question || "" },
-          { label: "Answer", value: (row) => row?.answer || "" },
-          { label: "Type", value: (row) => row?.type || "" },
+          { label: "Name", value: (row) => row?.name || "" },
+          { label: "Description", value: (row) => row?.description || "" },
+          { label: "Max Capacity", value: (row) => row?.maxCapacity ?? "" },
+          { label: "Image Path", value: (row) => row?.image || "" },
           {
-            label: "Created Date",
+            label: "Created At",
             value: (row) =>
               row?.createdAt ? new Date(row.createdAt).toLocaleString() : "",
           },
         ],
-        content: allFaqData,
+        content: exportSource,
       },
     ];
+
     try {
-      xlsx(dataToExport, settings);
-      toast.success("Exported to Excel successfully!");
-    } catch (error) {
-      console.error("Error exporting FAQs:", error);
-      toast.error("Failed to export FAQs.");
+      xlsx(exportSheet, settings);
+      toast.success("Exported successfully!");
+    } catch (err) {
+      console.error("Export failed", err);
+      toast.error("Export failed");
     } finally {
       setIsExporting(false);
     }
   };
 
-  if (authLoading) return <Loader />;
-
-  // if (!auth.user) {
-  //   navigate("/login");
-  //   return null;
-  // }
+  // ─── Render guards ───────────────────────────────────────────────────────────
+  if (authLoading.profile) return <Loader />;
+  if (!auth.user) {
+    navigate("/login");
+    return null;
+  }
   if (loading) return <Loader />;
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <Breaker/>
+      <div className="mb-6">
+        <Breaker />
+      </div>
+
       <div className="flex justify-between items-center mb-8">
         <div className="flex items-center gap-4">
           <input
             type="text"
-            placeholder="Search FAQs..."
+            placeholder="Search segments by name..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-80 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700 placeholder-gray-400"
-            aria-label="Search FAQs"
+            className="w-80 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 placeholder-gray-400"
+            aria-label="Search segments"
           />
-          <button
-            onClick={() => {
-              setSearchQuery(search);
-              setPage(1);
-            }}
-            className="bg-primary text-white  px-5 py-2.5 rounded-lg font-medium"
-          >
-            Search
-          </button>
+          {/* No separate Search button → filters live */}
         </div>
-        <div className="flex gap-4">
 
+        <div className="flex gap-4">
           <motion.button
             whileTap={{ scale: 0.95 }}
-            onClick={() => exportFunc(data)}
+            onClick={exportFunc}
             className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-green-700 transition-colors"
+            disabled={isExporting}
           >
             {isExporting ? (
               <span className="flex items-center gap-2">
-                <LoderBtn />
-                Exporting...
+                <LoderBtn /> Exporting...
               </span>
             ) : (
               "Export Excel"
             )}
           </motion.button>
-          {hasPermission("FAQ", "create") && (
+
+          {hasPermission("Segment", "create") && (
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={() => navigate("createfaq")}
+              onClick={handleAddClick}
+              data-aos="fade-left"
               className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:shadow-lg transition-shadow"
             >
-              Add FAQ
+              {isLoading ? (
+                <span className="flex items-center gap-2">
+                  <LoderBtn /> Adding...
+                </span>
+              ) : (
+                "Add Segment"
+              )}
             </motion.button>
           )}
         </div>
       </div>
 
-      <TableContainer
-        component={Paper}
-        className="rounded-xl shadow-lg overflow-hidden"
-      >
-        <Table sx={{ minWidth: 700 }} aria-label="faq table">
+      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+        <Table sx={{ minWidth: 700 }} aria-label="segment table">
           <TableHead>
             <TableRow>
               <StyledTableCell>S.No</StyledTableCell>
-              <StyledTableCell>Question</StyledTableCell>
-              <StyledTableCell>Answer</StyledTableCell>
-              <StyledTableCell>Type</StyledTableCell>
-              <StyledTableCell>Created Date</StyledTableCell>
+              <StyledTableCell>Image</StyledTableCell>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>Description</StyledTableCell>
+              <StyledTableCell>Capacity</StyledTableCell>
               <StyledTableCell align="center">Actions</StyledTableCell>
             </TableRow>
           </TableHead>
+
           <TableBody>
-            {data.length === 0 ? (
+            {filteredData.length === 0 ? (
               <StyledTableRow>
                 <StyledTableCell
                   colSpan={6}
                   align="center"
-                  className="py-8 text-gray-500 text-lg"
+                  className="py-12 text-gray-500 text-lg"
                 >
-                  No FAQs found
+                  {search.trim()
+                    ? "No matching segments found"
+                    : "No segments found"}
                 </StyledTableCell>
               </StyledTableRow>
             ) : (
-              data.map((row, index) => (
+              filteredData.map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell>
                     {(page - 1) * rowsPerPage + index + 1}
                   </StyledTableCell>
-                  <StyledTableCell>{row.question}</StyledTableCell>
-                  <StyledTableCell>{row.answer}</StyledTableCell>
-                  <StyledTableCell className="capitalize">
-                    {row.type}
+
+                  <StyledTableCell>
+                    {row.image ? (
+                      <img
+                        className="h-12 w-16 rounded-md object-cover border-2 border-gray-200 shadow-sm cursor-pointer hover:opacity-90 transition-opacity"
+                        src={getImageUrl(row.image)}
+                        alt={row.name || "Segment"}
+                        onClick={() => navigate(`segmentview/${row.id}`)}
+                        onError={(e) => (e.target.src = "/assets/placeholder.png")}
+                      />
+                    ) : (
+                      <div className="h-12 w-16 rounded-md bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
+                        N/A
+                      </div>
+                    )}
                   </StyledTableCell>
-                  <StyledTableCell className="text-gray-600">
-                    {row.createdAt
-                      ? new Date(row.createdAt).toLocaleString("en-IN", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })
-                      : "N/A"}
+
+                  <StyledTableCell className="font-medium text-gray-800">
+                    {row.name || "—"}
+                  </StyledTableCell>
+
+                  <StyledTableCell className="text-gray-600 max-w-xs truncate">
+                    {row.description || "—"}
+                  </StyledTableCell>
+
+                  <StyledTableCell className="text-gray-700 font-medium">
+                    {row.maxCapacity ?? "—"}
                   </StyledTableCell>
 
                   <StyledTableCell align="center">
-                    {(hasPermission("FAQ", "read") ||
-                      hasPermission("FAQ", "update") ||
-                      hasPermission("FAQ", "delete")) && (
-                        <IconButton
-                          onClick={(e) => handleMenuOpen(e, row.id)}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                      )}
+                    {(hasPermission("Segment", "read") ||
+                      hasPermission("Segment", "update") ||
+                      hasPermission("Segment", "delete")) && (
+                      <IconButton
+                        onClick={(e) => handleMenuOpen(e, row.id)}
+                        className="text-gray-500 hover:text-gray-700"
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                    )}
+
                     <Menu
                       anchorEl={anchorEl}
                       open={Boolean(anchorEl) && selectedRowId === row.id}
                       onClose={handleMenuClose}
                       PaperProps={{ className: "shadow-lg rounded-lg" }}
                     >
-                      {hasPermission("FAQ", "read") && (
+                      {hasPermission("Segment", "read") && (
                         <MenuItem
                           onClick={() => {
-                            navigate(`viewfaq/${row.id}`);
+                            navigate(`segmentview/${row.id}`);
                             handleMenuClose();
                           }}
-                          className="flex items-center gap-2 text-gray-700 hover:bg-gray-100"
+                          className="flex items-center gap-2"
                         >
                           <EyeIcon className="h-5 w-5 text-blue-600" />
                           View
                         </MenuItem>
                       )}
-                      {hasPermission("FAQ", "update") && (
+
+                      {hasPermission("Segment", "update") && (
                         <MenuItem
                           onClick={() => {
-                            navigate(`updatefaq/${row.id}`);
+                            navigate(`updateSegment/${row.id}`);
                             handleMenuClose();
                           }}
-                          className="flex items-center gap-2 text-gray-700 hover:bg-gray-100"
+                          className="flex items-center gap-2"
                         >
                           <PencilIcon className="h-5 w-5 text-green-600" />
                           Edit
                         </MenuItem>
                       )}
-                      {hasPermission("FAQ", "delete") && (
+
+                      {hasPermission("Segment", "delete") && (
                         <MenuItem
                           onClick={() => deleteHandler(row.id)}
-                          className="flex items-center gap-2 text-gray-700 hover:bg-gray-100"
+                          className="flex items-center gap-2"
                         >
                           <TrashIcon className="h-5 w-5 text-red-600" />
                           Delete
@@ -365,7 +412,7 @@ export default function FaqList() {
         </Table>
       </TableContainer>
 
-      {totalRecord > rowsPerPage && (
+      {totalPages > 1 && (
         <Stack spacing={2} alignItems="center" marginTop={6}>
           <Pagination
             count={totalPages}
@@ -373,9 +420,6 @@ export default function FaqList() {
             onChange={handlePageChange}
             variant="outlined"
             color="primary"
-            className="rounded-lg p-2"
-            boundaryCount={1}
-            siblingCount={1}
           />
         </Stack>
       )}

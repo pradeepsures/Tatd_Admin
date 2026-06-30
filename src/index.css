@@ -68,7 +68,7 @@ textarea,
 
     /* Gradient background */
     .bg-primary {
-  @apply bg-gradient-to-r from-[#03045E] via-[#0077B6] to-[#00B4D8];
+  @apply bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6];
 }
 
 .custom-select .ant-select-selector {
@@ -121,5 +121,5 @@ textarea,
 
   /* .bg-primary {
     @apply bg-gradient-to-r from-[#03045E] to- via-[#023E8A] ;
-  }
- */
+  } */
+

@@ -1,4 +1,6 @@
 /* Override Ant Design spinner dot color */
 .ant-spin-dot-item {
-  background-color: rgb(88, 4, 105) !important;
+  background-color: #1E3A8A!important;
 }
+
+

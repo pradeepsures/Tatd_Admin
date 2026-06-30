@@ -15,6 +15,7 @@ import {
   MdOutlinePendingActions,
 } from "react-icons/md";
 import { RiShutDownFill } from "react-icons/ri";
+<<<<<<< HEAD
 
 const NAV_SECTIONS = [
   {
@@ -103,15 +104,391 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const fullPath = pathname + search;
+=======
+import { BsFillFuelPumpFill } from "react-icons/bs";
+import { GiPunchingBag } from "react-icons/gi";
+import { GiHumanTarget } from "react-icons/gi";
+import { MdOutlineSettingsSuggest } from "react-icons/md";
+import { GiFlowerStar } from "react-icons/gi";
+import { MdRoomPreferences } from "react-icons/md";
+const Sidebar = () => {
+  // const { hasPermission } = useAuth();
+>>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
   const [open, setOpen] = useState(true);
   const [expanded, setExpanded] = useState({});
 
+<<<<<<< HEAD
   useEffect(() => {
     const next = {};
     NAV_SECTIONS.forEach((section, si) => {
       section.items.forEach((item, ii) => {
         if (item.children?.some((c) => pathMatches(c.link, fullPath) || pathMatches(c.link, pathname))) {
           next[`${si}-${ii}`] = true;
+=======
+  const menus = [
+    { name: "Dashboard", link: "/home", icon: MdOutlineDashboard },
+
+    {
+      name: "Driver",
+      icon: GiHumanTarget,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "Master",
+          link: "/home/driver",
+          sectionName: "Driver",
+        },
+          {
+          name: "Assigned Driver",
+          link: "/home/assignedDriver",
+          sectionName: "AssignedDriver",
+        },
+          {
+          name: "Unassigned Driver",
+          link: "/home/unassignedDriver",
+          sectionName: "UnassignedDriver",
+        },
+        // {
+        //   name: "Attendance",
+        //   link: "/home/punches",
+        //   sectionName: "Punches",
+        // },
+        // {
+        //   name: "Today Attendance",
+        //   link: "/home/punches/today-summary",
+        //   sectionName: "PunchesTodaySummary",
+        // },
+
+      ],
+    },
+
+     {
+      name: "Region Master",
+      icon: GiFlowerStar,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "States",
+          link: "/home/states",
+          sectionName: "States",
+        },
+          {
+          name: "Cities",
+          link: "/home/Cities",
+          sectionName: "Cities",
+        },
+      ],
+    },
+
+     {
+      name: "Vehicle Preference",
+      icon: MdRoomPreferences,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "Vehicle Preference",
+          link: "/home/VehiclePreference",
+          sectionName: "VehiclePreference",
+        },
+         {
+          name: "Vehicle Preference Category",
+          link: "/home/VehiclePreferenceCategory",
+          sectionName: "VehiclePreferenceCategory",
+        },
+        {
+          name: "Night Time",
+          link: "/home/NightTimes",
+          sectionName: "NightTime",
+        },
+      ],
+    },
+
+    
+    {
+      name: "Hourly Booking",
+      icon: TbBrandBooking,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+         {
+          name: "Hourly Booking",
+          link: "/home/hourlyBooking",
+          sectionName: "HourlyBooking",
+        },
+      ],
+    },
+
+      //  {
+      //     name: "Hourly Booking",
+      //     link: "/home/hourlyBooking",
+      //     icon: TbBrandBooking,
+      //     sectionName: "HourlyBooking",
+      //   },
+
+    // {
+    //   name: "Vehicle",
+    //   icon: FaCar,
+    //   dropdownIcon: RiArrowDropDownLine,
+    //   subMenus: [
+    //     {
+    //       name: "Vehicle",
+    //       link: "/home/vehicle",
+    //       sectionName: "Vehicle",
+    //     },
+    //     // {
+    //     //   name: "FuelLogs",
+    //     //   link: "/home/fuelLogs",
+    //     //   sectionName: "FuelLogs",
+    //     // },
+
+    //   ],
+    // },
+
+    // {
+    //   name: "Pricing",
+    //   link: "/home/pricing",
+    //   icon: RiPriceTag2Line,
+    //   sectionName: "Pricing",
+    // },
+
+    // {
+    //   name: "Trip",
+    //   icon: TbBrandBooking,
+    //   dropdownIcon: RiArrowDropDownLine,
+    //   subMenus: [
+    //     {
+    //       name: "All Trips",
+    //       link: "/home/booking",
+    //       sectionName: "Booking",
+    //     },
+
+    //     {
+    //       name: "Vehicle Status Request",
+    //       link: "/home/cancelRequest",
+    //       sectionName: "CancelRequest",
+    //     },
+    //   ],
+    // },
+
+    // {
+    //   name: "Support",
+    //   link: "/home/complaint",
+    //   icon: MdReportProblem,
+    //   sectionName: "Complaint",
+    // },
+
+    // {
+    //   name: "Shuttle",
+    //   icon: FaSpaceShuttle,
+    //   dropdownIcon: RiArrowDropDownLine,
+    //   subMenus: [
+    //     // 🔹 Retail submenu
+    //     {
+    //       name: "Retail",
+    //       dropdownIcon: RiArrowDropDownLine,
+    //       subMenus: [
+    //         {
+    //           name: "ShuttleRoute",
+    //           link: "/home/shuttleRoutes",
+    //           sectionName: "ShuttleRoute",
+    //         },
+    //         {
+    //           name: "ShuttleRouteShift",
+    //           link: "/home/shuttleRouteShifts",
+    //           sectionName: "ShuttleRouteShift",
+    //         },
+    //         {
+    //           name: "ShuttleRouteShiftAssign",
+    //           link: "/home/shuttleRouteShiftAssign",
+    //           sectionName: "ShuttleRouteShiftAssign",
+    //         },
+    //         {
+    //           name: "ShuttlePass",
+    //           link: "/home/shuttlePass",
+    //           sectionName: "ShuttlePass",
+    //         },
+    //       ],
+    //     },
+
+    //     // 🔹 NEW ETS submenu
+    //     {
+    //       name: "ETS",
+    //       dropdownIcon: RiArrowDropDownLine,
+    //       subMenus: [
+    //         {
+    //           name: "Users",
+    //           link: "/home/etsUser",
+    //           sectionName: "EtsUsers",
+    //         },
+    //         {
+    //           name: "Routes",
+    //           link: "/home/etsRoutes",
+    //           sectionName: "EtsRoutes",
+    //         },
+    //         {
+    //           name: "RouteShifts",
+    //           link: "/home/etsRouteShifts",
+    //           sectionName: "EtsRouteShifts",
+    //         },
+    //         {
+    //           name: "RouteShiftAssign",
+    //           link: "/home/etsRouteShiftAssign",
+    //           sectionName: "EtsRouteShiftAssign",
+    //         },
+    //         {
+    //           name: "UserStopPages",
+    //           link: "/home/etsUserStopPages",
+    //           sectionName: "EtsUserStopPages",
+    //         },
+    //       ],
+    //     },
+    //   ],
+    // },
+
+    {
+      name: "Settings",
+      icon: MdOutlineSettingsSuggest,
+      dropdownIcon: RiArrowDropDownLine,
+      subMenus: [
+        {
+          name: "Member",
+          link: "/home/member",
+          sectionName: "Member",
+        },
+        // {
+        //   name: "Section Master",
+        //   link: "/home/memberMaster",
+        //   sectionName: "SectionMaster",
+        // },
+        // {
+        //   name: "Role",
+        //   link: "/home/role",
+        //   sectionName: "Role",
+        // },
+        // {
+        //   name: "My Profile",
+        //   link: "/home/my-profile",
+        //   sectionName: "MyProfile",
+        // },
+        // {
+        //   name: "Segment",
+        //   link: "/home/segment",
+        //   sectionName: "Segment",
+        // },
+        // {
+        //   name: "Region",
+        //   link: "/home/region",
+        //   sectionName: "Region",
+        // },
+        // {
+        //   name: "Platform Dependencies",
+        //   link: "/home/platformdependencies",
+        //   sectionName: "PlatformDependencies",
+        // },
+        // {
+        //   name: "Holidays",
+        //   link: "/home/holidays",
+        //   sectionName: "Holidays",
+        // },
+        // {
+        //   name: "Airport Regions",
+        //   link: "/home/airportRegions",
+        //   icon: MdOutlineAssignmentTurnedIn,
+        //   sectionName: "AirportRegions",
+        // },
+
+        // {
+        //   name: "Punch Region",
+        //   link: "/home/punchRegion",
+        //   icon: GiPunch,
+        //   sectionName: "PunchRegion",
+        // },
+
+        {
+          name: "Hourly Packages",
+          link: "/home/hourlyPackages",
+          icon: GiPunch,
+          sectionName: "HourlyPackages",
+        },
+
+        {
+          name: "Hourly Pricing",
+          link: "/home/hourlyPricing",
+          icon: GiPunch,
+          sectionName: "HourlyPricing",
+        },
+
+        // {
+        //   name: "CMS",
+        //   icon: IoMdHome,
+        //   dropdownIcon: RiArrowDropDownLine,
+        //   subMenus: [
+        //     { name: "Banner", link: "/home/banner", sectionName: "Banner" },
+        //     {
+        //       name: "Term And Conditions",
+        //       link: "/home/TermAndCondition",
+        //       sectionName: "Term And Condition",
+        //     }, 
+        //     {
+        //       name: "Privacy Policy",
+        //       link: "/home/PrivacyPolicy",
+        //       sectionName: "PrivacyPolicy",
+        //     },
+        //     {
+        //       name: "About Us",
+        //       link: "/home/AboutUs",
+        //       icon: FaBlog,
+        //       sectionName: "AboutUs",
+        //     },
+
+        //     {
+        //       name: "Refund Policy",
+        //       link: "/home/RefundPolicy",
+        //       icon: FaBlog,
+        //       sectionName: "RefundPolicy",
+        //     },
+
+        //     {
+        //       name: "FAQ",
+        //       link: "/home/Faq",
+        //       icon: FaBlog,
+        //       sectionName: "Faq",
+        //     },
+        //   ],
+        // },
+
+      ],
+    },
+  ];
+
+  // Filter menus and submenus by read permission
+  // const filteredMenus = menus
+  //   .map((menu) => {
+  //     if (menu.subMenus) {
+  //       const visibleSubs = menu.subMenus.filter(
+  //         (sub) => !sub.sectionName || hasPermission(sub.sectionName, "read"),
+  //       );
+  //       if (visibleSubs.length === 0) return null; // hide menu if no visible submenu
+  //       return { ...menu, subMenus: visibleSubs };
+  //     } else {
+  //       // If main menu has sectionName, check permission
+  //       if (menu.sectionName && !hasPermission(menu.sectionName, "read"))
+  //         return null;
+  //       return menu;
+  //     }
+  //   })
+  //   .filter(Boolean); // Remove nulls
+
+  const filterMenu = (items) => {
+    return items
+      .map((item) => {
+        // If has children → recurse
+        if (item.subMenus) {
+          const filteredChildren = filterMenu(item.subMenus);
+
+          if (filteredChildren.length === 0) return null;
+
+          return { ...item, subMenus: filteredChildren };
+>>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
         }
       });
     });
@@ -124,8 +501,17 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
     navigate("/login", { replace: true });
   };
 
+<<<<<<< HEAD
   const toggleExpand = (key) => {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
+=======
+  // const filteredMenus = filterMenu(menus);
+  const filteredMenus = menus;
+
+  const handleMenuClick = (index) => {
+    setActiveMenu(activeMenu === index ? null : index);
+    setActiveSubMenu(null);
+>>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
   };
 
   const renderLink = (item, className = "") => {

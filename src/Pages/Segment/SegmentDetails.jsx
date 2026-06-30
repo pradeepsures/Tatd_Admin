@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Breaker from "../../compoents/Breaker";
-import { getBannerApi } from "../../Services/BannerApi";
+import { getSegmentApi } from "../../Services/SegmentApi"; // ← your exported function
 import Loader from "../../compoents/Loader";
 import toast from "react-hot-toast";
 
 import { getImageUrl } from "../../utils/imageUtils";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
-
-const BannerView = () => {
+const SegmentView = () => {
   const { id } = useParams();
-  const [bannerData, setBannerData] = useState({});
+  const [segmentData, setSegmentData] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchBannerData = async () => {
+    const fetchSegmentData = async () => {
       try {
         setIsLoading(true);
-        const response = await getBannerApi(id);
+        const response = await getSegmentApi(id);
+
         if (response?.status) {
-          toast.success("Banner details loaded successfully");
-          setBannerData(response.data);
+          toast.success("Segment details loaded successfully");
+          setSegmentData(response.data);
         } else {
-          throw new Error(response?.message || "Failed to load banner");
+          throw new Error(response?.message || "Failed to load segment");
         }
       } catch (err) {
         setError(err.message);
@@ -35,10 +34,11 @@ const BannerView = () => {
       }
     };
 
-    fetchBannerData();
+    fetchSegmentData();
   }, [id]);
 
   if (isLoading) return <Loader />;
+
   if (error) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -55,20 +55,20 @@ const BannerView = () => {
     <div className="min-h-screen bg-gray-50 p-6">
       <Breaker />
       <div className="max-w-5xl mt-1 mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          Banner <span className="text-red-500">Overview</span>
-        </h1>
+        {/* <h1 className="text-3xl font-bold text-gray-800 mb-6">
+          Segment <span className="text-red-500">Overview</span>
+        </h1> */}
 
         <div className="bg-white p-8 rounded-2xl shadow-xl space-y-10">
           {/* Image */}
           <section>
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
-              Banner Preview
+              Segment Preview
             </h2>
-            {bannerData.image ? (
+            {segmentData.image ? (
               <img
-                src={getImageUrl(bannerData.image)}
-                alt={bannerData.title || "Banner"}
+                src={getImageUrl(segmentData.image)}
+                alt={segmentData.name || "Segment"}
                 className="w-full max-w-md h-48 object-cover rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
                 onError={(e) =>
                   (e.target.src = "https://via.placeholder.com/256x160")
@@ -82,35 +82,21 @@ const BannerView = () => {
           {/* Details */}
           <section>
             <h2 className="text-xl font-semibold text-gray-700 mb-4">
-              Banner Information
+              Segment Information
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-              <Detail label="Type" value={bannerData.type} />
-              <Detail label="Priority" value={bannerData.priority} />
+              <Detail label="Name" value={segmentData.name} />
+              <Detail label="Max Capacity" value={segmentData.maxCapacity} />
               <Detail
-                label="Platform"
-                value={
-                  bannerData.platform
-                    ? bannerData.platform.charAt(0).toUpperCase() +
-                      bannerData.platform.slice(1)
-                    : null
-                }
-              />
-              <Detail
-                label="Status"
-                value={
-                  bannerData.status ? (
-                    <span className="text-green-600 font-medium">Active</span>
-                  ) : (
-                    <span className="text-red-600 font-medium">Inactive</span>
-                  )
-                }
+                label="Description"
+                value={segmentData.description}
+                isFullWidth
               />
               <Detail
                 label="Created On"
                 value={
-                  bannerData.createdAt
-                    ? new Date(bannerData.createdAt).toLocaleDateString(
+                  segmentData.createdAt
+                    ? new Date(segmentData.createdAt).toLocaleDateString(
                         "en-US",
                         {
                           year: "numeric",
@@ -139,12 +125,16 @@ const BannerView = () => {
   );
 };
 
-// Reusable Detail Component
-const Detail = ({ label, value }) => (
-  <div>
+// Reusable Detail Component (same as BannerView)
+const Detail = ({ label, value, isFullWidth = false }) => (
+  <div className={isFullWidth ? "md:col-span-2" : ""}>
     <p className="text-gray-500 font-medium mb-1">{label}</p>
-    <p className="text-gray-800">{value || "Not provided"}</p>
+    <p className="text-gray-800">
+      {value !== undefined && value !== null && value !== ""
+        ? value
+        : "Not provided"}
+    </p>
   </div>
 );
 
-export default BannerView;
+export default SegmentView;

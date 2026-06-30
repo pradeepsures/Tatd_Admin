@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { updateFAQApi, getFAQByIdApi } from "../../Services/FaqApi";
+import Breaker from "../../compoents/Breaker";
 
 export default function UpdateFAQ() {
   const { id } = useParams();
@@ -17,7 +18,7 @@ export default function UpdateFAQ() {
   useEffect(() => {
     const fetchFAQ = async () => {
       try {
-        const res = await getFAQByIdApi(id,{
+        const res = await getFAQByIdApi(id, {
           ...formData,
           lang: selectedLang,
         });
@@ -59,12 +60,11 @@ export default function UpdateFAQ() {
 
   return (
     <div className="max-w-9xl    mx-auto bg-white shadow-lg rounded-2xl p-6">
-
+      <Breaker />
       <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-gray-700">Update FAQ</h2>
 
-      <h2 className="text-2xl font-bold mb-4 text-gray-700">Update FAQ</h2>
-
-       <div className="mb-4 flex justify-end items-center gap-2">
+        <div className="mb-4 flex justify-end items-center gap-2">
           {/* <label className="text-xl font-medium text-gray-600">
             Language:
           </label> */}
@@ -84,9 +84,7 @@ export default function UpdateFAQ() {
             <option value="mr">Marathi</option>
           </select> */}
         </div>
-        </div>
-
-
+      </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         {/* Question */}
@@ -143,7 +141,7 @@ export default function UpdateFAQ() {
         {/* Submit Button */}
         <button
           type="submit"
-          className="w-full bg-gradient-to-l from-[#5F0099] to-[#9F00FF] text-white font-bold hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-6 rounded-2xl"
+          className="w-full bg-primary text-white font-bold hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-6 rounded-2xl"
         >
           Update FAQ
         </button>

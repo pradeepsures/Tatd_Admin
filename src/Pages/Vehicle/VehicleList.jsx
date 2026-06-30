@@ -37,7 +37,26 @@ import {
 // import { assignDriver } from "../../Services/BookingApi";
 import { reassignCancelRequestApi } from "../../Services/RequestApi";
 
+<<<<<<< HEAD
 import { StyledTableCell } from "../../compoents/TableComponents";
+=======
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
+    color: theme.palette.common.white,
+    fontWeight: 600,
+    fontSize: "0.95rem",
+    padding: "12px 16px",
+    textTransform: "uppercase",
+    letterSpacing: "0.05em",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: "0.9rem",
+    color: "#374151",
+    padding: "12px 16px",
+  },
+}));
+>>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": { backgroundColor: "#f9fafb" },
@@ -317,7 +336,7 @@ export default function VehicleList() {
 
         {stats && (
           <div className="flex justify-end mb-2">
-            <div className="bg-gradient-to-r from-[#03045E] to-[#0077B6] text-white shadow-md rounded-lg px-4 py-2 text-sm flex items-center gap-3">
+            <div className="bg-primary text-white shadow-md rounded-lg px-4 py-2 text-sm flex items-center gap-3">
 
               <span>
                 <span className="opacity-80">Total:</span>{" "}
