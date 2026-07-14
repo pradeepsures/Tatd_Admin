@@ -19,19 +19,7 @@ import { useAuth } from "../../auth/AuthContext";
 import { getAllPricing, deletePricingApi } from "../../Services/PricingApi";
 import xlsx from "json-as-xlsx";
 import LoderBtn from "../../compoents/LoderBtn"; // your loader button
-<<<<<<< HEAD
 import { StyledTableCell } from "../../compoents/TableComponents";
-=======
-
-// ✅ TABLE HEADER STYLE
-const StyledTableCell = styled(TableCellBase)(({ theme }) => ({
-    [`&.${tableCellClasses.head}`]: {
-        background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-        color: theme.palette.common.white,
-        fontWeight: 600,
-    },
-}));
->>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
 
 export default function PricingList() {
     const { auth, hasPermission, loading: authLoading } = useAuth();

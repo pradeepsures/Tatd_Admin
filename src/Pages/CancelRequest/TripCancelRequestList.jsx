@@ -27,7 +27,7 @@ export default function TripCancelRequestList() {
   const fetchData = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await getTripCancelRequests({ page, limit: 10, status: "pending" });
+      const res = await getTripCancelRequests({ page, limit: 10 });
       if (res?.status) {
         setData(res.data || []);
         setStats(res.stats);
@@ -66,7 +66,7 @@ export default function TripCancelRequestList() {
       <div className="mb-6">
         <h1 className="text-xl font-bold text-gray-900">Trip Cancel Requests</h1>
         <p className="text-sm text-gray-500 mt-1">
-          Drivers requesting to cancel hourly / weekly / monthly trips. Approve or reject each request.
+          Drivers requesting to cancel hourly / weekly / monthly trips. Approve or reject requests and view history.
         </p>
         {stats && (
           <p className="text-xs text-gray-400 mt-2">
@@ -79,7 +79,7 @@ export default function TripCancelRequestList() {
         <Table>
           <TableHead>
             <TableRow sx={{ bgcolor: "#111827" }}>
-              {["#", "Driver", "Booking Type", "Reason", "Requested", "Actions"].map((h) => (
+              {["#", "Driver", "Booking Type", "Reason", "Status", "Requested", "Actions"].map((h) => (
                 <TableCell key={h} sx={{ color: "#fff", fontWeight: 600 }}>{h}</TableCell>
               ))}
             </TableRow>
@@ -88,7 +88,7 @@ export default function TripCancelRequestList() {
             {!data.length ? (
               <TableRow>
                 <TableCell colSpan={6} align="center" sx={{ py: 6, color: "#6b7280" }}>
-                  No pending trip cancel requests. This is normal if no driver has requested cancellation.
+                  No trip cancel requests found.
                 </TableCell>
               </TableRow>
             ) : (
@@ -100,7 +100,20 @@ export default function TripCancelRequestList() {
                     <div className="text-xs text-gray-500">{row.driverId?.phone}</div>
                   </TableCell>
                   <TableCell className="capitalize">{row.bookingType || "—"}</TableCell>
-                  <TableCell>{row.reason || "—"}</TableCell>
+                  <TableCell>{row.reason || "No Reason Provided"}</TableCell>
+                  <TableCell>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        row.status === "approved"
+                          ? "bg-green-100 text-green-700"
+                          : row.status === "rejected"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-amber-100 text-amber-700"
+                      }`}
+                    >
+                      {row.status?.toUpperCase()}
+                    </span>
+                  </TableCell>
                   <TableCell>{row.requestedAt ? new Date(row.requestedAt).toLocaleString("en-IN") : "—"}</TableCell>
                   <TableCell>
                     <IconButton size="small" onClick={(e) => { setAnchorEl(e.currentTarget); setSelected(row); }}>

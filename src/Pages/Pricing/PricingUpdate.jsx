@@ -241,7 +241,7 @@ const PricingUpdate = () => {
     }
 
     return (
-        <div className="max-w-7xl mx-auto p-8 bg-white shadow-xl rounded-2xl">
+        <div className="w-full mx-auto p-8 bg-white shadow-xl rounded-2xl">
             <Breaker />
             <h1 className="text-3xl font-bold mb-10 mt-5 text-gray-800">Update Pricing Rule</h1>
 

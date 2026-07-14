@@ -39,7 +39,7 @@ function Loginpage() {
 
         <div className="relative z-10 flex flex-col justify-between p-12 w-full">
           <div>
-            <p className="text-blue-300 text-sm font-semibold uppercase tracking-widest mb-4">Tatd Chauffeur</p>
+            <p className="text-blue-300 text-sm font-semibold uppercase tracking-widest mb-4">Dvagoo Chauffeur</p>
             <h1 className="text-4xl xl:text-5xl font-bold text-white leading-tight max-w-lg">
               Manage rides.<br />Assign drivers.<br />Track everything.
             </h1>
@@ -70,9 +70,9 @@ function Loginpage() {
         <div className="w-full max-w-[400px]">
           <div className="flex flex-col items-center mb-8">
             <img
-              src="/images/tatd.png"
-              alt="Tatd Logo"
-              className="w-20 h-20 object-contain rounded-2xl bg-[#0f172a] p-3 shadow-lg mb-4"
+              src="/images/dvagoo.png"
+              alt="Dvagoo Logo"
+              className="w-32 md:w-36 object-contain mb-5 rounded-2xl shadow-lg border border-gray-100"
             />
             <h2 className="text-2xl font-bold text-gray-900">Admin Sign In</h2>
             <p className="text-sm text-gray-500 mt-1 text-center">Enter your credentials to access the control panel</p>
@@ -83,7 +83,7 @@ function Loginpage() {
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
               <input
                 type="email"
-                placeholder="admin@tatd.com"
+                placeholder="admin@dvagoo.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full h-11 px-4 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -118,7 +118,7 @@ function Loginpage() {
             </button>
           </form>
 
-          <p className="text-center text-xs text-gray-400 mt-6">Tatd Admin Panel · Secure Access</p>
+          <p className="text-center text-xs text-gray-400 mt-6">Dvagoo Admin Panel · Secure Access</p>
         </div>
       </div>
     </div>

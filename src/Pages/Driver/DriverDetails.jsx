@@ -88,7 +88,6 @@ export default function DriverDetail() {
 
       {/* PROFILE */}
       <div className="bg-white mt-6 p-6 rounded-xl shadow">
-<<<<<<< HEAD
 
         <div className="flex items-center gap-6">
 
@@ -128,26 +127,6 @@ export default function DriverDetail() {
               </button>
             </div>
 
-=======
-        <div className="flex items-start gap-6">
-          <div className="flex-shrink-0">
-            <img
-              src={driver.profilePic}
-              alt="profile"
-              className="w-28 h-28 rounded-full object-cover border"
-            />
-            {/* <button
-              onClick={() =>
-                downloadImage(
-                  driver.profilePic,
-                  `driver-profile-${driver._id || id}.jpg`,
-                )
-              }
-              className="mt-3 w-full bg-blue-600 text-white text-sm px-3 py-2 rounded-lg hover:bg-blue-700"
-            >
-              Download
-            </button> */}
->>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
           </div>
 
           <div>

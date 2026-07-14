@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import {
   createBrowserRouter,
@@ -10,6 +10,10 @@ import Layout from "./layout/Layout";
 import Dashboard from "./Pages/Dashborad/Dashboard";
 import Login from "./loginpage/Login";
 import ProtectedRoute from "./auth/ProtectedRoute";
+
+import DynamicList from "./components/Dynamic/DynamicList";
+import DynamicForm from "./components/Dynamic/DynamicForm";
+import { MODULE_CONFIGS } from "./config/routesConfig";
 
 // Users & Profile
 import UserList from "./Pages/User/UserList";
@@ -70,6 +74,10 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 import AboutUs from "./Pages/AboutUs/AboutUs";
 import RefundPolicy from "./Pages/RefundPolicy/RefundPolicy";
 
+import PublicPrivacyPolicy from "./Pages/Public/PublicPrivacyPolicy";
+import PublicTermsAndConditions from "./Pages/Public/PublicTermsAndConditions";
+import PublicDeleteAccount from "./Pages/Public/PublicDeleteAccount";
+
 import RoleList from "./Pages/Roles/RoleList";
 import CreateRole from "./Pages/Roles/CreateRole";
 import UpdateRole from "./Pages/Roles/UpdateRole";
@@ -77,110 +85,90 @@ import FaqList from "./Pages/FAQ/FaqList";
 import CreateFAQ from "./Pages/FAQ/CreateFaq";
 import UpdateFAQ from "./Pages/FAQ/UpdateFAQ";
 import FaqDetails from "./Pages/FAQ/FaqDetails";
-<<<<<<< HEAD
-=======
 import SegmentList from "./Pages/Segment/SegmentList";
 import SegmentView from "./Pages/Segment/SegmentDetails";
-import CreateSegment from "./Pages/Segment/SegmentCreate";
-import UpdateSegment from "./Pages/Segment/SegmentUpdate";
+// import CreateSegment from "./Pages/Segment/SegmentCreate";
+// import UpdateSegment from "./Pages/Segment/SegmentUpdate";
 import RegionList from "./Pages/Region/RegionList";
 import CreateAgency from "./Pages/Banner/CreateBanner";
-import CreateDriver from "./Pages/Driver/CreateDriver";
-import DriverList from "./Pages/Driver/DriverList";
-import DriverDetail from "./Pages/Driver/DriverDetails";
-import UpdateDriver from "./Pages/Driver/DriverUpdate";
-import PricingList from "./Pages/Pricing/PricingList";
-import PricingDetails from "./Pages/Pricing/PricingDetails";
-import PricingCreate from "./Pages/Pricing/PricingCreate";
-import VehicleList from "./Pages/Vehicle/VehicleList";
-import VehicleDetails from "./Pages/Vehicle/VehicleDetails";
-import CreateVehicle from "./Pages/Vehicle/VehicleCreate";
-import UpdateVehicle from "./Pages/Vehicle/VehicleUpdate";
-import BookingList from "./Pages/Booking/BookingList";
-import RefundPolicy from "./Pages/RefundPolicy/RefundPolicy";
-import DeleteUser from "./Pages/DeleteAccount/DeleteUserAccount";
-import DeleteDriver from "./Pages/DeleteAccount/DeleteDriverAccount";
-import PlatformDependenciesList from "./Pages/latformDependencies/PlatformDependenciesList";
-import BookingDetails from "./Pages/Booking/BookingDetails";
-import ComplaintList from "./Pages/Complaint/ComplaintList";
-import ComplaintView from "./Pages/Complaint/ComplaintDetails";
-import ComplaintEdit from "./Pages/Complaint/ComplaintUpdate";
+ 
 import AirportRegionList from "./Pages/AirportRegions/AirportRegionsList";
 import AirportRegionView from "./Pages/AirportRegions/AirportRegionDetails";
 import CreateAirportRegion from "./Pages/AirportRegions/AirportCreate";
 import UpdateAirportRegion from "./Pages/AirportRegions/AirporeRegionsUpdate";
 import DriverPrivacyPolicy from "./Pages/PrivacyPolicy/DriverPolicy";
 import UserPrivacyPolicy from "./Pages/PrivacyPolicy/UserPrivacyPolicy";
-import PricingUpdate from "./Pages/Pricing/PricingUpdate";
-import CreateHolidays from "./Pages/Holidays/CreateHolidays";
-import HolidayList from "./Pages/Holidays/HolidaysList";
-import UpdateHoliday from "./Pages/Holidays/UpdateHolidays";
-import CreateEtsUser from "./Pages/EtsUser/CreateEtsUser";
-import EtsUserList from "./Pages/EtsUser/EtsUserlist";
-import UpdateEtsUser from "./Pages/EtsUser/UpdateEtsUser";
-import CreateEtsRoute from "./Pages/EtsRoutes/CreteEtsRoutes";
-import ViewEtsUser from "./Pages/EtsUser/EtsUserDetails";
-import EtsRouteList from "./Pages/EtsRoutes/EtsRoutesList";
-import UpdateEtsRoute from "./Pages/EtsRoutes/UpdateEtsRoutes";
-import EtsRouteDetails from "./Pages/EtsRoutes/EtsRoutesDetails";
-import CreateEtsRouteShift from "./Pages/EtsRouteShift/CreateEtsRouteShift";
-import EtsRouteShiftList from "./Pages/EtsRouteShift/EtsRouteShiftList";
-import UpdateEtsRouteShift from "./Pages/EtsRouteShift/EtsRouteShiftUpdate";
-import CreateEtsRouteShiftAssign from "./Pages/EtsRouteShiftAssign/CreateEtsRoutesShiftAssign";
-import EtsRouteShiftAssignList from "./Pages/EtsRouteShiftAssign/EtsRouteShiftAssignList";
-import EtsRouteShiftAssignView from "./Pages/EtsRouteShiftAssign/EtsRouteShiftAssignDetails";
-import UpdateEtsRouteShiftAssign from "./Pages/EtsRouteShiftAssign/EtsRoutesShiftAssignUpdate";
-import CancelRequestList from "./Pages/CancelRequest/getCancelRequestList";
-import ShuttleRouteList from "./Pages/ShuttleRoute/ShuttleRouteList";
-import EtsRouteShiftDetails from "./Pages/EtsRouteShift/EtsRouteShiftDetails";
-import ShuttleRouteDetails from "./Pages/ShuttleRoute/ShuttleRouteDetails";
-import CreateShuttleRoute from "./Pages/ShuttleRoute/ShuttleRouteCreate";
-import UpdateShuttleRoute from "./Pages/ShuttleRoute/ShuttleRouteUpdate";
-import ShuttleRouteShiftList from "./Pages/SuttleRouteShift/SuttleRouteShiftList";
-import CreateShuttleRouteShift from "./Pages/SuttleRouteShift/CreateShuttleRouteShift";
-import UpdateShuttleRouteShift from "./Pages/SuttleRouteShift/UpdateShuttleRouteShift";
-import ShuttleRouteShiftDetails from "./Pages/SuttleRouteShift/ShuttleRouteShiftDetails";
-import ShuttlePassList from "./Pages/ShuttlePass/ShuttlePassList";
-import ShuttlePassView from "./Pages/ShuttlePass/ShuttlePassDetails";
-import CreateShuttlePass from "./Pages/ShuttlePass/ShuttlePassCreate";
-import UpdateShuttlePass from "./Pages/ShuttlePass/ShuttlePassUpdate";
-import CreateShuttleRouteShiftAssign from "./Pages/ShuttleRouteShiftAssign/CreateSuttleRouteShiftAssign";
-import ShuttleRouteShiftAssignList from "./Pages/ShuttleRouteShiftAssign/ShuttleRouteShiftAssignList";
-import ShuttleRouteShiftAssignView from "./Pages/ShuttleRouteShiftAssign/ShuttleRouteShiftAssignDetails";
-import UpdateShuttleRouteShiftAssign from "./Pages/ShuttleRouteShiftAssign/ShuttleRouteShiftAssignUpdate";
-import CreateEtsUserStoppage from "./Pages/EtsUserStopPages/CreateEtsUserStopPages";
-import PunchRegionList from "./Pages/PunchRegion/PunchRegionList";
-import PunchRegionView from "./Pages/PunchRegion/PunchRegionDetails";
-import CreatePunchRegion from "./Pages/PunchRegion/PunchRegionCreate";
-import UpdatePunchRegion from "./Pages/PunchRegion/PunchRegionUpdae";
-import EtsUserStoppageList from "./Pages/EtsUserStopPages/EtsUserStopPagesList";
-import EtsUserStoppageDetails from "./Pages/EtsUserStopPages/EtsUserStopPagesDetails";
-import UpdateEtsUserStoppage from "./Pages/EtsUserStopPages/EtsUserStopPagesUpdate";
-import FuelLogsList from "./Pages/FuelLogs/FuelLogsList";
-import FuelLogView from "./Pages/FuelLogs/FuelLogsDetails";
-import PunchList from "./Pages/Punches/PunchesList";
-import PunchView from "./Pages/Punches/PunchesDetails";
-import PunchTodaySummary from "./Pages/Punches/PunchesTodaySummary";
-import VehicleBookingDetails from "./Pages/Vehicle/VehicleBookingDetails";
-import DriverBookingDetails from "./Pages/Driver/DriverAllTripDetails";
-import ProfilePage from "./loginpage/MyProfile";
-import SectionNameList from "./Pages/Membermaster/MemberMasterList";
-import CreateMember from "./Pages/Member/CreateMember";
+// import CreateHolidays from "./Pages/Holidays/CreateHolidays";
+// import HolidayList from "./Pages/Holidays/HolidaysList";
+// import UpdateHoliday from "./Pages/Holidays/UpdateHolidays";
+// import CreateEtsUser from "./Pages/EtsUser/CreateEtsUser";
+// import EtsUserList from "./Pages/EtsUser/EtsUserlist";
+// import UpdateEtsUser from "./Pages/EtsUser/UpdateEtsUser";
+// import CreateEtsRoute from "./Pages/EtsRoutes/CreteEtsRoutes";
+// import ViewEtsUser from "./Pages/EtsUser/EtsUserDetails";
+// import EtsRouteList from "./Pages/EtsRoutes/EtsRoutesList";
+// import UpdateEtsRoute from "./Pages/EtsRoutes/UpdateEtsRoutes";
+// import EtsRouteDetails from "./Pages/EtsRoutes/EtsRoutesDetails";
+// import CreateEtsRouteShift from "./Pages/EtsRouteShift/CreateEtsRouteShift";
+// import EtsRouteShiftList from "./Pages/EtsRouteShift/EtsRouteShiftList";
+// import UpdateEtsRouteShift from "./Pages/EtsRouteShift/EtsRouteShiftUpdate";
+// import CreateEtsRouteShiftAssign from "./Pages/EtsRouteShiftAssign/CreateEtsRoutesShiftAssign";
+// import EtsRouteShiftAssignList from "./Pages/EtsRouteShiftAssign/EtsRouteShiftAssignList";
+// import EtsRouteShiftAssignView from "./Pages/EtsRouteShiftAssign/EtsRouteShiftAssignDetails";
+// import UpdateEtsRouteShiftAssign from "./Pages/EtsRouteShiftAssign/EtsRoutesShiftAssignUpdate";
+// import ShuttleRouteList from "./Pages/ShuttleRoute/ShuttleRouteList";
+// import EtsRouteShiftDetails from "./Pages/EtsRouteShift/EtsRouteShiftDetails";
+// import ShuttleRouteDetails from "./Pages/ShuttleRoute/ShuttleRouteDetails";
+// import CreateShuttleRoute from "./Pages/ShuttleRoute/ShuttleRouteCreate";
+// import UpdateShuttleRoute from "./Pages/ShuttleRoute/ShuttleRouteUpdate";
+// import ShuttleRouteShiftList from "./Pages/SuttleRouteShift/SuttleRouteShiftList";
+// import CreateShuttleRouteShift from "./Pages/SuttleRouteShift/CreateShuttleRouteShift";
+// import UpdateShuttleRouteShift from "./Pages/SuttleRouteShift/UpdateShuttleRouteShift";
+// import ShuttleRouteShiftDetails from "./Pages/SuttleRouteShift/ShuttleRouteShiftDetails";
+// import ShuttlePassList from "./Pages/ShuttlePass/ShuttlePassList";
+// import ShuttlePassView from "./Pages/ShuttlePass/ShuttlePassDetails";
+// import CreateShuttlePass from "./Pages/ShuttlePass/ShuttlePassCreate";
+// import UpdateShuttlePass from "./Pages/ShuttlePass/ShuttlePassUpdate";
+// import CreateShuttleRouteShiftAssign from "./Pages/ShuttleRouteShiftAssign/CreateSuttleRouteShiftAssign";
+// import ShuttleRouteShiftAssignList from "./Pages/ShuttleRouteShiftAssign/ShuttleRouteShiftAssignList";
+// import ShuttleRouteShiftAssignView from "./Pages/ShuttleRouteShiftAssign/ShuttleRouteShiftAssignDetails";
+// import UpdateShuttleRouteShiftAssign from "./Pages/ShuttleRouteShiftAssign/ShuttleRouteShiftAssignUpdate";
+// import CreateEtsUserStoppage from "./Pages/EtsUserStopPages/CreateEtsUserStopPages";
+// import PunchRegionList from "./Pages/PunchRegion/PunchRegionList";
+// import PunchRegionView from "./Pages/PunchRegion/PunchRegionDetails";
+// import CreatePunchRegion from "./Pages/PunchRegion/PunchRegionCreate";
+// import UpdatePunchRegion from "./Pages/PunchRegion/PunchRegionUpdae";
+// import EtsUserStoppageList from "./Pages/EtsUserStopPages/EtsUserStopPagesList";
+// import EtsUserStoppageDetails from "./Pages/EtsUserStopPages/EtsUserStopPagesDetails";
+// import UpdateEtsUserStoppage from "./Pages/EtsUserStopPages/EtsUserStopPagesUpdate";
+// import FuelLogsList from "./Pages/FuelLogs/FuelLogsList";
+// import FuelLogView from "./Pages/FuelLogs/FuelLogsDetails";
+// import PunchList from "./Pages/Punches/PunchesList";
+// import PunchView from "./Pages/Punches/PunchesDetails";
+// import PunchTodaySummary from "./Pages/Punches/PunchesTodaySummary";
+
+// import SectionNameList from "./Pages/Membermaster/MemberMasterList";
+// import CreateMember from "./Pages/Member/CreateMember";
 import UpdateMember from "./Pages/Member/UpdateMember";
-import HourlyPackageList from "./Pages/HourlyPackages/HourlyPackagesList";
+// import HourlyPackageList from "./Pages/HourlyPackages/HourlyPackagesList";
 import StatesList from "./Pages/States/StatesList";
 import CitiesList from "./Pages/Cities/CitiesList";
 import VehiclePreferenceList from "./Pages/VehiclePreference/VehiclePreferenceList";
 import VehiclePreferenceCategoryList from "./Pages/VehiclePreferenceCategory/VehivlePreferenceCategoryList";
 import NightTimesList from "./Pages/NightTime/NightTimeList";
-import HourlyPricingList from "./Pages/HourlyPricing/HourlyPricingList";
-import HourlyBookingList from "./Pages/hourlyBooking/HourlyBookingList";
+// import HourlyPricingList from "./Pages/HourlyPricing/HourlyPricingList";
+// import WeeklyPricingList from "./Pages/WeeklyPricing/WeeklyPricingList";
+// import MonthlyPricingList from "./Pages/MonthlyPricing/MonthlyPricingList";
+// import OutstationPricingList from "./Pages/OutstationPricing/OutstationPricingList";
+
 import HourlyBookingDetails from "./Pages/hourlyBooking/HourlyBookingDetails";
 import AssignedDriversList from "./Pages/Driver/AssignedDriverList";
 
-// import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
+import MembershipPlanList from "./Pages/Membership/MembershipPlanList";
+import MembershipPlanCreate from "./Pages/Membership/MembershipPlanCreate";
+import MembershipPlanUpdate from "./Pages/Membership/MembershipPlanUpdate";
 
->>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
+// import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
 
 const Unauthorized = () => (
   <div className="flex min-h-screen items-center justify-center bg-gray-50 p-6">
@@ -206,6 +194,18 @@ const router = createBrowserRouter([
     element: <Unauthorized />,
   },
   {
+    path: "/privacy-policy",
+    element: <PublicPrivacyPolicy />,
+  },
+  {
+    path: "/terms-and-conditions",
+    element: <PublicTermsAndConditions />,
+  },
+  {
+    path: "/delete-account",
+    element: <PublicDeleteAccount />,
+  },
+  {
     path: "/home",
     element: (
       <ProtectedRoute>
@@ -214,8 +214,6 @@ const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Dashboard /> },
-<<<<<<< HEAD
-      
       // Profile
       { path: "my-profile", element: <ProfilePage /> },
       
@@ -245,7 +243,6 @@ const router = createBrowserRouter([
       { path: "booking/weekly", element: <WeeklyBookingList /> },
       { path: "booking/monthly", element: <MonthlyBookingList /> },
       { path: "booking/outstation", element: <OutstationBookingList /> },
-      { path: "booking/pending", element: <PendingAssignments /> },
       { path: "booking/bookingdetails/:id", element: <BookingDetails /> },
       { path: "cancelrequest", element: <CancelRequestList /> },
       { path: "trip-cancel-requests", element: <TripCancelRequestList /> },
@@ -262,10 +259,10 @@ const router = createBrowserRouter([
       { path: "complaint/updateComplaint/:id", element: <ComplaintEdit /> },
       
       // CMS & Settings
-      { path: "banner", element: <BannerList /> },
-      { path: "banner/createbanner", element: <CreateBanner /> },
-      { path: "banner/updatebanner/:id", element: <UpdateBanner /> },
-      { path: "banner/bannerview/:id", element: <BannerView /> },
+      // { path: "banner", element: <BannerList /> },
+      // { path: "banner/createbanner", element: <CreateBanner /> },
+      // { path: "banner/updatebanner/:id", element: <UpdateBanner /> },
+      // { path: "banner/bannerview/:id", element: <BannerView /> },
       
       { path: "TermAndCondition", element: <List /> },
       { path: "PrivacyPolicy", element: <PrivacyPolicy /> },
@@ -276,214 +273,107 @@ const router = createBrowserRouter([
       { path: "role/createrole", element: <CreateRole /> },
       { path: "role/updaterole/:id", element: <UpdateRole /> },
       
-      { path: "FAQ", element: <FaqList /> },
-      { path: "FAQ/createfaq", element: <CreateFAQ /> },
-      { path: "FAQ/updatefaq/:id", element: <UpdateFAQ /> },
-      { path: "FAQ/viewfaq/:id", element: <FaqDetails /> },
+      // { path: "FAQ", element: <FaqList /> },
+      // { path: "FAQ/createfaq", element: <CreateFAQ /> },
+      // { path: "FAQ/updatefaq/:id", element: <UpdateFAQ /> },
+      // { path: "FAQ/viewfaq/:id", element: <FaqDetails /> },
       
       { path: "appConfig", element: <AppConfig /> },
-      { path: "outstationPricing", element: <OutstationPricing /> },
+      // { path: "outstationPricing", element: <OutstationPricing /> },
       { path: "feedbackTags", element: <FeedbackTags /> },
       { path: "cancellationReasons", element: <CancellationReasons /> },
-=======
-
-      //profile
-      // { path: "my-profile", element: <ProfilePage /> }, 
-
-      // Banner routes
-      { path: "banner", element: <BannerList /> },
-      { path: "banner/createbanner", element: <CreateBanner /> },
-      { path: "banner/updatebanner/:id", element: <UpdateBanner /> }, 
-      { path: "banner/bannerview/:id", element: <BannerView /> },
-
-      //Member route
-      { path: "member", element: <MemberList /> },
-      { path: "member/createmember", element: <CreateMember /> },
-      { path: "member/edit/:id", element: <UpdateMember /> },
-
-      // role
-      // { path: "role", element: <RoleList /> },
-      // { path: "role/createrole", element: <CreateRole /> },
-      // { path: "role/updaterole/:id", element: <UpdateRole /> },
-
+      
       //segment
       { path: "segment", element: <SegmentList /> },
       { path: "segment/segmentview/:id", element: <SegmentView /> },
-      { path: "segment/createsegment", element: <CreateSegment /> },
-      { path: "segment/updateSegment/:id", element: <UpdateSegment /> },
+      // { path: "segment/createsegment", element: <CreateSegment /> },
+      // { path: "segment/updateSegment/:id", element: <UpdateSegment /> },
 
       //region
       { path: "region", element: <RegionList /> },
 
-      //driver
-      { path: "driver", element: <DriverList /> },
-      { path: "driver/createDriver", element: <CreateDriver /> },
-      { path: "driver/driverView/:id", element: <DriverDetail /> },
-      { path: "driver/driverBookingView/:id", element: <DriverBookingDetails /> },
-      { path: "driver/updateDriver/:id", element: <UpdateDriver /> },
-      { path: "assignedDriver", element: <AssignedDriversList /> },
-
-
-      //terms and condition, privacy policy, about us   
-      { path: "TermAndCondition", element: <List /> },
-      { path: "PrivacyPolicy", element: <PrivacyPolicy /> },
-      // { path: "AboutUs", element: <AboutUs /> },
-      // { path: "RefundPolicy", element: <RefundPolicy /> },
-
-      // FAQ
-      { path: "FAQ", element: <FaqList /> },
-      { path: "FAQ/createfaq", element: <CreateFAQ /> },
-      { path: "FAQ/updatefaq/:id", element: <UpdateFAQ /> },
-      { path: "FAQ/viewfaq/:id", element: <FaqDetails /> },
-
-      //pricing
-      { path: "pricing", element: <PricingList /> },
-      { path: "pricing/pricingview/:id", element: <PricingDetails /> },
-      { path: "pricing/create", element: <PricingCreate /> },
-      { path: "pricing/update/:id", element: <PricingUpdate /> },
-
-      //vehicle
-      { path: "vehicle", element: <VehicleList /> },
-      { path: "vehicle/vehicledetails/:id", element: <VehicleDetails /> },
-      { path: "vehicle/vehicleBooking/:id", element: <VehicleBookingDetails /> }, 
-      { path: "vehicle/create", element: <CreateVehicle /> },
-      { path: "vehicle/updateVehicle/:id", element: <UpdateVehicle /> },
-
-      //Booking
-      // { path: "booking", element: <BookingList /> },
-      // { path: "booking/bookingdetails/:id", element: <BookingDetails /> },
-
-      //cancel request
-      // { path: "cancelrequest", element: <CancelRequestList /> },
-
-
-      //plateform dependencies
-      // { path: "platformdependencies", element: <PlatformDependenciesList /> },
-
-      //cpmplaint
-      // { path: "complaint", element: <ComplaintList /> },
-      // { path: "complaint/complaintView/:id", element: <ComplaintView /> },
-      // { path: "complaint/updateComplaint/:id", element: <ComplaintEdit /> },
-
-      //aiport region
-      // { path: "airportRegions", element: <AirportRegionList /> },
-      // { path: "airportRegions/airportRegionsDetails/:id", element: <AirportRegionView /> },
-      // { path: "airportRegions/create", element: <CreateAirportRegion /> },
-      // { path: "airportRegions/update/:id", element: <UpdateAirportRegion /> },
-
-      //holiday
-      // { path: "holidays", element: <HolidayList /> },
-      // { path: "holidays/create", element: <CreateHolidays /> },
-      // { path: "holidays/update/:id", element: <UpdateHoliday /> },
-
-      //etsUser
-      // { path: "etsUser", element: <EtsUserList /> },
-      // { path: "etsUser/create", element: <CreateEtsUser /> },
-      // { path: "etsUser/view/:id", element: <ViewEtsUser /> },
-      // { path: "etsUser/update/:id", element: <UpdateEtsUser /> },
-
-      //etsRoute
-      // { path: "etsRoutes", element: <EtsRouteList /> },
-      // { path: "etsRoutes/create", element: <CreateEtsRoute /> },
-      // { path: "etsRoutes/view/:id", element: <EtsRouteDetails /> },
-      // { path: "etsRoutes/update/:id", element: <UpdateEtsRoute /> },
-
-      //etsRouteShift
-      // { path: "etsRouteShifts", element: <EtsRouteShiftList /> },
-      // { path: "etsRouteShifts/create", element: <CreateEtsRouteShift /> },
-      // { path: "etsRouteShifts/view/:id", element: <EtsRouteShiftDetails /> },
-      // { path: "etsRouteShifts/update/:id", element: <UpdateEtsRouteShift /> },
-
-      //etsRoutesShiftAssign
-      // { path: "etsRouteShiftAssign", element: <EtsRouteShiftAssignList /> },
-      // { path: "etsRouteShiftAssign/create", element: <CreateEtsRouteShiftAssign /> },
-      // { path: "etsRouteShiftAssign/view/:id", element: <EtsRouteShiftAssignView /> },
-      // { path: "etsRouteShiftAssign/update/:id", element: <UpdateEtsRouteShiftAssign /> },
-
-      //shuttle route 
-      // { path: "shuttleRoutes", element: <ShuttleRouteList /> },
-      // { path: "shuttleRoutes/create", element: <CreateShuttleRoute /> },
-      // { path: "shuttleRoutes/view/:id", element: <ShuttleRouteDetails /> },
-      // { path: "shuttleRoutes/update/:id", element: <UpdateShuttleRoute /> },
-
-      //shuttle route shift
-      // { path: "shuttleRouteShifts", element: <ShuttleRouteShiftList /> },
-      // { path: "shuttleRouteShifts/create", element: <CreateShuttleRouteShift /> },
-      // { path: "shuttleRouteShifts/view/:id", element: <ShuttleRouteShiftDetails /> },
-      // { path: "shuttleRouteShifts/update/:id", element: <UpdateShuttleRouteShift /> },
-
-      //shutttle pass
-      // { path: "shuttlePass", element: <ShuttlePassList /> },
-      // { path: "shuttlePass/create", element: <CreateShuttlePass /> },
-      // { path: "shuttlePass/view/:id", element: <ShuttlePassView /> },
-      // { path: "shuttlePass/update/:id", element: <UpdateShuttlePass /> },
-
-      //shuttle route shift assign
-      // { path: "shuttleRouteShiftAssign", element: <ShuttleRouteShiftAssignList /> },
-      // { path: "shuttleRouteShiftAssign/create", element: <CreateShuttleRouteShiftAssign /> },
-      // { path: "shuttleRouteShiftAssign/view/:id", element: <ShuttleRouteShiftAssignView /> },
-      // { path: "shuttleRouteShiftAssign/update/:id", element: <UpdateShuttleRouteShiftAssign /> },
-
-      //etsUserStoppage
-      // { path: "etsUserStopPages", element: <EtsUserStoppageList /> },
-      // { path: "etsUserStopPages/create", element: <CreateEtsUserStoppage /> },
-      // { path: "etsUserStopPages/view/:id", element: <EtsUserStoppageDetails /> },
-      // { path: "etsUserStopPages/update/:id", element: <UpdateEtsUserStoppage /> },
-
-      //punch region
-      // { path: "punchRegion", element: <PunchRegionList /> },
-      // { path: "punchRegion/create", element: <CreatePunchRegion /> },
-      // { path: "punchRegion/view/:id", element: <PunchRegionView /> },
-      // { path: "punchRegion/update/:id", element: <UpdatePunchRegion /> },
-
-      //Fuel Logs
-      // { path: "fuelLogs", element: <FuelLogsList /> },
-      // { path: "fuelLogs/view/:id", element: <FuelLogView /> },
-      
-      //Punches
-      // { path: "punches", element: <PunchList /> },
-      // { path: "punches/view/:id", element: <PunchView /> },
-      // { path: "punches/today-summary", element: <PunchTodaySummary /> },
-
-      // //member master
-      // { path: "memberMaster", element: <SectionNameList/> },
-
       //hourly packages
-      { path: "hourlyPackages", element: <HourlyPackageList /> },
+      // { path: "hourlyPackages", element: <HourlyPackageList /> },
 
       //hourly pricing 
-      { path: "hourlyPricing", element: <HourlyPricingList/> },
+      // { path: "hourlyPricing", element: <HourlyPricingList/> },
+      
+      //weekly pricing 
+      // { path: "weeklyPricing", element: <WeeklyPricingList/> },
+      
+      //monthly pricing 
+      // { path: "monthlyPricing", element: <MonthlyPricingList/> },
+      
+      //outstation pricing 
+      // { path: "outstationPricing", element: <OutstationPricingList/> },
 
       //states
-      { path:"states", element: <StatesList/> },
+      // { path:"states", element: <StatesList/> },
 
       //cities
-      { path:"Cities", element: <CitiesList/> },
+      // { path:"Cities", element: <CitiesList/> },
 
       //vehicle Preference
       { path: "VehiclePreference", element: <VehiclePreferenceList/> },
 
       //vehicle preference category
-     { path: "VehiclePreferenceCategory", element: <VehiclePreferenceCategoryList/> },
+      { path: "VehiclePreferenceCategory", element: <VehiclePreferenceCategoryList/> },
 
-     //night Times
-     { path: "NightTimes", element: <NightTimesList/> },
-
-     //hourly booking
-     { path: "hourlyBooking", element: <HourlyBookingList/> },
-     { path: "hourlyBooking/view/:id", element: <HourlyBookingDetails/> }
-
-
->>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
+      //night Times
+      { path: "NightTimes", element: <NightTimesList/> },
+      
+      // Membership Plans
+      { path: "membership", element: <MembershipPlanList /> },
+      { path: "membership/create", element: <MembershipPlanCreate /> },
+      { path: "membership/update/:id", element: <MembershipPlanUpdate /> },
+      
+      // Dynamic Routes Generated from Config
+      ...Object.values(MODULE_CONFIGS).flatMap(config => {
+        // Strip "/home/" from basePath for react-router children path
+        const pathBase = config.basePath.replace("/home/", "");
+        return [
+          { path: pathBase, element: <DynamicList config={config} /> },
+          { path: `${pathBase}/create`, element: <DynamicForm config={config} /> },
+          { path: `${pathBase}/update/:id`, element: <DynamicForm config={config} /> },
+          { path: `${pathBase}/view/:id`, element: <DynamicForm config={config} readOnly={true} /> },
+        ];
+      })
     ],
   },
 ]);
 
+import { io } from "socket.io-client";
+
+const NOTIFICATION_SOUND = "https://actions.google.com/sounds/v1/alarms/beep_short.ogg";
+
 const App = () => {
+  useEffect(() => {
+    const socketUrl = import.meta.env.VITE_BASE_URL?.replace('/api', '') || "http://localhost:9060";
+    const socket = io(socketUrl, {
+      transports: ["websocket", "polling"]
+    });
+
+    socket.on("connect", () => {
+      console.log("Admin Socket Connected:", socket.id);
+      socket.emit("join_admin");
+    });
+
+    socket.on("admin_notification", (data) => {
+      const audio = new Audio(NOTIFICATION_SOUND);
+      audio.play().catch(e => console.log("Audio auto-play blocked by browser:", e));
+      toast.success(data.title ? `${data.title}\n${data.body}` : (data.body || "New Notification!"), {
+        duration: 5000,
+      });
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
   return (
     <>
       <RouterProvider router={router} />
-      <Toaster position="top-center" reverseOrder={false} />
+      <Toaster position="top-right" reverseOrder={false} />
     </>
   );
 };

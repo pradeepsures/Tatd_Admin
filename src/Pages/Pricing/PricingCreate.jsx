@@ -21,8 +21,6 @@ const baseDayNightSchema = z.object({
   minFare: z.number().min(0),
   cancellationFee: z.number().min(0).default(50),
 });
-nightFare: z.number().min(0).optional();
-
 
 const surgeWindowSchema = z.object({
   label: z.string().min(1, "Label is required"),
@@ -242,7 +240,7 @@ const PricingCreate = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto p-8 bg-white shadow-xl rounded-2xl">
+    <div className="w-full mx-auto p-8 bg-white shadow-xl rounded-2xl">
       <Breaker />
       <h1 className="text-3xl font-bold mb-10 mt-5 text-gray-800">Create New Pricing</h1>
 
@@ -251,7 +249,7 @@ const PricingCreate = () => {
         onSubmit={handleSubmit(onSubmit, (errors) => {
           console.log("FORM ERRORS:", errors);
         }
-        )} className="space-12" >
+        )} className="space-y-12" >
         {/* 1. Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Region */}

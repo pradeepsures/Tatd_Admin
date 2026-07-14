@@ -19,7 +19,7 @@ const Navbar = ({ onMenuClick }) => {
           <HiMenuAlt3 size={22} />
         </button>
         <div>
-          <h1 className="text-base font-semibold text-gray-800">Tatd Admin</h1>
+          <h1 className="text-base font-semibold text-gray-800">Dvagoo Admin</h1>
           <p className="hidden sm:block text-xs text-gray-500">
             {displayName}
             {auth?.user?.role?.name && (

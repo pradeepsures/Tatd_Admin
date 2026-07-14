@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:9060";
 
 // ✅ GET Refund Policies
 export const getAllRefundPolicy = async ({ page, rowsPerPage, searchQuery }) => {

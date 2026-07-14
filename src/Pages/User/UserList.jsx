@@ -272,7 +272,7 @@ export default function AdminList() {
   const exportToExcel = (allUsersData) => {
     const today = new Date().toISOString().slice(0, 10);
     const settings = {
-      fileName: `Tatd_AppUsers_${today}`,
+      fileName: `Dvagoo_AppUsers_${today}`,
       extraLength: 3,
       writeMode: "writeFile",
     };
@@ -546,6 +546,7 @@ export default function AdminList() {
           <TableHead>
             <TableRow>
               <StyledTableCell>S.No</StyledTableCell>
+              <StyledTableCell>Profile</StyledTableCell>
               <StyledTableCell>Name & Contact</StyledTableCell>
               <StyledTableCell>Total Trips</StyledTableCell>
               <StyledTableCell>Total Spent</StyledTableCell>
@@ -571,6 +572,13 @@ export default function AdminList() {
                 <StyledTableRow key={row.id}>
                   <StyledTableCell>
                     {(page - 1) * rowsPerPage + index + 1}
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <img
+                      src={getImageUrl(row.profileImage || row.profilePic) || "/no-image.png"}
+                      alt="profile"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
                   </StyledTableCell>
                   <StyledTableCell>
                     <div className="font-medium text-gray-900">

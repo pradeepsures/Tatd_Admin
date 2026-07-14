@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:9060";
 
 export const createDriverApi = async (formData) => {
   const token = localStorage.getItem("token");
@@ -55,33 +55,9 @@ export const getAllDrivers = async ({
 
         return await res.json();
 
-<<<<<<< HEAD
-//   } catch (err) {
-//     toast.error(err.message || "Failed to fetch drivers");
-//     throw err;
-//   }
-
-// };
-export const getAllDrivers = async ({ page, rowsPerPage, searchQuery, isVerified }) => {
-
-  const token = localStorage.getItem("token");
-
-  try {
-
-    let url = `${BASE_URL}/api/admin/drivers?page=${page}&limit=${rowsPerPage}`;
-
-    if (searchQuery) {
-      url += `&search=${encodeURIComponent(searchQuery)}`;
-    }
-    if (isVerified === false) {
-      url += `&isVerified=false`;
-    } else if (isVerified === true) {
-      url += `&isVerified=true`;
-=======
     } catch (err) {
         toast.error(err.message || "Failed to fetch drivers");
         throw err;
->>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
     }
 };
 

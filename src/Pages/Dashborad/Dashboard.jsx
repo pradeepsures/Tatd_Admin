@@ -10,10 +10,7 @@ import {
   MdOutlinePendingActions,
   MdOutlineVerifiedUser,
 } from "react-icons/md";
-import { getAllDrivers } from "../../Services/DriverApi";
-import { getAllVehicles } from "../../Services/VehicleApi";
-import { getAllBookings } from "../../Services/BookingApi";
-import { getAllAdmins } from "../../Services/UserApi";
+import { getAllDeashboard } from "../../Services/DeshboardApi";
 
 const StatCard = ({ label, value, icon: Icon, accent, sub }) => (
   <div className="bg-white rounded-2xl border border-gray-100 p-8 flex items-center gap-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -55,16 +52,15 @@ const Dashboard = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const [d, v, b, u] = await Promise.allSettled([
-          getAllDrivers({ page: 1, rowsPerPage: 1, searchQuery: "" }),
-          getAllVehicles({ page: 1, limit: 1 }),
-          getAllBookings({ page: 1, rowsPerPage: 1 }),
-          getAllAdmins({ page: 1, rowsPerPage: 1 }),
-        ]);
-        if (d.status === "fulfilled") setDriverStats(d.value?.stats);
-        if (v.status === "fulfilled") setVehicleStats(v.value?.stats);
-        if (b.status === "fulfilled") setBookingStats(b.value?.stats);
-        if (u.status === "fulfilled") setUserStats(u.value?.stats);
+        const res = await getAllDeashboard({ page: 1, rowsPerPage: 10, searchQuery: "" });
+        if (res?.status) {
+          setDriverStats(res.data.driverStats);
+          setVehicleStats(res.data.vehicleStats);
+          setBookingStats(res.data.bookingStats);
+          setUserStats(res.data.userStats);
+        }
+      } catch (error) {
+        console.error("Failed to load dashboard stats", error);
       } finally {
         setLoading(false);
       }
@@ -95,21 +91,8 @@ const Dashboard = () => {
       </div>
 
       {/* Action alerts */}
-      {(pendingVerify > 0 || unassigned > 0) && (
+      {(pendingVerify > 0) && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {unassigned > 0 && (
-            <button
-              type="button"
-              onClick={() => navigate("/home/booking/pending")}
-              className="flex items-center gap-4 rounded-2xl bg-amber-50 border border-amber-200 p-6 text-left hover:bg-amber-100/80 transition-all duration-300 shadow-sm"
-            >
-              <MdOutlinePendingActions className="text-amber-600 text-4xl shrink-0" />
-              <div>
-                <p className="font-extrabold text-amber-900 text-lg">{unassigned} Trips Need Driver Assignment</p>
-                <p className="text-sm text-amber-700 mt-1 font-medium">Click to navigate to Pending Assignment list to assign chauffeurs →</p>
-              </div>
-            </button>
-          )}
           {pendingVerify > 0 && (
             <button
               type="button"
@@ -130,13 +113,6 @@ const Dashboard = () => {
       <div className="space-y-4">
         <h2 className="text-xl font-bold text-gray-800 tracking-wide uppercase">Quick Operations</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <ActionCard
-            title="Assign Drivers to Trips"
-            desc="Link chauffeurs and vehicles to unassigned rides."
-            link="/home/booking/pending"
-            accent="border-blue-100 bg-blue-50/70 hover:bg-blue-50 text-blue-900"
-            icon={MdOutlineAssignment}
-          />
           <ActionCard
             title="Verify Driver Approvals"
             desc="Validate uploaded license, KYC and driver details."
