@@ -16,10 +16,15 @@ const UpdateRole = () => {
 
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState({});
-  const [sectionOptions, setSectionOptions] = useState([]);
-  const [sectionLoading, setSectionLoading] = useState(false);
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const AVAILABLE_SECTIONS = [
+    "Dashboard", "Driver", "Vehicle", "Booking", "User", "Membership", 
+    "Pricing", "HourlyPricing", "WeeklyPricing", "MonthlyPricing", "OutstationPricing", "HourlyPackages",
+    "Complaint", "Geography", "State", "City", "Region", "Settings", "Profile", "Role", "AdminStaff", "Config",
+    "Feedback", "CancelReason", "Banner", "Segment", "CMS", "FAQ"
+  ];
 
   // useEffect(() => {
   //   if (id) {
@@ -51,7 +56,6 @@ const UpdateRole = () => {
 
   useEffect(() => {
     if (id) {
-      fetchSections(); // 👈 ADD THIS
 
       const fetchRole = async () => {
         setLoading(true);
@@ -82,25 +86,6 @@ const UpdateRole = () => {
     }
   }, [id]);
 
-  const fetchSections = async (search = "") => {
-    try {
-      setSectionLoading(true);
-
-      const res = await getAllSectionName({
-        page: 1,
-        rowsPerPage: 20,
-        searchQuery: search,
-      });
-
-      if (res?.status) {
-        setSectionOptions(res.data || []);
-      }
-    } catch (err) {
-      console.error("Error fetching sections", err);
-    } finally {
-      setSectionLoading(false);
-    }
-  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -251,16 +236,16 @@ const UpdateRole = () => {
                 placeholder="Select Section"
                 className="w-3/4 h-10"
                 value={perm.sectionName || undefined}
-                loading={sectionLoading}
-                onSearch={(value) => fetchSections(value)}
                 onChange={(value) =>
                   handlePermissionChange(index, "sectionName", value)
                 }
-                filterOption={false}
+                filterOption={(input, option) =>
+                  (option?.value ?? "").toLowerCase().includes(input.toLowerCase())
+                }
               >
-                {sectionOptions.map((item) => (
-                  <Option key={item._id} value={item.name}>
-                    {item.name}
+                {AVAILABLE_SECTIONS.map((item) => (
+                  <Option key={item} value={item}>
+                    {item}
                   </Option>
                 ))}
               </Select>

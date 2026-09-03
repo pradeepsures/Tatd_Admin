@@ -25,33 +25,13 @@ const CreateRole = () => {
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState({});
   const [apiMessage, setApiMessage] = useState("");
-  const [sectionOptions, setSectionOptions] = useState([]);
-  const [sectionLoading, setSectionLoading] = useState(false);
   const navigate = useNavigate();
-
-  const fetchSections = async (search = "") => {
-    try {
-      setSectionLoading(true);
-
-      const res = await getAllSectionName({
-        page: 1,
-        rowsPerPage: 20,
-        searchQuery: search,
-      });
-
-      if (res?.status) {
-        setSectionOptions(res.data || []);
-      }
-    } catch (err) {
-      console.error("Error fetching sections", err);
-    } finally {
-      setSectionLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSections();
-  }, []);
+  const AVAILABLE_SECTIONS = [
+    "Dashboard", "Driver", "Vehicle", "Booking", "User", "Membership", 
+    "Pricing", "HourlyPricing", "WeeklyPricing", "MonthlyPricing", "OutstationPricing", "HourlyPackages",
+    "Complaint", "Geography", "State", "City", "Region", "Settings", "Profile", "Role", "AdminStaff", "Config",
+    "Feedback", "CancelReason", "Banner", "Segment", "CMS", "FAQ"
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -195,16 +175,16 @@ const CreateRole = () => {
                   placeholder="Select Section"
                   className="w-3/4 h-10"
                   value={perm.sectionName || undefined}
-                  loading={sectionLoading}
-                  onSearch={(value) => fetchSections(value)}
                   onChange={(value) =>
                     handlePermissionChange(index, "sectionName", value)
                   }
-                  filterOption={false}
+                  filterOption={(input, option) =>
+                    (option?.value ?? "").toLowerCase().includes(input.toLowerCase())
+                  }
                 >
-                  {sectionOptions.map((item) => (
-                    <Option key={item._id} value={item.name}>
-                      {item.name}
+                  {AVAILABLE_SECTIONS.map((item) => (
+                    <Option key={item} value={item}>
+                      {item}
                     </Option>
                   ))}
                 </Select>

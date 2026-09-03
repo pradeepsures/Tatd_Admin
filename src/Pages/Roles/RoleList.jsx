@@ -194,13 +194,13 @@ export default function skillList() {
     return null;
   }
 
-  // if (!hasPermission("Role", "view")) {
-  //   return (
-  //     <div className="text-center mt-20 text-red-500 text-lg">
-  //       You don’t have permission to view this page
-  //     </div>
-  //   );
-  // }
+  if (!hasPermission("Role", "read")) {
+    return (
+      <div className="text-center mt-20 text-red-500 text-lg">
+        You don’t have permission to view this page
+      </div>
+    );
+  }
 
   if (loading) return <Loader />;
 

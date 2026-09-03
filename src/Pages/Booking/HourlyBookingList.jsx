@@ -33,6 +33,13 @@ import {
 
 const { Option } = Select;
 
+const formatText = (text) => {
+  if (!text) return "-";
+  return text
+    .replace(/[_-]/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
 export default function HourlyBookingList() {
   const navigate = useNavigate();
 
@@ -306,6 +313,7 @@ export default function HourlyBookingList() {
               <StyledTableCell>BOOKING NO</StyledTableCell>
               <StyledTableCell>CUSTOMER INFO</StyledTableCell>
               <StyledTableCell>DETAILS</StyledTableCell>
+              <StyledTableCell>TRIP TYPE</StyledTableCell>
               <StyledTableCell>TRIP STATUS</StyledTableCell>
               <StyledTableCell>PAYMENT</StyledTableCell>
               <StyledTableCell>CHAUFFEUR INFO</StyledTableCell>
@@ -323,18 +331,31 @@ export default function HourlyBookingList() {
               data.map((row, index) => (
                 <TableRow key={row._id}>
                   <TableCell>{(page - 1) * rowsPerPage + index + 1}</TableCell>
-                  <TableCell className="font-semibold text-gray-800">{row.bookingNumber}</TableCell>
+                  <TableCell className="font-semibold text-gray-800 break-words">{row.bookingNumber}</TableCell>
                   <TableCell>
-                    <div className="font-medium text-gray-800">{row.user?.name || row.travellerName || "_"}</div>
-                    <div className="text-xs text-gray-500">{row.user?.phone || row.travellerPhone || "_"}</div>
+                    <div className="font-medium text-gray-800 break-words">{row.user?.name || row.travellerName || "_"}</div>
+                    <div className="text-[10px] sm:text-xs text-gray-500 break-all">{row.user?.phone || row.travellerPhone || "_"}</div>
                   </TableCell>
                   <TableCell>
-                    <div className="text-xs font-semibold text-blue-600">Hours: {row.bookedHours} Hrs</div>
-                    <div className="text-xs text-gray-500 mt-1">Pickup: {row.pickup?.address}</div>
-                    <div className="text-xs text-gray-400">Scheduled: {row.scheduledAt ? new Date(row.scheduledAt).toLocaleString() : "-"}</div>
+                    <div className="text-[10px] sm:text-xs font-semibold text-blue-600 break-words">Hours: {row.bookedHours} Hrs</div>
+                    <div className="text-[10px] sm:text-xs text-gray-500 mt-1 break-words">Pickup: {row.pickup?.address}</div>
+                    <div className="text-[10px] sm:text-xs text-gray-400 break-words">Scheduled: {row.scheduledAt ? new Date(row.scheduledAt).toLocaleString() : "-"}</div>
                   </TableCell>
                   <TableCell>
-                    <span className={`px-2 py-1 rounded-full text-xs font-semibold uppercase ${
+                    <span
+                      className={`inline-block max-w-full px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold leading-tight break-words ${
+                        row.tripType === "round_trip"
+                          ? "bg-blue-100 text-blue-700"
+                          : row.tripType === "one_way"
+                            ? "bg-purple-100 text-purple-700"
+                            : "bg-slate-100 text-slate-700"
+                      }`}
+                    >
+                      {formatText(row.tripType)}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className={`inline-block max-w-full px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase leading-tight ${
                       row.tripStatus === "completed" ? "bg-green-100 text-green-800" :
                       row.tripStatus === "cancelled" ? "bg-red-100 text-red-800" :
                       row.tripStatus === "in_progress" ? "bg-blue-100 text-blue-800" : "bg-yellow-100 text-yellow-800"

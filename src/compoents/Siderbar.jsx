@@ -22,7 +22,7 @@ const pathMatches = (link, pathname) =>
   pathname === link || (link !== "/home" && pathname.startsWith(`${link}/`)) || pathname.startsWith(`${link}?`);
 
 const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
-  const { logout, auth } = useAuth();
+  const { logout, auth, hasPermission } = useAuth();
   const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const fullPath = pathname + search;
@@ -113,12 +113,17 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
                 </p>
               )}
               <div className="space-y-0.5">
-                {section.items.map((item, ii) => {
+                {section.items
+                  .filter((item) => !item.permissionKey || hasPermission(item.permissionKey, "read"))
+                  .map((item, ii) => {
                   const key = `${si}-${ii}`;
                   const Icon = item.icon;
 
                   if (item.children) {
-                    const isChildActive = item.children.some(
+                    const visibleChildren = item.children.filter((child) => !child.permissionKey || hasPermission(child.permissionKey, "read"));
+                    if (visibleChildren.length === 0) return null;
+
+                    const isChildActive = visibleChildren.some(
                       (c) => pathMatches(c.link, fullPath) || pathMatches(c.link, pathname)
                     );
                     return (
@@ -140,7 +145,7 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
                         </button>
                         {open && expanded[key] && (
                           <div className="ml-4 mt-0.5 space-y-0.5 border-l border-slate-700 pl-2">
-                            {item.children.map((child) => {
+                            {visibleChildren.map((child) => {
                               const active =
                                 pathMatches(child.link, fullPath) || pathMatches(child.link, pathname);
                               return (

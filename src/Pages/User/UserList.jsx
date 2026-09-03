@@ -78,7 +78,6 @@ export default function AdminList() {
   const [isExporting, setIsExporting] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
 
@@ -94,7 +93,6 @@ export default function AdminList() {
         endDate: endDate ? formatLocalDate(endDate) : undefined,
         zeroBalance: zeroBalance || undefined,
         notZeroBalance: notZeroBalance || undefined,
-        lang: selectedLanguage,
       };
 
       const result = await getAllAdmins(payload);
@@ -141,7 +139,6 @@ export default function AdminList() {
     endDate,
     zeroBalance,
     notZeroBalance,
-    selectedLanguage,
 
   ]);
 
@@ -354,26 +351,6 @@ export default function AdminList() {
         </div>
 
         <div className="flex flex-wrap gap-3">
-
-       <Select
-  value={selectedLanguage}
-  onChange={(e) => {
-    setSelectedLanguage(e.target.value);
-    setPage(1);
-  }}
-  size="small"
-  sx={{ minWidth: 120 }}
->
-  <MenuItem value="en">English</MenuItem>
-  <MenuItem value="hi">Hindi</MenuItem>
-  <MenuItem value="pa">Punjabi</MenuItem>
-  <MenuItem value="bn">Bengali</MenuItem>
-  <MenuItem value="ta">Tamil</MenuItem>
-  <MenuItem value="te">Telugu</MenuItem>
-  <MenuItem value="gu">Gujarati</MenuItem>
-  <MenuItem value="mr">Marathi</MenuItem>
-</Select>
-
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleFilterMenuOpen}

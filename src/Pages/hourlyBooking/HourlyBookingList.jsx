@@ -511,7 +511,7 @@ export default function HourlyBookingList() {
                     </div>
                   </StyledTableCell>
 
-                  {/* TRIP + FARE */}
+                  {/* TRIP TYPE */}
                   <StyledTableCell>
                     <div className="space-y-1.5 w-full">
                       <span
@@ -523,12 +523,8 @@ export default function HourlyBookingList() {
                           }
                   `}
                       >
-                        {formatText(booking.tripType)}
+                        {formatText(booking.tripType) || "-"}
                       </span>
-
-                      {/* <div className="font-semibold text-sm text-gray-800">
-                        ₹{booking.estimatedFare}
-                      </div> */}
                     </div>
                   </StyledTableCell>
 

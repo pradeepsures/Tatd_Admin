@@ -328,7 +328,7 @@ export default function CitiesList() {
 
                 <StyledTableCell>{row.name}</StyledTableCell>
 
-                <StyledTableCell>{row.state?.name}</StyledTableCell>
+                <StyledTableCell>{row.state?.name.name}</StyledTableCell>
 
                 <StyledTableCell>
                   <span

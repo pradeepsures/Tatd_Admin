@@ -7,6 +7,24 @@ import Breaker from "../../../src/compoents/Breaker";
 import { GenericApi } from "../../Services/GenericApi";
 import { INDIAN_STATES } from "../../utils/constants";
 
+const normalizeSelectValue = (value) => {
+  if (value === null || value === undefined || value === "") return "";
+  if (typeof value === "object") return value._id || value.id || "";
+  return value;
+};
+
+const normalizeFormData = (data = {}) => {
+  const normalized = { ...data };
+
+  Object.keys(normalized).forEach((key) => {
+    if (key === "state" || key === "city") {
+      normalized[key] = normalizeSelectValue(normalized[key]);
+    }
+  });
+
+  return normalized;
+};
+
 export default function DynamicForm({ config, readOnly = false }) {
   const { title, endpoint, fields, basePath } = config;
   const navigate = useNavigate();
@@ -103,7 +121,7 @@ export default function DynamicForm({ config, readOnly = false }) {
       setLoading(true);
       const result = await GenericApi.fetchDetails(endpoint, id);
       if (result?.status) {
-        setFormData(result.data || {});
+        setFormData(normalizeFormData(result.data || {}));
       } else {
         toast.error(result?.message || `Failed to fetch ${title} details.`);
         navigate(basePath);

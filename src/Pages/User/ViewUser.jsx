@@ -87,6 +87,20 @@ const ViewUser = () => {
             </div>
           </div>
 
+          {user.planCounts && (
+            <div className="p-6 border-b border-gray-100">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">Plan Counts</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {Object.entries(user.planCounts).map(([plan, count]) => (
+                  <div key={plan} className="bg-slate-50 rounded-lg p-4 text-center border border-slate-200">
+                    <p className="text-xs uppercase tracking-wide text-gray-500">{plan}</p>
+                    <p className="text-2xl font-bold text-slate-800 mt-2">{count ?? 0}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="bg-gray-50 rounded-lg p-4">
               <span className="text-sm text-gray-500">Email</span>
@@ -116,6 +130,7 @@ const ViewUser = () => {
                   <thead>
                     <tr className="text-left text-gray-500 border-b">
                       <th className="pb-2 pr-4">Booking #</th>
+                      <th className="pb-2 pr-4">Plan</th>
                       <th className="pb-2 pr-4">Status</th>
                       <th className="pb-2 pr-4">Payment</th>
                       <th className="pb-2 pr-4">Amount</th>
@@ -130,9 +145,10 @@ const ViewUser = () => {
                             {trip.bookingNumber || trip._id.slice(-6)}
                           </Link>
                         </td>
-                        <td className="py-3 pr-4 capitalize">{trip.tripStatus || "—"}</td>
+                        <td className="py-3 pr-4">{trip.planType || "—"}</td>
+                        <td className="py-3 pr-4 capitalize">{trip.overallStatus || trip.tripStatus || "—"}</td>
                         <td className="py-3 pr-4 capitalize">{trip.payment?.status || trip.paymentStatus || "—"}</td>
-                        <td className="py-3 pr-4">₹{trip.payment?.paidAmount || trip.estimatedFare || 0}</td>
+                        <td className="py-3 pr-4">₹{trip.payment?.paidAmount ?? trip.estimatedFare ?? 0}</td>
                         <td className="py-3">{trip.createdAt ? new Date(trip.createdAt).toLocaleDateString("en-IN") : "—"}</td>
                       </tr>
                     ))}

@@ -26,6 +26,32 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:last-child td, &:last-child th": { border: 0 },
 }));
 
+const getNestedValue = (obj, path) => {
+  if (!obj || typeof obj !== "object") return "";
+  if (!path) return obj;
+
+  const keys = path.split(".");
+  let current = obj;
+
+  for (const key of keys) {
+    if (current == null || !(key in current)) return "";
+    current = current[key];
+  }
+
+  return current;
+};
+
+const getDisplayValue = (row, key) => {
+  const value = getNestedValue(row, key);
+
+  if (value === null || value === undefined || value === "") return "N/A";
+  if (typeof value === "object") {
+    return value.name || value._id || value.label || "N/A";
+  }
+
+  return value;
+};
+
 export default function DynamicList({ config }) {
   const { title, endpoint, columns, permissions, basePath } = config;
   const { auth, hasPermission, loading: authLoading } = useAuth();
@@ -107,7 +133,7 @@ export default function DynamicList({ config }) {
     if (data.length < 1) return toast.error(`${title} list is empty!`);
     setIsExporting(true);
     const settings = { fileName: `Dvagoo_${title.replace(/\s+/g, '_')}`, extraLength: 3, writeMode: "writeFile", writeOptions: {}, RTL: false };
-    const exportColumns = columns.map(col => ({ label: col.label, value: (row) => row[col.key] || "" }));
+    const exportColumns = columns.map(col => ({ label: col.label, value: (row) => getDisplayValue(row, col.key) === "N/A" ? "" : getDisplayValue(row, col.key) }));
     exportColumns.unshift({ label: "ID", value: (row) => row._id || "" });
     
     try {
@@ -179,11 +205,11 @@ export default function DynamicList({ config }) {
                       {col.type === "image" ? (
                         <img src={getImageUrl(row[col.key])} alt={col.label} className="h-10 w-10 rounded-full object-cover shadow-sm" onError={(e) => e.target.src = "/assets/placeholder.png"} />
                       ) : col.type === "boolean" ? (
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${row[col.key] ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
-                          {row[col.key] ? "Yes" : "No"}
+                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${Boolean(getNestedValue(row, col.key)) ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                          {Boolean(getNestedValue(row, col.key)) ? "Yes" : "No"}
                         </span>
                       ) : (
-                        row[col.key] || "N/A"
+                        getDisplayValue(row, col.key)
                       )}
                     </StyledTableCell>
                   ))}

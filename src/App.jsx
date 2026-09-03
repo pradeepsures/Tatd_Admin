@@ -81,6 +81,8 @@ import PublicDeleteAccount from "./Pages/Public/PublicDeleteAccount";
 import RoleList from "./Pages/Roles/RoleList";
 import CreateRole from "./Pages/Roles/CreateRole";
 import UpdateRole from "./Pages/Roles/UpdateRole";
+import AdminStaffList from "./Pages/AdminStaff/AdminStaffList";
+import CreateAdminStaff from "./Pages/AdminStaff/CreateAdminStaff";
 import FaqList from "./Pages/FAQ/FaqList";
 import CreateFAQ from "./Pages/FAQ/CreateFaq";
 import UpdateFAQ from "./Pages/FAQ/UpdateFAQ";
@@ -180,6 +182,16 @@ const Unauthorized = () => (
   </div>
 );
 
+import { useAuth } from "./auth/AuthContext";
+const DashboardGuard = () => {
+  const { auth, hasPermission } = useAuth();
+  // If no Dashboard permission, default route becomes My Profile
+  if (auth.user && !hasPermission("Dashboard")) {
+    return <Navigate to="/home/my-profile" replace />;
+  }
+  return <Dashboard />;
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -213,7 +225,7 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <Dashboard /> },
+      { index: true, element: <DashboardGuard /> },
       // Profile
       { path: "my-profile", element: <ProfilePage /> },
       
@@ -272,6 +284,9 @@ const router = createBrowserRouter([
       { path: "role", element: <RoleList /> },
       { path: "role/createrole", element: <CreateRole /> },
       { path: "role/updaterole/:id", element: <UpdateRole /> },
+      
+      { path: "admin-staff", element: <AdminStaffList /> },
+      { path: "admin-staff/create", element: <CreateAdminStaff /> },
       
       // { path: "FAQ", element: <FaqList /> },
       // { path: "FAQ/createfaq", element: <CreateFAQ /> },
@@ -344,6 +359,8 @@ const router = createBrowserRouter([
 
 import { io } from "socket.io-client";
 
+import { eventBus } from "./utils/eventBus";
+
 const NOTIFICATION_SOUND = "https://actions.google.com/sounds/v1/alarms/beep_short.ogg";
 
 const App = () => {
@@ -364,6 +381,7 @@ const App = () => {
       toast.success(data.title ? `${data.title}\n${data.body}` : (data.body || "New Notification!"), {
         duration: 5000,
       });
+      eventBus.emit("new_notification", data);
     });
 
     return () => {
