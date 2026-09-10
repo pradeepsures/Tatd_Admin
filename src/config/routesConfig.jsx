@@ -25,26 +25,8 @@ export const NAV_SECTIONS = [
     ],
   },
   {
-    label: "Operations",
+    label: "Bookings & Trips",
     items: [
-      {
-        name: "Drivers",
-        icon: MdOutlinePeople,
-        permissionKey: "Driver",
-        children: [
-          { name: "All Drivers", link: "/home/driver", permissionKey: "Driver" },
-          { name: "Pending Verification", link: "/home/driver?verified=pending", permissionKey: "Driver" },
-        ],
-      },
-      {
-        name: "Fleet",
-        icon: MdOutlineDirectionsCar,
-        permissionKey: "Vehicle",
-        children: [
-          { name: "Vehicle Preferences", link: "/home/VehiclePreference", permissionKey: "Vehicle" },
-          { name: "Preference Categories", link: "/home/VehiclePreferenceCategory", permissionKey: "Vehicle" },
-        ],
-      },
       {
         name: "Trips & Assign",
         icon: MdOutlineAssignment,
@@ -58,18 +40,40 @@ export const NAV_SECTIONS = [
           { name: "Trip Cancel Requests", link: "/home/trip-cancel-requests", permissionKey: "Booking" },
         ],
       },
-
     ],
   },
   {
-    label: "Customers & Staff",
+    label: "Drivers & Fleet",
+    items: [
+      {
+        name: "Drivers",
+        icon: MdOutlinePeople,
+        permissionKey: "Driver",
+        children: [
+          { name: "All Drivers", link: "/home/driver", permissionKey: "Driver" },
+          { name: "Pending Verification", link: "/home/driver?verified=pending", permissionKey: "Driver" },
+        ],
+      },
+      {
+        name: "Fleet Management",
+        icon: MdOutlineDirectionsCar,
+        permissionKey: "Vehicle",
+        children: [
+          { name: "Vehicle Preferences", link: "/home/VehiclePreference", permissionKey: "Vehicle" },
+          { name: "Preference Categories", link: "/home/VehiclePreferenceCategory", permissionKey: "Vehicle" },
+        ],
+      },
+    ],
+  },
+  {
+    label: "Users & Members",
     items: [
       { name: "App Users", link: "/home/users", icon: MdOutlinePerson, permissionKey: "User" },
       { name: "Membership Plans", link: "/home/membership", icon: MdOutlinePeople, permissionKey: "Membership" },
     ],
   },
   {
-    label: "Business & Pricing",
+    label: "Pricing & Fares",
     items: [
       {
         name: "Pricing Config",
@@ -84,12 +88,12 @@ export const NAV_SECTIONS = [
           { name: "Hourly Packages", link: "/home/hourlyPackages", permissionKey: "HourlyPackages" },
         ],
       },
-      { name: "Support & Complaints", link: "/home/complaint", icon: MdOutlineSupportAgent, permissionKey: "Complaint" },
     ],
   },
   {
-    label: "Geography & Locations",
+    label: "Support & Geo",
     items: [
+      { name: "Support & Complaints", link: "/home/complaint", icon: MdOutlineSupportAgent, permissionKey: "Complaint" },
       {
         name: "Regions & Zones",
         icon: FaMapMarkedAlt,
@@ -105,7 +109,7 @@ export const NAV_SECTIONS = [
     label: "Configuration",
     items: [
       {
-        name: "Settings",
+        name: "System Settings",
         icon: MdOutlineSettings,
         permissionKey: "Settings",
         children: [
@@ -121,7 +125,7 @@ export const NAV_SECTIONS = [
         ],
       },
       {
-        name: "CMS",
+        name: "CMS (Content)",
         icon: FaRegBuilding,
         permissionKey: "CMS",
         children: [

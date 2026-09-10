@@ -166,3 +166,47 @@ export const getDriverBooking = async (id) => {
     throw err;
   }
 };
+
+// ✅ GET DRIVER WALLET TRANSACTIONS
+export const getDriverWalletTransactions = async (id) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${id}/wallet-transactions`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Failed to fetch transactions");
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Failed to fetch transactions");
+    throw err;
+  }
+};
+
+// ✅ SETTLE DRIVER WALLET
+export const settleDriverWallet = async (id, data) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${id}/settle-wallet`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Failed to settle wallet");
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Failed to settle wallet");
+    throw err;
+  }
+};

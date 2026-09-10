@@ -75,6 +75,15 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
       : [{ title: "", description: "" }]
   );
 
+  // Dynamic Benefits
+  const [benefits, setBenefits] = useState({
+    discountType: initialData.benefits?.discountType || "none",
+    discountValue: initialData.benefits?.discountValue || 0,
+    zeroCancellationFee: initialData.benefits?.zeroCancellationFee || false,
+    freeRidesPerMonth: initialData.benefits?.freeRidesPerMonth || 0,
+    priorityDriverAssignment: initialData.benefits?.priorityDriverAssignment || false,
+  });
+
   // Image Cropper State
   const [imageSrc, setImageSrc] = useState(null);
   const [croppedImageBlob, setCroppedImageBlob] = useState(null);
@@ -96,6 +105,14 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
     const newFeatures = [...features];
     newFeatures[index][field] = value;
     setFeatures(newFeatures);
+  };
+
+  const handleBenefitChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setBenefits((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
   const addFeature = () => {
@@ -165,6 +182,7 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
     if (formData.tag) payload.append("tag", formData.tag);
     payload.append("status", formData.status);
     payload.append("features", JSON.stringify(validFeatures));
+    payload.append("benefits", JSON.stringify(benefits));
 
     if (croppedImageBlob) {
       payload.append("image", croppedImageBlob, "plan-image.jpg");
@@ -315,9 +333,83 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
             </div>
           </div>
 
-          {/* Section 4: Features */}
+          {/* Section 4: Dynamic Benefits */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 border-t pt-6">Plan Features</h3>
+            <h3 className="text-lg font-semibold text-gray-700 mb-4 border-t pt-6">Dynamic Benefits</h3>
+            <p className="text-sm text-gray-500 mb-4">These values will be automatically applied by the system.</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Discount Type</label>
+                <select
+                  name="discountType"
+                  value={benefits.discountType}
+                  onChange={handleBenefitChange}
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                >
+                  <option value="none">None</option>
+                  <option value="percentage">Percentage (%)</option>
+                  <option value="flat">Flat Amount (₹)</option>
+                </select>
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Discount Value</label>
+                <input
+                  type="number"
+                  name="discountValue"
+                  value={benefits.discountValue}
+                  onChange={handleBenefitChange}
+                  min="0"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. 5 or 50"
+                  disabled={benefits.discountType === "none"}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Free Rides Per Month</label>
+                <input
+                  type="number"
+                  name="freeRidesPerMonth"
+                  value={benefits.freeRidesPerMonth}
+                  onChange={handleBenefitChange}
+                  min="0"
+                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  placeholder="e.g. 2"
+                />
+              </div>
+
+              <div className="flex items-center mt-6">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="zeroCancellationFee"
+                    checked={benefits.zeroCancellationFee}
+                    onChange={handleBenefitChange}
+                    className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-700 font-medium text-sm">Zero Cancellation Fee</span>
+                </label>
+              </div>
+
+              <div className="flex items-center mt-6">
+                <label className="flex items-center space-x-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="priorityDriverAssignment"
+                    checked={benefits.priorityDriverAssignment}
+                    onChange={handleBenefitChange}
+                    className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                  />
+                  <span className="text-gray-700 font-medium text-sm">Priority Driver Assignment</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          {/* Section 5: Features */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-700 mb-4 border-t pt-6">Visual Features (Text)</h3>
             <div className="space-y-4">
               {features.map((feature, index) => (
                 <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-lg border">

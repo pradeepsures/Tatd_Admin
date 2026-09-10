@@ -46,7 +46,7 @@ export const createMembershipPlan = async (formData) => {
 export const updateMembershipPlan = async (id, formData) => {
   try {
     const token = getToken();
-    const res = await axios.put(`${API_URL}/${id}`, formData, {
+    const res = await axios.patch(`${API_URL}/${id}`, formData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",

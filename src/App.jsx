@@ -28,6 +28,7 @@ import CreateDriver from "./Pages/Driver/CreateDriver";
 import DriverDetail from "./Pages/Driver/DriverDetails";
 import UpdateDriver from "./Pages/Driver/DriverUpdate";
 import DriverBookingDetails from "./Pages/Driver/DriverAllTripDetails";
+import DriverLedger from "./Pages/Driver/DriverLedger";
 
 // Vehicles
 import VehicleList from "./Pages/Vehicle/VehicleList";
@@ -241,6 +242,7 @@ const router = createBrowserRouter([
       { path: "driver/driverView/:id", element: <DriverDetail /> },
       { path: "driver/driverBookingView/:id", element: <DriverBookingDetails /> },
       { path: "driver/updateDriver/:id", element: <UpdateDriver /> },
+      { path: "driver/ledger/:id", element: <DriverLedger /> },
       
       // Vehicles
       { path: "vehicle", element: <VehicleList /> },

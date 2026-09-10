@@ -16,7 +16,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import toast from "react-hot-toast";
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon, CurrencyRupeeIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 import { Modal } from "antd";
 import xlsx from "json-as-xlsx";
@@ -82,7 +82,7 @@ export default function DriverList() {
         page,
         limit: rowsPerPage,
         search: searchQuery,
-        isVerified: appliedFilters.isVerified || undefined,
+        isVerified: showUnverifiedOnly ? false : (appliedFilters.isVerified || undefined),
         isOnline: appliedFilters.isOnline || undefined,
         isAvailable: appliedFilters.isAvailable || undefined,
         startDate: appliedFilters.startDate || undefined,
@@ -100,7 +100,7 @@ export default function DriverList() {
     } finally {
       setLoading(false);
     }
-  }, [page, searchQuery, appliedFilters]);
+  }, [page, searchQuery, appliedFilters, showUnverifiedOnly]);
 
   useEffect(() => {
     fetchDrivers();
@@ -449,6 +449,7 @@ export default function DriverList() {
                             <StyledTableCell>STATUS</StyledTableCell>
 
                             <StyledTableCell>VERIFIED</StyledTableCell>
+                            <StyledTableCell>WALLET</StyledTableCell>
 
                             <StyledTableCell align="center">Actions</StyledTableCell>
 
@@ -552,6 +553,13 @@ export default function DriverList() {
 
                                     </TableCell>
 
+                                    {/* WALLET */}
+                                    <TableCell>
+                                        <span className={`font-semibold ${row.walletBalance < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                            ₹{row.walletBalance || 0}
+                                        </span>
+                                    </TableCell>
+
                                     {/* ACTIONS */}
                                     <TableCell align="center">
                                         <IconButton
@@ -611,6 +619,17 @@ export default function DriverList() {
                                                     View Trips
                                                 </MenuItem>
                                             )}
+                                            {hasPermission(SECTION, "read") && (
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        navigate(`ledger/${row.id}`);
+                                                        handleActionClose();
+                                                    }}
+                                                >
+                                                    <CurrencyRupeeIcon className="h-5 w-5 text-yellow-600 mr-2" />
+                                                    Wallet Ledger
+                                                </MenuItem>
+                                            )}
                                             {hasPermission(SECTION, "delete") && (
                                                 <MenuItem
                                                     onClick={() => {
@@ -625,9 +644,7 @@ export default function DriverList() {
                                             )}
                                         </Menu>
                                     </TableCell>
-
                                 </TableRow>
-
                             ))
 
                         )}

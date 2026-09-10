@@ -138,7 +138,7 @@ useEffect(() => {
             Booking Details
           </h2>
 
-          {data?.driverResponse?.status === "pending" && (
+          {data?.driverResponse?.status === "pending" && data?.overallStatus !== "completed" && (
             <button
               onClick={() => setShowReassignModal(true)}
               className="bg-red-600 text-white px-5 py-2 rounded-lg shadow"
