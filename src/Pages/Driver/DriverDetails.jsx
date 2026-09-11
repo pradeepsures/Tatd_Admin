@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getSingleDriver, updateDriver } from "../../Services/DriverApi";
+import { getSingleDriver, updateDriver, getSingleDriverBankDetails, reverifyBankDetails } from "../../Services/DriverApi";
 import Loader from "../../compoents/Loader";
 
 export default function DriverDetail() {
@@ -9,7 +9,9 @@ export default function DriverDetail() {
   const navigate = useNavigate();
 
   const [driver, setDriver] = useState(null);
+  const [bankDetails, setBankDetails] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [bankLoading, setBankLoading] = useState(false);
 
   const downloadImage = async (url, filename) => {
     if (!url) {
@@ -50,6 +52,34 @@ export default function DriverDetail() {
     }
   };
 
+  const fetchBankDetails = async () => {
+    try {
+      setBankLoading(true);
+      const result = await getSingleDriverBankDetails(id);
+      if (result?.status) {
+        setBankDetails(result.data);
+      }
+    } catch (err) {
+      // It's possible the driver hasn't added bank details yet.
+      console.log("No bank details found");
+    } finally {
+      setBankLoading(false);
+    }
+  };
+
+  const handleReverifyBank = async () => {
+    try {
+      toast.loading("Reverifying IFSC code...", { id: "reverify" });
+      const result = await reverifyBankDetails(id);
+      if (result?.status) {
+        toast.success("Bank details reverified", { id: "reverify" });
+        fetchBankDetails(); // refresh details
+      }
+    } catch (error) {
+      toast.error("Failed to reverify bank details", { id: "reverify" });
+    }
+  };
+
   const handleVerify = async () => {
     try {
       const formData = new FormData();
@@ -67,7 +97,10 @@ export default function DriverDetail() {
   };
 
   useEffect(() => {
-    if (id) fetchDriver();
+    if (id) {
+      fetchDriver();
+      fetchBankDetails();
+    }
   }, [id]);
 
   if (loading) return <Loader />;
@@ -374,6 +407,87 @@ export default function DriverDetail() {
             </span>
           ))}
         </div>
+      </div>
+
+      {/* BANK DETAILS */}
+      <div className="bg-white p-5 rounded-xl shadow mt-6">
+        <div className="flex justify-between items-center mb-4">
+          <h4 className="font-semibold text-lg">Bank Details</h4>
+          {bankDetails && (
+            <button
+              onClick={handleReverifyBank}
+              disabled={bankLoading}
+              className="bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 text-sm font-medium"
+            >
+              {bankLoading ? "Verifying..." : "Reverify IFSC"}
+            </button>
+          )}
+        </div>
+
+        {bankLoading && !bankDetails ? (
+          <p className="text-gray-500">Loading bank details...</p>
+        ) : bankDetails ? (
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-gray-500 text-sm">Account Holder</p>
+              <p className="font-medium">{bankDetails.accountHolderName}</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Account Number</p>
+              <div className="flex items-center gap-2">
+                <p className="font-medium tracking-wider">{bankDetails.accountNumber}</p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(bankDetails.accountNumber);
+                    toast.success("Account number copied!");
+                  }}
+                  className="text-gray-400 hover:text-gray-700"
+                  title="Copy Account Number"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" />
+                    <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">IFSC Code</p>
+              <p className="font-medium uppercase">{bankDetails.ifscCode}</p>
+            </div>
+            <div>
+              <p className="text-gray-500 text-sm">Status</p>
+              <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${bankDetails.isVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                {bankDetails.isVerified ? "Verified ✅" : "Not Verified ❌"}
+              </span>
+            </div>
+            {bankDetails.bankName && (
+              <div>
+                <p className="text-gray-500 text-sm">Bank Name</p>
+                <p className="font-medium">{bankDetails.bankName}</p>
+              </div>
+            )}
+            {bankDetails.branchName && (
+              <div>
+                <p className="text-gray-500 text-sm">Branch</p>
+                <p className="font-medium">{bankDetails.branchName}</p>
+              </div>
+            )}
+            {bankDetails.upiId && (
+              <div>
+                <p className="text-gray-500 text-sm">UPI ID</p>
+                <p className="font-medium">{bankDetails.upiId}</p>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg flex items-center gap-3 text-yellow-800">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <p className="font-medium">Bank details not added — payout cannot be processed for this driver.</p>
+          </div>
+        )}
       </div>
 
       {/* STATS */}
