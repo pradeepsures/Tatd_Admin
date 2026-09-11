@@ -1,15 +1,19 @@
 import toast from 'react-hot-toast';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:9060";
 
 // ────────────────────────────────────────────────
 // Get Hourly Pricing
 // ────────────────────────────────────────────────
-export const getHourlyPricing = async () => {
+export const getHourlyPricing = async ({ page = 1, limit = 10, state, city } = {}) => {
   const token = localStorage.getItem('token');
 
   try {
-    const res = await fetch(`${BASE_URL}/api/admin/hourlyPricing`, {
+    let url = `${BASE_URL}/api/admin/hourlyPricing?page=${page}&limit=${limit}`;
+    if (state) url += `&state=${state}`;
+    if (city) url += `&city=${city}`;
+
+    const res = await fetch(url, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${token}`,

@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:9060";
 
 export const createDriverApi = async (formData) => {
   const token = localStorage.getItem("token");
@@ -55,33 +55,9 @@ export const getAllDrivers = async ({
 
         return await res.json();
 
-<<<<<<< HEAD
-//   } catch (err) {
-//     toast.error(err.message || "Failed to fetch drivers");
-//     throw err;
-//   }
-
-// };
-export const getAllDrivers = async ({ page, rowsPerPage, searchQuery, isVerified }) => {
-
-  const token = localStorage.getItem("token");
-
-  try {
-
-    let url = `${BASE_URL}/api/admin/drivers?page=${page}&limit=${rowsPerPage}`;
-
-    if (searchQuery) {
-      url += `&search=${encodeURIComponent(searchQuery)}`;
-    }
-    if (isVerified === false) {
-      url += `&isVerified=false`;
-    } else if (isVerified === true) {
-      url += `&isVerified=true`;
-=======
     } catch (err) {
         toast.error(err.message || "Failed to fetch drivers");
         throw err;
->>>>>>> 4c448d3b85c64ab16592eaa9d5b3f1ba21dd9e64
     }
 };
 
@@ -187,6 +163,97 @@ export const getDriverBooking = async (id) => {
 
   } catch (err) {
     toast.error(err.message || "Error fetching booking details");
+    throw err;
+  }
+};
+
+// ✅ GET DRIVER WALLET TRANSACTIONS
+export const getDriverWalletTransactions = async (id) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${id}/wallet-transactions`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Failed to fetch transactions");
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Failed to fetch transactions");
+    throw err;
+  }
+};
+
+// ✅ SETTLE DRIVER WALLET
+export const settleDriverWallet = async (id, data) => {
+  const token = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${id}/settle-wallet`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "Failed to settle wallet");
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Failed to settle wallet");
+    throw err;
+  }
+};
+
+// --- DRIVER BANK DETAILS ---
+
+export const getDriverBankDetailsList = async (page = 1, limit = 10, status = "") => {
+  const token = localStorage.getItem("token");
+  try {
+    let url = `${BASE_URL}/api/admin/drivers/bank-details/list?page=${page}&limit=${limit}`;
+    if (status) url += `&status=${status}`;
+
+    const res = await fetch(url, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return await res.json();
+  } catch (err) {
+    toast.error(err.message || "Failed to fetch driver bank details list");
+    throw err;
+  }
+};
+
+export const getSingleDriverBankDetails = async (driverId) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${driverId}/bank-details`, {
+      method: "GET",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return await res.json();
+  } catch (err) {
+    toast.error(err.message || "Failed to fetch bank details");
+    throw err;
+  }
+};
+
+export const reverifyBankDetails = async (driverId) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${driverId}/bank-details/reverify`, {
+      method: "PUT",
+      headers: { Authorization: `Bearer ${token}` }
+    });
+    return await res.json();
+  } catch (err) {
+    toast.error(err.message || "Failed to reverify bank details");
     throw err;
   }
 };

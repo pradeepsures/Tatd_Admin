@@ -1,5 +1,6 @@
 import React from 'react'
 import Profilelogo from "./Profilelogo"
+import NotificationBell from "./NotificationBell"
 import { HiMenuAlt3 } from "react-icons/hi";
 import { useAuth } from "../auth/AuthContext";
 
@@ -19,7 +20,7 @@ const Navbar = ({ onMenuClick }) => {
           <HiMenuAlt3 size={22} />
         </button>
         <div>
-          <h1 className="text-base font-semibold text-gray-800">Tatd Admin</h1>
+          <h1 className="text-base font-semibold text-gray-800">Dvagoo Admin</h1>
           <p className="hidden sm:block text-xs text-gray-500">
             {displayName}
             {auth?.user?.role?.name && (
@@ -30,7 +31,7 @@ const Navbar = ({ onMenuClick }) => {
       </div>
 
       <div className='flex shrink-0 items-center gap-4'>
-        {/* You can add notification bells or search icons here in the future */}
+        <NotificationBell />
         <div className="h-8 w-[1px] bg-gray-200 hidden sm:block"></div>
         <div className='scale-90 sm:scale-100'>
           <Profilelogo />

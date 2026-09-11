@@ -367,7 +367,7 @@ export default function RegionList() {
                 <StyledTableRow key={row.id}>
                   <StyledTableCell>{(page - 1) * rowsPerPage + index + 1}</StyledTableCell>
                   <StyledTableCell className="font-medium text-gray-800">{row.name || "—"}</StyledTableCell>
-                  <StyledTableCell className="text-gray-700">{row.state || "—"}</StyledTableCell>
+                  <StyledTableCell className="text-gray-700">{row.state?.name?.name || "—"}</StyledTableCell>
                   <StyledTableCell className="text-gray-700">{row.radiusKm != null ? `${row.radiusKm} km` : "—"}</StyledTableCell>
                   <StyledTableCell>
                     <span

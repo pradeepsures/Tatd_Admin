@@ -184,8 +184,6 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                     onChange={(e) => handleChange("bookingType", e.target.value)}
                 >
                     <option value="">Booking Type</option>
-                    <option value="one_way">One Way</option>
-                    <option value="round_trip">Round Trip</option>
                     <option value="hourly">Hourly</option>
                     <option value="intercity">Intercity</option>
                 </select>

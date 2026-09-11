@@ -1,4 +1,4 @@
-﻿import * as React from "react";
+import * as React from "react";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
@@ -332,7 +332,7 @@ export default function OutstationBookingList() {
                     </span>
                   </TableCell>
                   <TableCell>
-                    <div className="text-xs font-bold text-gray-800">â‚¹{row.estimatedFare}</div>
+                    <div className="text-xs font-bold text-gray-800">₹{row.estimatedFare}</div>
                     <span className={`text-[10px] font-bold uppercase ${row.paymentStatus === "paid" ? "text-green-600" : "text-orange-600"}`}>
                       {row.paymentStatus}
                     </span>

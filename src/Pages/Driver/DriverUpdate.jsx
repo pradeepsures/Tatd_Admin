@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Breaker from "../../compoents/Breaker";
 import { getSingleDriver, updateDriver } from "../../Services/DriverApi";
@@ -19,6 +19,12 @@ const UpdateDriver = () => {
 
   const [vehiclePrefs, setVehiclePrefs] = useState([]);
   const [vehicleCategories, setVehicleCategories] = useState([]);
+
+  const permAddressRef = useRef(null);
+  const currAddressRef = useRef(null);
+  const permAutocompleteRef = useRef(null);
+  const currAutocompleteRef = useRef(null);
+  const [scriptLoaded, setScriptLoaded] = useState(false);
 
   // Form state - same structure as create
   const [formData, setFormData] = useState({
@@ -146,6 +152,93 @@ const UpdateDriver = () => {
 
     fetchData();
   }, [id, navigate]);
+
+  // Load Google Maps Script
+  useEffect(() => {
+    const GOOGLE_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "AIzaSyAw5iIsWyZnq8Ejy8jLC2jcKvNRxI5Ll3w";
+    
+    if (window.google && window.google.maps && window.google.maps.places) {
+      setScriptLoaded(true);
+      return;
+    }
+
+    const existing = document.querySelector(`script[data-google-maps]`);
+    if (!existing) {
+      const s = document.createElement('script');
+      s.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_API_KEY}&libraries=places`;
+      s.async = true;
+      s.defer = true;
+      s.setAttribute('data-google-maps', 'true');
+      s.onload = () => setScriptLoaded(true);
+      document.head.appendChild(s);
+    } else {
+      existing.addEventListener('load', () => setScriptLoaded(true));
+    }
+  }, []);
+
+  const parseAddressComponents = (place, addressType) => {
+    let state = "";
+    let city = "";
+    let pincode = "";
+
+    if (place.address_components) {
+      for (const component of place.address_components) {
+        const types = component.types;
+        if (types.includes("administrative_area_level_1")) {
+          state = component.long_name;
+        }
+        if (types.includes("locality") || types.includes("administrative_area_level_2")) {
+          if (!city || types.includes("locality")) {
+            city = component.long_name;
+          }
+        }
+        if (types.includes("postal_code")) {
+          pincode = component.long_name;
+        }
+      }
+    }
+
+    const formattedAddress = place.formatted_address || place.name || "";
+
+    setFormData((prev) => ({
+      ...prev,
+      [addressType]: formattedAddress,
+      state: state || prev.state,
+      city: city || prev.city,
+      pincode: pincode || prev.pincode,
+    }));
+  };
+
+  useEffect(() => {
+    if (scriptLoaded && window.google && window.google.maps && window.google.maps.places) {
+      if (permAddressRef.current) {
+        permAutocompleteRef.current = new window.google.maps.places.Autocomplete(permAddressRef.current, { types: ['geocode'] });
+        permAutocompleteRef.current.setFields(['formatted_address', 'address_components', 'name']);
+        permAutocompleteRef.current.addListener('place_changed', () => {
+          const place = permAutocompleteRef.current.getPlace();
+          parseAddressComponents(place, "permanentAddress");
+        });
+      }
+
+      if (currAddressRef.current) {
+        currAutocompleteRef.current = new window.google.maps.places.Autocomplete(currAddressRef.current, { types: ['geocode'] });
+        currAutocompleteRef.current.setFields(['formatted_address', 'address_components', 'name']);
+        currAutocompleteRef.current.addListener('place_changed', () => {
+          const place = currAutocompleteRef.current.getPlace();
+          parseAddressComponents(place, "currentAddress");
+        });
+      }
+
+      return () => {
+        if (permAutocompleteRef.current && window.google && window.google.maps.event) {
+          window.google.maps.event.clearInstanceListeners(permAutocompleteRef.current);
+        }
+        if (currAutocompleteRef.current && window.google && window.google.maps.event) {
+          window.google.maps.event.clearInstanceListeners(currAutocompleteRef.current);
+        }
+      };
+    }
+  }, [scriptLoaded]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -464,19 +557,23 @@ const UpdateDriver = () => {
           <label className="ml-2 mt-5 font-normal block">
             Permanent Address
           </label>
-          <textarea
-            className="w-full h-20 mb-1 border rounded-xl pl-4 pt-2 border-gray-500 resize-none"
+          <input
+            ref={permAddressRef}
+            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+            type="text"
             name="permanentAddress"
-            placeholder="Permanent address"
+            placeholder="Search Permanent address"
             value={formData.permanentAddress}
             onChange={handleChange}
           />
 
           <label className="ml-2 mt-5 font-normal block">Current Address</label>
-          <textarea
-            className="w-full h-20 mb-1 border rounded-xl pl-4 pt-2 border-gray-500 resize-none"
+          <input
+            ref={currAddressRef}
+            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+            type="text"
             name="currentAddress"
-            placeholder="Current address"
+            placeholder="Search Current address"
             value={formData.currentAddress}
             onChange={handleChange}
           />

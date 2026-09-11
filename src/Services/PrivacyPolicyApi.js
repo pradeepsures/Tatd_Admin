@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL;
+const BASE_URL = import.meta.env.VITE_BASE_URL || "http://localhost:9060";
 
 export const getAllPrivacyPolicy = async ({ page, rowsPerPage, searchQuery, lang }) => {
   const token = localStorage.getItem("token");

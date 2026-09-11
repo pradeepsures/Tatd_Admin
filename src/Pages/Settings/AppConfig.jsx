@@ -19,7 +19,7 @@ export default function AppConfig() {
     try {
       setLoading(true);
       const res = await getAppConfig();
-      if (res?.status) {
+      if (res?.success || res?.status) {
         const data = res.data;
         setConfig(data);
         setSupportPhone(data.supportPhone || "");
@@ -41,19 +41,43 @@ export default function AppConfig() {
 
   const handleSave = async (e) => {
     e.preventDefault();
+
+    // Validations
+    if (supportPhone && !/^\+?[0-9]{10,15}$/.test(supportPhone.trim().replace(/\s+/g, ""))) {
+      toast.error("Please enter a valid Support Phone Number (10-15 digits)");
+      return;
+    }
+
+    if (sosNumber && !/^[0-9]{3,15}$/.test(sosNumber.trim())) {
+      toast.error("Please enter a valid SOS Number (3-15 digits)");
+      return;
+    }
+
+    if (supportEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(supportEmail.trim())) {
+      toast.error("Please enter a valid Support Email");
+      return;
+    }
+
+    if (appVersion && !/^\d+\.\d+\.\d+$/.test(appVersion.trim())) {
+      toast.error("App Version must be in format like 1.0.0");
+      return;
+    }
+
     try {
       setSaving(true);
       const payload = {
-        supportPhone,
-        supportEmail,
-        sosNumber,
+        supportPhone: supportPhone.trim(),
+        supportEmail: supportEmail.trim(),
+        sosNumber: sosNumber.trim(),
         maintenanceMode,
-        appVersion,
+        appVersion: appVersion.trim(),
       };
       const res = await updateAppConfig(payload);
-      if (res?.status) {
+      if (res?.success || res?.status) {
         toast.success("App Config updated successfully");
         setConfig(res.data);
+      } else {
+        toast.error(res?.message || "Failed to update config");
       }
     } catch (error) {
       toast.error("Failed to update App Config");
@@ -103,7 +127,7 @@ export default function AppConfig() {
               value={supportEmail}
               onChange={(e) => setSupportEmail(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
-              placeholder="support@tatd.in"
+              placeholder="support@dvagoo.in"
             />
           </div>
 

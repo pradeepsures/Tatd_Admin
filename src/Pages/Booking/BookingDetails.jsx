@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Card } from "@mui/material";
 import Loader from "../../compoents/Loader";
 import Breaker from "../../compoents/Breaker";
-import { getSingleBooking } from "../../Services/BookingApi";
+import { getSingleBooking, getOutstationBookingDetail, getHourlyBookingDetail, getWeeklyBookingDetail, getMonthlyBookingDetail } from "../../Services/BookingApi";
 import { Modal, Select } from "antd";
 // import { getAllDrivers } from "../../Services/DriverApi";
 import { getUnassignedDriversBySegment } from "../../Services/BookingApi";
@@ -37,6 +37,8 @@ const Section = ({ title, children }) => (
 export default function BookingDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const searchParams = new URLSearchParams(window.location.search);
+  const type = searchParams.get("type");
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -49,7 +51,18 @@ export default function BookingDetails() {
   const fetchDetails = async () => {
     try {
       setLoading(true);
-      const res = await getSingleBooking(id);
+      let res;
+      if (type === "Outstation") {
+        res = await getOutstationBookingDetail(id);
+      } else if (type === "Hourly") {
+        res = await getHourlyBookingDetail(id);
+      } else if (type === "Weekly") {
+        res = await getWeeklyBookingDetail(id);
+      } else if (type === "Monthly") {
+        res = await getMonthlyBookingDetail(id);
+      } else {
+        res = await getSingleBooking(id);
+      }
       if (res?.status) setData(res.data);
     } catch (err) {
       console.error(err);
@@ -125,7 +138,7 @@ useEffect(() => {
             Booking Details
           </h2>
 
-          {data?.driverResponse?.status === "pending" && (
+          {data?.driverResponse?.status === "pending" && data?.overallStatus !== "completed" && (
             <button
               onClick={() => setShowReassignModal(true)}
               className="bg-red-600 text-white px-5 py-2 rounded-lg shadow"

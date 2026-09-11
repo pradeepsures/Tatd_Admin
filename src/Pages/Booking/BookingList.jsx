@@ -405,7 +405,6 @@ export default function BookingList({
               <StyledTableCell>S.No</StyledTableCell>
               <StyledTableCell>BOOKING</StyledTableCell>
               <StyledTableCell>INFORMATION</StyledTableCell>
-              <StyledTableCell>BOOKING TYPE</StyledTableCell>
               <StyledTableCell>TRIP STATUS</StyledTableCell>
               <StyledTableCell>SEGMENT</StyledTableCell>
               <StyledTableCell>VEHICLE</StyledTableCell>
@@ -449,7 +448,6 @@ export default function BookingList({
                     </div>
                   </TableCell>
 
-                  <TableCell>{row.bookingType || "-"}</TableCell>
                   <TableCell>{row.tripStatus || "-"}</TableCell>
                   <TableCell>{row.segment?.name || "-"}</TableCell>
                   <TableCell>
