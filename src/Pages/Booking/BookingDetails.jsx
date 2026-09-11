@@ -13,16 +13,17 @@ import { toast } from "react-hot-toast";
 const { Option } = Select;
 
 // ✅ Field (thin divider)
-const Field = ({ label, value }) => (
-  <div className="flex justify-between items-center gap-4 py-3 border-b border-gray-100/80 last:border-b-0 hover:bg-blue-50/30 transition-colors px-2 rounded-lg">
-    <span className="text-gray-500 text-sm font-medium tracking-wide">{label}</span>
-    <span className="text-gray-900 text-sm font-semibold text-right break-words max-w-[60%]">
-      {value !== null && value !== undefined && value !== ""
-        ? value
-        : "N/A"}
-    </span>
-  </div>
-);
+const Field = ({ label, value }) => {
+  if (value === null || value === undefined || value === "" || value === "-") return null;
+  return (
+    <div className="flex justify-between items-center gap-4 py-3 border-b border-gray-100/80 last:border-b-0 hover:bg-blue-50/30 transition-colors px-2 rounded-lg">
+      <span className="text-gray-500 text-sm font-medium tracking-wide">{label}</span>
+      <span className="text-gray-900 text-sm font-semibold text-right break-words max-w-[60%]">
+        {value}
+      </span>
+    </div>
+  );
+};
 
 // ✅ Section
 const Section = ({ title, children }) => (
@@ -232,14 +233,6 @@ useEffect(() => {
           )}
         </Section>
 
-        {/* REGION */}
-        <Section title="Region & Segment">
-          <Field label="Segment" value={data.segment?.name} />
-          <Field label="Capacity" value={data.segment?.maxCapacity} />
-          <Field label="Region" value={data.region?.name} />
-          <Field label="State" value={data.region?.state} />
-          <Field label="Radius" value={data.region?.radiusKm} />
-        </Section>
 
         {/* PRICING SNAPSHOT */}
         <Section title="Pricing Snapshot">
