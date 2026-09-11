@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { Toaster } from "react-hot-toast";
 import {
   createBrowserRouter,
@@ -367,13 +367,15 @@ import { io } from "socket.io-client";
 
 import { eventBus } from "./utils/eventBus";
 
-const NOTIFICATION_SOUND = "https://actions.google.com/sounds/v1/alarms/beep_short.ogg";
+const NOTIFICATION_SOUND = "/noti.mp3";
 
 const App = () => {
+  const audioRef = useRef(null);
+
   useEffect(() => {
     const socketUrl = import.meta.env.VITE_BASE_URL?.replace('/api', '') || "http://localhost:9060";
     const socket = io(socketUrl, {
-      transports: ["websocket", "polling"]
+      transports: ["polling", "websocket"]
     });
 
     socket.on("connect", () => {
@@ -382,8 +384,9 @@ const App = () => {
     });
 
     socket.on("admin_notification", (data) => {
-      const audio = new Audio(NOTIFICATION_SOUND);
-      audio.play().catch(e => console.log("Audio auto-play blocked by browser:", e));
+      if (audioRef.current) {
+        audioRef.current.play().catch(e => console.log("Audio auto-play blocked by browser:", e));
+      }
       toast.success(data.title ? `${data.title}\n${data.body}` : (data.body || "New Notification!"), {
         duration: 5000,
       });
@@ -396,6 +399,7 @@ const App = () => {
   }, []);
   return (
     <>
+      <audio ref={audioRef} src={NOTIFICATION_SOUND} preload="auto" />
       <RouterProvider router={router} />
       <Toaster position="top-right" reverseOrder={false} />
     </>
