@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getSingleDriver, updateDriver, getSingleDriverBankDetails, reverifyBankDetails } from "../../Services/DriverApi";
+import { getSingleDriver, updateDriver, getSingleDriverBankDetails, reverifyBankDetails, adminAddUpdateBankDetails } from "../../Services/DriverApi";
 import Loader from "../../compoents/Loader";
 
 export default function DriverDetail() {
@@ -12,6 +12,9 @@ export default function DriverDetail() {
   const [bankDetails, setBankDetails] = useState(null);
   const [loading, setLoading] = useState(false);
   const [bankLoading, setBankLoading] = useState(false);
+  const [bankModalOpen, setBankModalOpen] = useState(false);
+  const [bankForm, setBankForm] = useState({ accountName: '', accountNumber: '', ifscCode: '' });
+  const [bankSubmitting, setBankSubmitting] = useState(false);
 
   const downloadImage = async (url, filename) => {
     if (!url) {
@@ -93,6 +96,29 @@ export default function DriverDetail() {
       }
     } catch (error) {
       toast.error("Failed to update verification status", { id: "verify" });
+    }
+  };
+
+  const handleBankSubmit = async (e) => {
+    e.preventDefault();
+    if (!bankForm.accountName || !bankForm.accountNumber || !bankForm.ifscCode) {
+      toast.error("Please fill all fields");
+      return;
+    }
+    try {
+      setBankSubmitting(true);
+      toast.loading("Verifying and saving bank details...", { id: "bankSubmit" });
+      const result = await adminAddUpdateBankDetails(id, bankForm);
+      if (result?.status) {
+        toast.success(result.message, { id: "bankSubmit" });
+        setBankModalOpen(false);
+        setBankForm({ accountName: '', accountNumber: '', ifscCode: '' });
+        fetchBankDetails();
+      }
+    } catch (error) {
+      toast.error(error.message || "Failed to update bank details", { id: "bankSubmit" });
+    } finally {
+      setBankSubmitting(false);
     }
   };
 
@@ -199,6 +225,9 @@ export default function DriverDetail() {
           </p>
           <p>
             <b>Gender:</b> {driver.gender}
+          </p>
+          <p>
+            <b>Completed Rides:</b> {driver.completedRidesCount || 0}
           </p>
         </div>
 
@@ -413,15 +442,23 @@ export default function DriverDetail() {
       <div className="bg-white p-5 rounded-xl shadow mt-6">
         <div className="flex justify-between items-center mb-4">
           <h4 className="font-semibold text-lg">Bank Details</h4>
-          {bankDetails && (
+          <div className="flex gap-2">
             <button
-              onClick={handleReverifyBank}
-              disabled={bankLoading}
-              className="bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 text-sm font-medium"
+              onClick={() => setBankModalOpen(true)}
+              className="bg-green-100 text-green-700 px-3 py-1 rounded hover:bg-green-200 text-sm font-medium"
             >
-              {bankLoading ? "Verifying..." : "Reverify IFSC"}
+              {bankDetails ? "Update Bank Details" : "Add Bank Details"}
             </button>
-          )}
+            {bankDetails && (
+              <button
+                onClick={handleReverifyBank}
+                disabled={bankLoading}
+                className="bg-blue-100 text-blue-700 px-3 py-1 rounded hover:bg-blue-200 text-sm font-medium"
+              >
+                {bankLoading ? "Verifying..." : "Reverify IFSC"}
+              </button>
+            )}
+          </div>
         </div>
 
         {bankLoading && !bankDetails ? (
@@ -509,6 +546,72 @@ export default function DriverDetail() {
           </h2>
         </div>
       </div>
+
+      {bankModalOpen && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+            <button 
+              onClick={() => setBankModalOpen(false)}
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-700"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            <h3 className="text-xl font-bold mb-4">{bankDetails ? "Update" : "Add"} Bank Details</h3>
+            <form onSubmit={handleBankSubmit} className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Account Holder Name</label>
+                <input 
+                  type="text" 
+                  required
+                  value={bankForm.accountName}
+                  onChange={(e) => setBankForm({...bankForm, accountName: e.target.value})}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  placeholder="e.g. Rahul Sharma"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+                <input 
+                  type="text" 
+                  required
+                  value={bankForm.accountNumber}
+                  onChange={(e) => setBankForm({...bankForm, accountNumber: e.target.value})}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  placeholder="Account Number"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">IFSC Code</label>
+                <input 
+                  type="text" 
+                  required
+                  value={bankForm.ifscCode}
+                  onChange={(e) => setBankForm({...bankForm, ifscCode: e.target.value.toUpperCase()})}
+                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  placeholder="e.g. SBIN0001234"
+                />
+              </div>
+              <div className="pt-2 flex justify-end gap-3">
+                <button 
+                  type="button" 
+                  onClick={() => setBankModalOpen(false)}
+                  className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded"
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  disabled={bankSubmitting}
+                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {bankSubmitting ? "Saving..." : "Save & Verify"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

@@ -13,25 +13,30 @@ import { toast } from "react-hot-toast";
 const { Option } = Select;
 
 // ✅ Field (thin divider)
-const Field = ({ label, value }) => (
-  <div className="flex justify-between gap-4 py-2 border-b border-gray-100">
-    <span className="text-gray-500 text-sm font-medium">{label}</span>
-    <span className="text-gray-800 text-sm text-right">
-      {value !== null && value !== undefined && value !== ""
-        ? value
-        : "N/A"}
-    </span>
-  </div>
-);
+const Field = ({ label, value }) => {
+  if (value === null || value === undefined || value === "" || value === "-") return null;
+  return (
+    <div className="flex justify-between items-center gap-4 py-3 border-b border-gray-100/80 last:border-b-0 hover:bg-blue-50/30 transition-colors px-2 rounded-lg">
+      <span className="text-gray-500 text-sm font-medium tracking-wide">{label}</span>
+      <span className="text-gray-900 text-sm font-semibold text-right break-words max-w-[60%]">
+        {value}
+      </span>
+    </div>
+  );
+};
 
 // ✅ Section
 const Section = ({ title, children }) => (
-  <Card className="p-6 shadow-sm rounded-xl">
-    <h3 className="text-lg font-semibold mb-4 text-gray-800">{title}</h3>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-2">
+  <div className="bg-white/90 backdrop-blur-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl">
+    <div className="flex items-center gap-3 mb-5 border-b border-gray-100 pb-3">
+      <h3 className="text-lg font-bold text-gray-800 bg-gradient-to-r from-indigo-700 to-blue-600 bg-clip-text text-transparent">
+        {title}
+      </h3>
+    </div>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-1">
       {children}
     </div>
-  </Card>
+  </div>
 );
 
 export default function BookingDetails() {
@@ -201,13 +206,11 @@ useEffect(() => {
 
         {/* LOCATION */}
         <Section title="Trip Location">
-
           {/* LEFT SIDE = PICKUP */}
           <div>
             <h3 className="text-sm font-semibold text-gray-700 mb-2">
               Pickup
             </h3>
-
             <Field label="Address" value={data.pickup?.address} />
             <Field
               label="Date"
@@ -216,39 +219,66 @@ useEffect(() => {
           </div>
 
           {/* RIGHT SIDE = DROP */}
-          <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
-              Drop
-            </h3>
-
-            <Field label="Address" value={data.dropoff?.address} />
-            <Field
-              label="Date"
-              value={data.tripEndAtIST || "-"}
-            />
-          </div>
-
+          {data.dropoff && (
+            <div>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">
+                Drop
+              </h3>
+              <Field label="Address" value={data.dropoff?.address} />
+              <Field
+                label="Date"
+                value={data.tripEndAtIST || "-"}
+              />
+            </div>
+          )}
         </Section>
 
-        {/* REGION */}
-        <Section title="Region & Segment">
-          <Field label="Segment" value={data.segment?.name} />
-          <Field label="Capacity" value={data.segment?.maxCapacity} />
-          <Field label="Region" value={data.region?.name} />
-          <Field label="State" value={data.region?.state} />
-          <Field label="Radius" value={data.region?.radiusKm} />
-        </Section>
 
         {/* PRICING SNAPSHOT */}
         <Section title="Pricing Snapshot">
-          <Field label="Base Fare" value={data.pricingSnapshot?.baseFare} />
-          <Field label="Per KM Rate" value={data.pricingSnapshot?.perKmRate} />
-          <Field label="Per Min Rate" value={data.pricingSnapshot?.perMinRate} />
-          <Field label="Min Fare" value={data.pricingSnapshot?.minFare} />
-          <Field label="Surge" value={data.pricingSnapshot?.surgeMultiplier} />
-          <Field label="Time Type" value={data.pricingSnapshot?.timeType} />
+          {(!type) && (
+            <>
+              <Field label="Base Fare" value={data.pricingSnapshot?.baseFare} />
+              <Field label="Per KM Rate" value={data.pricingSnapshot?.perKmRate} />
+              <Field label="Per Min Rate" value={data.pricingSnapshot?.perMinRate} />
+              <Field label="Min Fare" value={data.pricingSnapshot?.minFare} />
+              <Field label="Surge" value={data.pricingSnapshot?.surgeMultiplier} />
+              <Field label="Time Type" value={data.pricingSnapshot?.timeType} />
+              <Field label="Cancellation Fee" value={data.pricingSnapshot?.cancellationFee} />
+            </>
+          )}
+
+          {type === "Hourly" && (
+            <>
+              <Field label="Trip Type" value={data.pricingSnapshot?.tripType} />
+              <Field label="Per Hour Rate" value={data.pricingSnapshot?.perHourRate} />
+              <Field label="Night Fare" value={data.pricingSnapshot?.nightFare} />
+              <Field label="Night Window Count" value={data.pricingSnapshot?.nightWindowCount} />
+              <Field label="Night Fare Amount" value={data.pricingSnapshot?.nightFareAmount} />
+            </>
+          )}
+
+          {type === "Outstation" && (
+            <>
+              <Field label="Round Trip Per Day" value={data.pricingSnapshot?.roundTripPerDayFare} />
+              <Field label="One Way Per KM" value={data.pricingSnapshot?.oneWayPerKmRate} />
+              <Field label="One Way Base" value={data.pricingSnapshot?.oneWayBaseFare} />
+              <Field label="Night Fare" value={data.pricingSnapshot?.nightFare} />
+              <Field label="Total Night Fare" value={data.pricingSnapshot?.totalNightFare} />
+              <Field label="Service Charge" value={data.pricingSnapshot?.serviceCharge} />
+            </>
+          )}
+
+          {(type === "Weekly" || type === "Monthly") && (
+            <>
+              <Field label="Hourly Fare" value={data.pricingSnapshot?.hourlyFare} />
+              <Field label="Night Fare" value={data.pricingSnapshot?.nightFare} />
+              <Field label="Total Night Fare" value={data.pricingSnapshot?.totalNightFare} />
+              <Field label="Service Charge" value={data.pricingSnapshot?.serviceCharge} />
+            </>
+          )}
+
           <Field label="GST %" value={data.pricingSnapshot?.gstPercent} />
-          <Field label="Cancellation Fee" value={data.pricingSnapshot?.cancellationFee} />
         </Section>
 
         {/* PAYMENT */}
@@ -267,8 +297,25 @@ useEffect(() => {
         <Section title="Fare">
           <Field label="Estimated Fare" value={data.estimatedFare} />
           <Field label="Prepaid" value={data.prepaidAmount} />
-          <Field label="Estimated KM" value={data.estimatedKm} />
-          <Field label="Estimated Time" value={data.estimatedMins} />
+          
+          {(!type || type === "Outstation") && (
+            <>
+              <Field label="Estimated KM" value={data.estimatedKm} />
+              <Field label="Estimated Time" value={data.estimatedMins} />
+            </>
+          )}
+
+          {type === "Hourly" && (
+            <Field label="Booked Hours" value={data.bookedHours} />
+          )}
+
+          {(type === "Weekly" || type === "Monthly" || type === "Outstation") && (
+            <Field label="Total Days" value={data.totalDays} />
+          )}
+
+          {(type === "Weekly" || type === "Monthly") && (
+            <Field label="Daily Hours" value={data.dailyHours} />
+          )}
         </Section>
 
         {/* FARE BREAKUP */}

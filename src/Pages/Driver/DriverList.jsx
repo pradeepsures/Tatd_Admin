@@ -497,7 +497,6 @@ export default function DriverList() {
                                                 {/* {row.name} */}
                                                 {[row.name, row.midName, row.lastName].filter(Boolean).join(" ")}
                                             </span>
-
                                             <span className="text-sm text-gray-500">
                                                 {row.email}
                                             </span>
@@ -516,7 +515,7 @@ export default function DriverList() {
                                             <span className="font-semibold text-gray-700">{row.totalRides || 0} Rides</span>
                                             <button
                                                 onClick={() => {
-                                                    navigate(`driverBookingView/${row.id}`);
+                                                    navigate(`/home/driver/driverBookingView/${row.id}`);
                                                 }}
                                                 className="p-1.5 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
                                                 title="View Trips"
@@ -555,9 +554,17 @@ export default function DriverList() {
 
                                     {/* WALLET */}
                                     <TableCell>
-                                        <span className={`font-semibold ${row.walletBalance < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                            ₹{row.walletBalance || 0}
-                                        </span>
+                                        <div className="flex flex-col items-start gap-1">
+                                            <span className={`font-semibold ${row.walletBalance < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                                ₹{Number(row.walletBalance || 0).toFixed(2)}
+                                            </span>
+                                            <button
+                                                onClick={() => navigate(`/home/driver/ledger/${row.id}`)}
+                                                className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded shadow-sm border border-gray-200 transition-colors"
+                                            >
+                                                View Ledger
+                                            </button>
+                                        </div>
                                     </TableCell>
 
                                     {/* ACTIONS */}
