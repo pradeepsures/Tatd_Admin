@@ -257,3 +257,21 @@ export const reverifyBankDetails = async (driverId) => {
     throw err;
   }
 };
+
+export const adminAddUpdateBankDetails = async (driverId, data) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${driverId}/bank-details`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    return await res.json();
+  } catch (err) {
+    toast.error(err.message || "Failed to update bank details");
+    throw err;
+  }
+};

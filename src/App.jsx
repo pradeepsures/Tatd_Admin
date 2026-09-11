@@ -65,6 +65,7 @@ import AppConfig from "./Pages/Settings/AppConfig";
 import OutstationPricing from "./Pages/Settings/OutstationPricing";
 import FeedbackTags from "./Pages/Settings/FeedbackTags";
 import CancellationReasons from "./Pages/Settings/CancellationReasons";
+import CommissionSettings from "./Pages/Settings/CommissionSettings";
 import BannerList from "./Pages/Banner/BannerList";
 import CreateBanner from "./Pages/Banner/CreateBanner";
 import UpdateBanner from "./Pages/Banner/UpdateBanner";
@@ -301,6 +302,7 @@ const router = createBrowserRouter([
       // { path: "outstationPricing", element: <OutstationPricing /> },
       { path: "feedbackTags", element: <FeedbackTags /> },
       { path: "cancellationReasons", element: <CancellationReasons /> },
+      { path: "commissionSettings", element: <CommissionSettings /> },
       
       //segment
       { path: "segment", element: <SegmentList /> },

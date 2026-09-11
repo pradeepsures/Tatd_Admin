@@ -276,9 +276,14 @@ export default function DriverBookingDetails() {
                   <div className="font-semibold text-gray-800">
                     {item.bookingNumber}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-gray-500 mb-1">
                     {item.createdAtIST}
                   </div>
+                  {item.collectionType && (
+                    <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-100 text-purple-700 uppercase tracking-wide">
+                      {item.collectionType.replace("Booking", "").replace("booking", "standard")}
+                    </span>
+                  )}
                 </td>
 
                 {/* USER */}
@@ -302,10 +307,14 @@ export default function DriverBookingDetails() {
                 {/* ROUTE */}
                 <td className="px-4 py-3">
                   <div className="text-xs text-gray-500">From:</div>
-                  <div className="text-sm">{item.pickup?.address}</div>
+                  <div className="text-sm truncate max-w-[150px]" title={item.pickup?.address}>{item.pickup?.address || "N/A"}</div>
 
-                  <div className="text-xs text-gray-500 mt-1">To:</div>
-                  <div className="text-sm">{item.dropoff?.address}</div>
+                  {item.dropoff?.address && (
+                    <>
+                      <div className="text-xs text-gray-500 mt-1">To:</div>
+                      <div className="text-sm truncate max-w-[150px]" title={item.dropoff?.address}>{item.dropoff?.address}</div>
+                    </>
+                  )}
                 </td>
 
                 {/* FARE */}
@@ -319,11 +328,21 @@ export default function DriverBookingDetails() {
                 {/* TRIP */}
                 <td className="px-4 py-3">
                   <div className="text-sm">
-                    {item.estimatedKm || 0} km
+                    {item.collectionType === "hourlyBooking" ? (
+                      `${item.bookedHours || 0} Hours`
+                    ) : item.collectionType === "weeklyBooking" || item.collectionType === "monthlyBooking" ? (
+                      `${item.totalDays || 0} Days (${item.dailyHours || 0} hrs/day)`
+                    ) : item.collectionType === "outstationBooking" ? (
+                      `${item.totalDays || 0} Days`
+                    ) : (
+                      `${item.estimatedKm || 0} km`
+                    )}
                   </div>
-                  <div className="text-xs text-gray-500">
-                    {item.estimatedMins || 0} mins
-                  </div>
+                  {(!["hourlyBooking", "weeklyBooking", "monthlyBooking", "outstationBooking"].includes(item.collectionType)) && (
+                    <div className="text-xs text-gray-500">
+                      {item.estimatedMins || 0} mins
+                    </div>
+                  )}
                 </td>
 
                 {/* STATUS */}

@@ -169,6 +169,44 @@ export const deleteFeedbackTag = async (id) => {
   }
 };
 
+// --- COMMISSION SETTINGS ---
+
+export const getCommissionSettings = async () => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/commission-settings`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Failed to fetch Commission Settings");
+    throw err;
+  }
+};
+
+export const updateCommissionSettings = async (data) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/commission-settings`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Failed to update Commission Settings");
+    throw err;
+  }
+};
+
 // --- OUTSTATION PRICING ---
 
 export const getOutstationPricing = async () => {
