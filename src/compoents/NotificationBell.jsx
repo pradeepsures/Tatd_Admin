@@ -54,7 +54,7 @@ const NotificationBell = () => {
     if (unreadCount === 0) return;
     try {
       const token = localStorage.getItem('token');
-      await fetch(`${BASE_URL}/api/admin/notifications/read-all`, {
+      await fetch(`${BASE_URL}/api/admin/notifications/mark-all-read`, {
         method: 'PATCH',
         headers: { Authorization: `Bearer ${token}` }
       });

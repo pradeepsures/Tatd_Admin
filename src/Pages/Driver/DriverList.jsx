@@ -504,6 +504,12 @@ export default function DriverList() {
                                             <span className="text-sm text-gray-500">
                                                 {row.phone}
                                             </span>
+                                            
+                                            {!row.policeVerificationPhoto && (
+                                                <span className="text-[10px] font-bold text-red-600 animate-pulse mt-1 bg-red-50 w-max px-1.5 py-0.5 rounded border border-red-200 flex items-center gap-1">
+                                                    ⚠️ Police Verification Pending
+                                                </span>
+                                            )}
 
                                         </div>
 

@@ -13,7 +13,8 @@ export default function AppConfig() {
   const [supportEmail, setSupportEmail] = useState("");
   const [sosNumber, setSosNumber] = useState("");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
-  const [appVersion, setAppVersion] = useState("");
+  const [userAppVersion, setUserAppVersion] = useState("");
+  const [driverAppVersion, setDriverAppVersion] = useState("");
 
   const fetchConfig = async () => {
     try {
@@ -26,7 +27,8 @@ export default function AppConfig() {
         setSupportEmail(data.supportEmail || "");
         setSosNumber(data.sosNumber || "");
         setMaintenanceMode(data.maintenanceMode || false);
-        setAppVersion(data.appVersion || "");
+        setUserAppVersion(data.userAppVersion || "");
+        setDriverAppVersion(data.driverAppVersion || "");
       }
     } catch (err) {
       toast.error("Failed to load App Config");
@@ -58,8 +60,13 @@ export default function AppConfig() {
       return;
     }
 
-    if (appVersion && !/^\d+\.\d+\.\d+$/.test(appVersion.trim())) {
-      toast.error("App Version must be in format like 1.0.0");
+    if (userAppVersion && !/^\d+\.\d+\.\d+$/.test(userAppVersion.trim())) {
+      toast.error("User App Version must be in format like 1.0.0");
+      return;
+    }
+
+    if (driverAppVersion && !/^\d+\.\d+\.\d+$/.test(driverAppVersion.trim())) {
+      toast.error("Driver App Version must be in format like 1.0.0");
       return;
     }
 
@@ -70,7 +77,8 @@ export default function AppConfig() {
         supportEmail: supportEmail.trim(),
         sosNumber: sosNumber.trim(),
         maintenanceMode,
-        appVersion: appVersion.trim(),
+        userAppVersion: userAppVersion.trim(),
+        driverAppVersion: driverAppVersion.trim(),
       };
       const res = await updateAppConfig(payload);
       if (res?.success || res?.status) {
@@ -132,11 +140,22 @@ export default function AppConfig() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Current App Version (Optional)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">User App Version (Optional)</label>
             <input
               type="text"
-              value={appVersion}
-              onChange={(e) => setAppVersion(e.target.value)}
+              value={userAppVersion}
+              onChange={(e) => setUserAppVersion(e.target.value)}
+              className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+              placeholder="1.0.0"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Driver App Version (Optional)</label>
+            <input
+              type="text"
+              value={driverAppVersion}
+              onChange={(e) => setDriverAppVersion(e.target.value)}
               className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
               placeholder="1.0.0"
             />
