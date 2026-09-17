@@ -15,6 +15,8 @@ export default function DriverDetail() {
   const [bankModalOpen, setBankModalOpen] = useState(false);
   const [bankForm, setBankForm] = useState({ accountName: '', accountNumber: '', ifscCode: '' });
   const [bankSubmitting, setBankSubmitting] = useState(false);
+  const [previewImage, setPreviewImage] = useState(null);
+  const [previewImageName, setPreviewImageName] = useState("");
 
   const downloadImage = async (url, filename) => {
     if (!url) {
@@ -410,9 +412,9 @@ export default function DriverDetail() {
                 {driver.licensePhoto ? (
                   <div className="relative group rounded overflow-hidden h-32 bg-gray-200 border border-gray-300">
                     <img src={driver.licensePhoto} alt="License" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => downloadImage(driver.licensePhoto, `driver-license-${id}.jpg`)} className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 hover:bg-gray-100">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg> Download
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={() => { setPreviewImage(driver.licensePhoto); setPreviewImageName(`driver-license-${id}.jpg`); }}>
+                      <button className="bg-white text-gray-900 text-xs font-bold px-4 py-2 rounded flex items-center gap-1 hover:bg-gray-100 shadow">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> View Full Document
                       </button>
                     </div>
                   </div>
@@ -431,9 +433,9 @@ export default function DriverDetail() {
                 {driver.policeVerificationPhoto ? (
                   <div className="relative group rounded overflow-hidden h-32 bg-gray-200 border border-gray-300">
                     <img src={driver.policeVerificationPhoto} alt="Police" className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => downloadImage(driver.policeVerificationPhoto, `driver-pv-${id}.jpg`)} className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 hover:bg-gray-100">
-                         Download
+                    <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={() => { setPreviewImage(driver.policeVerificationPhoto); setPreviewImageName(`driver-pv-${id}.jpg`); }}>
+                      <button className="bg-white text-gray-900 text-xs font-bold px-4 py-2 rounded flex items-center gap-1 hover:bg-gray-100 shadow">
+                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> View Full Document
                       </button>
                     </div>
                   </div>
@@ -454,9 +456,9 @@ export default function DriverDetail() {
                     <div className="relative group rounded overflow-hidden h-32 bg-gray-200 border border-gray-300">
                       <img src={driver.adhaarFrontPhoto} alt="Aadhaar Front" className="w-full h-full object-cover" />
                       <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">FRONT</div>
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => downloadImage(driver.adhaarFrontPhoto, `driver-aadhaar-front-${id}.jpg`)} className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 hover:bg-gray-100">
-                           Download
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={() => { setPreviewImage(driver.adhaarFrontPhoto); setPreviewImageName(`driver-aadhaar-front-${id}.jpg`); }}>
+                        <button className="bg-white text-gray-900 text-xs font-bold px-4 py-2 rounded flex items-center gap-1 hover:bg-gray-100 shadow">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> View Full Document
                         </button>
                       </div>
                     </div>
@@ -466,9 +468,9 @@ export default function DriverDetail() {
                     <div className="relative group rounded overflow-hidden h-32 bg-gray-200 border border-gray-300">
                       <img src={driver.adhaarBackPhoto} alt="Aadhaar Back" className="w-full h-full object-cover" />
                        <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">BACK</div>
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => downloadImage(driver.adhaarBackPhoto, `driver-aadhaar-back-${id}.jpg`)} className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 hover:bg-gray-100">
-                           Download
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={() => { setPreviewImage(driver.adhaarBackPhoto); setPreviewImageName(`driver-aadhaar-back-${id}.jpg`); }}>
+                        <button className="bg-white text-gray-900 text-xs font-bold px-4 py-2 rounded flex items-center gap-1 hover:bg-gray-100 shadow">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> View Full Document
                         </button>
                       </div>
                     </div>
@@ -490,9 +492,9 @@ export default function DriverDetail() {
                     <div className="relative group rounded overflow-hidden h-32 bg-gray-200 border border-gray-300">
                       <img src={driver.panFrontPhoto} alt="PAN Front" className="w-full h-full object-cover" />
                        <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">FRONT</div>
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => downloadImage(driver.panFrontPhoto, `driver-pan-front-${id}.jpg`)} className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 hover:bg-gray-100">
-                           Download
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={() => { setPreviewImage(driver.panFrontPhoto); setPreviewImageName(`driver-pan-front-${id}.jpg`); }}>
+                        <button className="bg-white text-gray-900 text-xs font-bold px-4 py-2 rounded flex items-center gap-1 hover:bg-gray-100 shadow">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> View Full Document
                         </button>
                       </div>
                     </div>
@@ -502,9 +504,9 @@ export default function DriverDetail() {
                      <div className="relative group rounded overflow-hidden h-32 bg-gray-200 border border-gray-300">
                       <img src={driver.panBackPhoto} alt="PAN Back" className="w-full h-full object-cover" />
                        <div className="absolute top-2 left-2 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded">BACK</div>
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button onClick={() => downloadImage(driver.panBackPhoto, `driver-pan-back-${id}.jpg`)} className="bg-white text-gray-900 text-xs font-bold px-3 py-1.5 rounded flex items-center gap-1 hover:bg-gray-100">
-                           Download
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer" onClick={() => { setPreviewImage(driver.panBackPhoto); setPreviewImageName(`driver-pan-back-${id}.jpg`); }}>
+                        <button className="bg-white text-gray-900 text-xs font-bold px-4 py-2 rounded flex items-center gap-1 hover:bg-gray-100 shadow">
+                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> View Full Document
                         </button>
                       </div>
                     </div>
@@ -582,6 +584,29 @@ export default function DriverDetail() {
               </div>
             </form>
           </div>
+        </div>
+      )}
+
+      {/* IMAGE PREVIEW MODAL */}
+      {previewImage && (
+        <div className="fixed inset-0 bg-black/95 flex flex-col items-center justify-center z-[70] p-4 backdrop-blur-sm">
+          <div className="absolute top-6 right-6 flex gap-4">
+            <button 
+              onClick={() => downloadImage(previewImage, previewImageName)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 transition-colors shadow-lg"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+              Download File
+            </button>
+            <button 
+              onClick={() => { setPreviewImage(null); setPreviewImageName(""); }}
+              className="bg-white/10 hover:bg-white/30 text-white border border-white/20 px-5 py-2.5 rounded-lg font-bold transition-colors shadow-lg flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+              Close
+            </button>
+          </div>
+          <img src={previewImage} alt="Document Preview" className="max-w-full max-h-[85vh] object-contain rounded-lg shadow-2xl" />
         </div>
       )}
 
