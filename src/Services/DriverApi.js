@@ -275,3 +275,48 @@ export const adminAddUpdateBankDetails = async (driverId, data) => {
     throw err;
   }
 };
+
+export const verifyPanOcrApi = async (id) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${id}/verify-pan-ocr`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const result = await res.json();
+    return result;
+  } catch (err) {
+    toast.error(err.message || "Failed to verify PAN via OCR");
+    throw err;
+  }
+};
+
+export const verifyDlOcrApi = async (id) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${id}/verify-dl-ocr`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return await res.json();
+  } catch (err) {
+    toast.error(err.message || "Failed to verify DL via OCR");
+    throw err;
+  }
+};
+
+export const verifyAadhaarOcrApi = async (id) => {
+  const token = localStorage.getItem("token");
+  try {
+    const res = await fetch(`${BASE_URL}/api/admin/drivers/${id}/verify-aadhaar-ocr`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return await res.json();
+  } catch (err) {
+    toast.error(err.message || "Failed to verify Aadhaar via OCR");
+    throw err;
+  }
+};
