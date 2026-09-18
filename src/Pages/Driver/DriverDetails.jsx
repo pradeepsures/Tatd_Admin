@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getSingleDriver, updateDriver, getSingleDriverBankDetails, reverifyBankDetails, adminAddUpdateBankDetails } from "../../Services/DriverApi";
+import { getSingleDriver, updateDriver, getSingleDriverBankDetails, reverifyBankDetails, adminAddUpdateBankDetails, verifyPanOcrApi, verifyDlOcrApi, verifyAadhaarOcrApi } from "../../Services/DriverApi";
 import Loader from "../../compoents/Loader";
 
 export default function DriverDetail() {
@@ -17,6 +17,74 @@ export default function DriverDetail() {
   const [bankSubmitting, setBankSubmitting] = useState(false);
   const [previewImage, setPreviewImage] = useState(null);
   const [previewImageName, setPreviewImageName] = useState("");
+  const [isVerifyingPan, setIsVerifyingPan] = useState(false);
+  const [panOcrResult, setPanOcrResult] = useState(null); // { matched: boolean, text: string }
+
+  const handleVerifyPanOcr = async () => {
+    try {
+      setIsVerifyingPan(true);
+      toast.loading("Verifying PAN via OCR...", { id: "pan-ocr" });
+      const result = await verifyPanOcrApi(id);
+      if (result?.success) {
+        setPanOcrResult({ matched: result.matched, text: result.text });
+        if (result.matched) {
+          toast.success("PAN Verified Successfully!", { id: "pan-ocr" });
+        } else {
+          toast.error("PAN Mismatch: Uploaded PAN photo does not match the entered PAN number.", { id: "pan-ocr" });
+        }
+      } else {
+        toast.error("Failed to verify PAN", { id: "pan-ocr" });
+      }
+    } catch (error) {
+      toast.error("Error occurred during PAN verification", { id: "pan-ocr" });
+    } finally {
+      setIsVerifyingPan(false);
+    }
+  };
+
+  const [isVerifyingDl, setIsVerifyingDl] = useState(false);
+  const [dlOcrResult, setDlOcrResult] = useState(null);
+
+  const handleVerifyDlOcr = async () => {
+    try {
+      setIsVerifyingDl(true);
+      toast.loading("Verifying DL via OCR...", { id: "dl-ocr" });
+      const result = await verifyDlOcrApi(id);
+      if (result?.success) {
+        setDlOcrResult({ matched: result.matched, text: result.text });
+        if (result.matched) toast.success("DL Verified Successfully!", { id: "dl-ocr" });
+        else toast.error("DL Mismatch: Uploaded photo does not match DL number.", { id: "dl-ocr" });
+      } else {
+        toast.error("Failed to verify DL", { id: "dl-ocr" });
+      }
+    } catch (error) {
+      toast.error("Error occurred during DL verification", { id: "dl-ocr" });
+    } finally {
+      setIsVerifyingDl(false);
+    }
+  };
+
+  const [isVerifyingAadhaar, setIsVerifyingAadhaar] = useState(false);
+  const [aadhaarOcrResult, setAadhaarOcrResult] = useState(null);
+
+  const handleVerifyAadhaarOcr = async () => {
+    try {
+      setIsVerifyingAadhaar(true);
+      toast.loading("Verifying Aadhaar via OCR...", { id: "aadhaar-ocr" });
+      const result = await verifyAadhaarOcrApi(id);
+      if (result?.success) {
+        setAadhaarOcrResult({ matched: result.matched, text: result.text });
+        if (result.matched) toast.success("Aadhaar Verified Successfully!", { id: "aadhaar-ocr" });
+        else toast.error("Aadhaar Mismatch: Uploaded photo does not match Aadhaar number.", { id: "aadhaar-ocr" });
+      } else {
+        toast.error("Failed to verify Aadhaar", { id: "aadhaar-ocr" });
+      }
+    } catch (error) {
+      toast.error("Error occurred during Aadhaar verification", { id: "aadhaar-ocr" });
+    } finally {
+      setIsVerifyingAadhaar(false);
+    }
+  };
 
   const downloadImage = async (url, filename) => {
     if (!url) {
@@ -403,8 +471,24 @@ export default function DriverDetail() {
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h5 className="font-bold text-gray-800">Driving License</h5>
+                    <h5 className="font-bold text-gray-800 flex items-center gap-2">
+                      Driving License
+                      {driver.licensePhoto && driver.licenseNumber && (
+                        <button
+                          onClick={handleVerifyDlOcr}
+                          disabled={isVerifyingDl}
+                          className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded font-semibold border border-blue-200 transition-colors disabled:opacity-50"
+                        >
+                          {isVerifyingDl ? "Verifying..." : "Verify OCR"}
+                        </button>
+                      )}
+                    </h5>
                     <p className="text-xs text-gray-500 mt-1 font-mono">{driver.licenseNumber || "N/A"}</p>
+                    {dlOcrResult && (
+                      <p className={`text-xs mt-1 font-bold ${dlOcrResult.matched ? 'text-green-600' : 'text-red-600'}`}>
+                        {dlOcrResult.matched ? '✅ Match Found in Image' : '❌ DL Mismatch'}
+                      </p>
+                    )}
                     <p className="text-xs text-gray-500 mt-1">Exp: {driver.licenseExpiry ? new Date(driver.licenseExpiry).toLocaleDateString() : "N/A"}</p>
                   </div>
                   <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-medium">DL</span>
@@ -446,8 +530,24 @@ export default function DriverDetail() {
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 md:col-span-2">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h5 className="font-bold text-gray-800">Aadhaar Card</h5>
+                    <h5 className="font-bold text-gray-800 flex items-center gap-2">
+                      Aadhaar Card
+                      {driver.adhaarFrontPhoto && driver.adhaarNumber && (
+                        <button
+                          onClick={handleVerifyAadhaarOcr}
+                          disabled={isVerifyingAadhaar}
+                          className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded font-semibold border border-blue-200 transition-colors disabled:opacity-50"
+                        >
+                          {isVerifyingAadhaar ? "Verifying..." : "Verify OCR"}
+                        </button>
+                      )}
+                    </h5>
                     <p className="text-xs text-gray-500 mt-1 font-mono tracking-widest">{driver.adhaarNumber || "N/A"}</p>
+                    {aadhaarOcrResult && (
+                      <p className={`text-xs mt-1 font-bold ${aadhaarOcrResult.matched ? 'text-green-600' : 'text-red-600'}`}>
+                        {aadhaarOcrResult.matched ? '✅ Match Found in Image' : '❌ Aadhaar Mismatch'}
+                      </p>
+                    )}
                   </div>
                   <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-medium">ID</span>
                 </div>
@@ -482,8 +582,24 @@ export default function DriverDetail() {
               <div className="bg-gray-50 rounded-lg p-4 border border-gray-200 md:col-span-2">
                 <div className="flex justify-between items-start mb-3">
                   <div>
-                    <h5 className="font-bold text-gray-800">PAN Card</h5>
+                    <h5 className="font-bold text-gray-800 flex items-center gap-2">
+                      PAN Card
+                      {driver.panFrontPhoto && driver.panNumber && (
+                        <button
+                          onClick={handleVerifyPanOcr}
+                          disabled={isVerifyingPan}
+                          className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 px-2 py-1 rounded font-semibold border border-blue-200 transition-colors disabled:opacity-50"
+                        >
+                          {isVerifyingPan ? "Verifying..." : "Verify OCR"}
+                        </button>
+                      )}
+                    </h5>
                     <p className="text-xs text-gray-500 mt-1 font-mono tracking-widest">{driver.panNumber || "N/A"}</p>
+                    {panOcrResult && (
+                      <p className={`text-xs mt-1 font-bold ${panOcrResult.matched ? 'text-green-600' : 'text-red-600'}`}>
+                        {panOcrResult.matched ? '✅ Match Found in Image' : '❌ PAN Mismatch'}
+                      </p>
+                    )}
                   </div>
                   <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-medium">TAX</span>
                 </div>
