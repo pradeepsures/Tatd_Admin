@@ -4,6 +4,23 @@ import toast from "react-hot-toast";
 import { getSingleDriver, updateDriver, getSingleDriverBankDetails, reverifyBankDetails, adminAddUpdateBankDetails, verifyPanOcrApi, verifyDlOcrApi, verifyAadhaarOcrApi } from "../../Services/DriverApi";
 import Loader from "../../compoents/Loader";
 
+function OcrResult({ result }) {
+  if (!result) return null;
+  return (
+    <div className="mt-1 text-xs">
+      <p className={`font-bold ${result.matched ? 'text-green-600' : 'text-amber-700'}`}>
+        {result.matched ? 'Number found in image' : 'OCR could not confirm the number. Review the document.'}
+      </p>
+      <details className="mt-1 text-gray-600">
+        <summary className="cursor-pointer">View text read from image</summary>
+        <p className="mt-1 whitespace-pre-wrap break-words max-h-40 overflow-auto">
+          {result.text?.trim() || 'No readable text detected. Try a clearer document image.'}
+        </p>
+      </details>
+    </div>
+  );
+}
+
 export default function DriverDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,9 +45,9 @@ export default function DriverDetail() {
       if (result?.success) {
         setPanOcrResult({ matched: result.matched, text: result.text });
         if (result.matched) {
-          toast.success("PAN Verified Successfully!", { id: "pan-ocr" });
+          toast.success("PAN number found in image", { id: "pan-ocr" });
         } else {
-          toast.error("PAN Mismatch: Uploaded PAN photo does not match the entered PAN number.", { id: "pan-ocr" });
+          toast.error("OCR could not confirm PAN. Review the document and extracted text.", { id: "pan-ocr" });
         }
       } else {
         toast.error("Failed to verify PAN", { id: "pan-ocr" });
@@ -52,8 +69,8 @@ export default function DriverDetail() {
       const result = await verifyDlOcrApi(id);
       if (result?.success) {
         setDlOcrResult({ matched: result.matched, text: result.text });
-        if (result.matched) toast.success("DL Verified Successfully!", { id: "dl-ocr" });
-        else toast.error("DL Mismatch: Uploaded photo does not match DL number.", { id: "dl-ocr" });
+        if (result.matched) toast.success("DL number found in image", { id: "dl-ocr" });
+        else toast.error("OCR could not confirm DL. Review the document and extracted text.", { id: "dl-ocr" });
       } else {
         toast.error("Failed to verify DL", { id: "dl-ocr" });
       }
@@ -74,8 +91,8 @@ export default function DriverDetail() {
       const result = await verifyAadhaarOcrApi(id);
       if (result?.success) {
         setAadhaarOcrResult({ matched: result.matched, text: result.text });
-        if (result.matched) toast.success("Aadhaar Verified Successfully!", { id: "aadhaar-ocr" });
-        else toast.error("Aadhaar Mismatch: Uploaded photo does not match Aadhaar number.", { id: "aadhaar-ocr" });
+        if (result.matched) toast.success("Aadhaar number found in image", { id: "aadhaar-ocr" });
+        else toast.error("OCR could not confirm Aadhaar. Review the document and extracted text.", { id: "aadhaar-ocr" });
       } else {
         toast.error("Failed to verify Aadhaar", { id: "aadhaar-ocr" });
       }
@@ -484,11 +501,7 @@ export default function DriverDetail() {
                       )}
                     </h5>
                     <p className="text-xs text-gray-500 mt-1 font-mono">{driver.licenseNumber || "N/A"}</p>
-                    {dlOcrResult && (
-                      <p className={`text-xs mt-1 font-bold ${dlOcrResult.matched ? 'text-green-600' : 'text-red-600'}`}>
-                        {dlOcrResult.matched ? '✅ Match Found in Image' : '❌ DL Mismatch'}
-                      </p>
-                    )}
+                    <OcrResult result={dlOcrResult} />
                     <p className="text-xs text-gray-500 mt-1">Exp: {driver.licenseExpiry ? new Date(driver.licenseExpiry).toLocaleDateString() : "N/A"}</p>
                   </div>
                   <span className="bg-purple-100 text-purple-700 text-xs px-2 py-1 rounded font-medium">DL</span>
@@ -543,11 +556,7 @@ export default function DriverDetail() {
                       )}
                     </h5>
                     <p className="text-xs text-gray-500 mt-1 font-mono tracking-widest">{driver.adhaarNumber || "N/A"}</p>
-                    {aadhaarOcrResult && (
-                      <p className={`text-xs mt-1 font-bold ${aadhaarOcrResult.matched ? 'text-green-600' : 'text-red-600'}`}>
-                        {aadhaarOcrResult.matched ? '✅ Match Found in Image' : '❌ Aadhaar Mismatch'}
-                      </p>
-                    )}
+                    <OcrResult result={aadhaarOcrResult} />
                   </div>
                   <span className="bg-indigo-100 text-indigo-700 text-xs px-2 py-1 rounded font-medium">ID</span>
                 </div>
@@ -595,11 +604,7 @@ export default function DriverDetail() {
                       )}
                     </h5>
                     <p className="text-xs text-gray-500 mt-1 font-mono tracking-widest">{driver.panNumber || "N/A"}</p>
-                    {panOcrResult && (
-                      <p className={`text-xs mt-1 font-bold ${panOcrResult.matched ? 'text-green-600' : 'text-red-600'}`}>
-                        {panOcrResult.matched ? '✅ Match Found in Image' : '❌ PAN Mismatch'}
-                      </p>
-                    )}
+                    <OcrResult result={panOcrResult} />
                   </div>
                   <span className="bg-orange-100 text-orange-700 text-xs px-2 py-1 rounded font-medium">TAX</span>
                 </div>
