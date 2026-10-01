@@ -1,6 +1,7 @@
 // src/pages/States/StatesList.jsx
 
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -74,11 +75,11 @@ export default function StatesList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage] = useState(10);
 
-  const [search, setSearch] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [search, setSearch] = useAdminListState("search", "");
+  const [searchQuery, setSearchQuery] = useAdminListState("searchQuery", "");
 
   const [totalPages, setTotalPages] = useState(1);
 

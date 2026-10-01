@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Table from "@mui/material/Table";
@@ -46,11 +47,11 @@ export default function HourlyBookingList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useAdminListState("filters", {
     search: "",
     startDate: "",
     endDate: "",

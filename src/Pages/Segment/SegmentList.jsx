@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -66,8 +67,8 @@ export default function SegmentList() {
   const [filteredData, setFilteredData] = useState([]);    // client-side filtered
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-  const [search, setSearch] = useState("");                // search input value
-  const [page, setPage] = useState(1);
+  const [search, setSearch] = useAdminListState("search", "");                // search input value
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage] = useState(7);
   const [isLoading, setIsLoading] = useState(false);       // add button loading
   const [isExporting, setIsExporting] = useState(false);

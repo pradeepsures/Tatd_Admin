@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -44,7 +45,7 @@ export default function BookingList({
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage] = useState(7);
   const [totalPages, setTotalPages] = useState(0);
 
@@ -52,7 +53,7 @@ export default function BookingList({
   const [isReassignModalOpen, setIsReassignModalOpen] = useState(false);
 
   // ✅ FIXED FILTER STATE (IMPORTANT)
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useAdminListState("filters", {
     searchQuery: "",
     startDate: "",
     endDate: "",

@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -26,6 +27,8 @@ import LoderBtn from "../../compoents/LoderBtn";
 import Breaker from "../../compoents/Breaker";
 
 import { getAllDrivers, deleteDriver, updateDriver } from "../../Services/DriverApi";
+import { getAllStates } from "../../Services/StatesApi";
+import { getAllCities } from "../../Services/CitiesApi";
 import { useAuth } from "../../auth/AuthContext";
 import { StyledTableCell } from "../../compoents/TableComponents";
 
@@ -42,17 +45,20 @@ export default function DriverList() {
     const [isLoading, setIsLoading] = useState(false);
 
   // SEARCH
-  const [searchInput, setSearchInput] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchInput, setSearchInput] = useAdminListState("searchInput", "");
+  const [searchQuery, setSearchQuery] = useAdminListState("searchQuery", "");
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [stats, setStats] = useState(null);
+  const [stateOptions, setStateOptions] = useState([]);
+  const [cityOptions, setCityOptions] = useState([]);
+  const [locationsLoading, setLocationsLoading] = useState(false);
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const showUnverifiedOnly = searchParams.get("verified") === "pending";
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useAdminListState("filters", {
     isVerified: "",
     isOnline: "",
     isAvailable: "",
@@ -63,7 +69,7 @@ export default function DriverList() {
   });
 
   // ✅ APPLIED FILTERS (only used for API)
-  const [appliedFilters, setAppliedFilters] = useState({
+  const [appliedFilters, setAppliedFilters] = useAdminListState("appliedFilters", {
     isVerified: "",
     isOnline: "",
     isAvailable: "",
@@ -73,8 +79,31 @@ export default function DriverList() {
     endDate: "",
   });
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const rowsPerPage = 10;
+
+  useEffect(() => {
+    let active = true;
+    getAllStates({ page: 1, rowsPerPage: 1000 })
+      .then((result) => { if (active) setStateOptions(result?.data || []); })
+      .catch(() => {});
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    let active = true;
+    const selectedState = stateOptions.find((item) => item.name === filters.state);
+    if (!selectedState) {
+      setCityOptions([]);
+      return () => { active = false; };
+    }
+    setLocationsLoading(true);
+    getAllCities({ page: 1, rowsPerPage: 1000, state: selectedState._id })
+      .then((result) => { if (active) setCityOptions(result?.data || []); })
+      .catch(() => { if (active) setCityOptions([]); })
+      .finally(() => { if (active) setLocationsLoading(false); });
+    return () => { active = false; };
+  }, [filters.state, stateOptions]);
 
 
   // FETCH
@@ -218,6 +247,8 @@ export default function DriverList() {
             if(result?.status) {
                 toast.success(`Driver ${!currentStatus ? 'Verified' : 'Unverified'}`);
                 fetchDrivers();
+            } else {
+                toast.error(result?.message || "Failed to update driver status");
             }
         } catch(err) {
             toast.error("Failed to update driver status");
@@ -462,11 +493,17 @@ export default function DriverList() {
                 </label>
                 <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
                     State
-                    <input value={filters.state} onChange={(e) => setFilters({ ...filters, state: e.target.value })} placeholder="Filter by state" className="rounded-lg border px-3 py-2 font-normal" />
+                    <select value={filters.state} onChange={(e) => setFilters({ ...filters, state: e.target.value, city: "" })} className="min-w-48 rounded-lg border px-3 py-2 font-normal">
+                        <option value="">All states</option>
+                        {stateOptions.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
+                    </select>
                 </label>
                 <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
                     City
-                    <input value={filters.city} onChange={(e) => setFilters({ ...filters, city: e.target.value })} placeholder="Filter by city" className="rounded-lg border px-3 py-2 font-normal" />
+                    <select value={filters.city} onChange={(e) => setFilters({ ...filters, city: e.target.value })} disabled={!filters.state || locationsLoading} className="min-w-48 rounded-lg border px-3 py-2 font-normal disabled:cursor-not-allowed disabled:bg-gray-100">
+                        <option value="">{locationsLoading ? "Loading cities..." : filters.state ? "All cities" : "Select a state first"}</option>
+                        {cityOptions.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
+                    </select>
                 </label>
                 <button onClick={applyFilters} className="rounded-lg bg-primary px-4 py-2 text-white">Apply filters</button>
                 <button onClick={clearFilters} className="rounded-lg border px-4 py-2 text-gray-700">Clear</button>
@@ -486,6 +523,10 @@ export default function DriverList() {
 
                             <StyledTableCell>DETAILS</StyledTableCell>
 
+                            <StyledTableCell>LOCATION</StyledTableCell>
+
+                            <StyledTableCell>ADDRESS</StyledTableCell>
+
                             <StyledTableCell>RIDES</StyledTableCell>
 
                             <StyledTableCell>STATUS</StyledTableCell>
@@ -503,7 +544,7 @@ export default function DriverList() {
                         {data.length === 0 ? (
 
                             <TableRow>
-                                <TableCell colSpan={8} align="center">
+                                <TableCell colSpan={10} align="center">
                                     No Drivers Found
                                 </TableCell>
                             </TableRow>
@@ -555,6 +596,30 @@ export default function DriverList() {
 
                                         </div>
 
+                                    </TableCell>
+
+                                    <TableCell>
+                                        <span className="font-medium text-gray-800">
+                                            {[row.city, row.state].filter(Boolean).join(", ") || "—"}
+                                        </span>
+                                    </TableCell>
+
+                                    <TableCell className="min-w-64 max-w-80">
+                                        <div className="space-y-1 text-sm text-gray-700">
+                                            {row.currentAddress && (
+                                                <div className="break-words">
+                                                    <span className="mr-1 text-xs font-semibold uppercase text-gray-400">Current</span>
+                                                    {row.currentAddress}
+                                                </div>
+                                            )}
+                                            {row.permanentAddress && row.permanentAddress !== row.currentAddress && (
+                                                <div className="break-words">
+                                                    <span className="mr-1 text-xs font-semibold uppercase text-gray-400">Permanent</span>
+                                                    {row.permanentAddress}
+                                                </div>
+                                            )}
+                                            {!row.currentAddress && !row.permanentAddress && <span className="text-gray-400">—</span>}
+                                        </div>
                                     </TableCell>
 
                                     {/* RIDES */}

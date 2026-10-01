@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import { getDriverBankDetailsList } from "../../Services/DriverApi";
@@ -7,9 +8,9 @@ import Loader from "../../compoents/Loader";
 export default function DriverPayouts() {
   const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [totalPages, setTotalPages] = useState(1);
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useAdminListState("statusFilter", "");
   const limit = 10;
 
   const fetchPayouts = async () => {

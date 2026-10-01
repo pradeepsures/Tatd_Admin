@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 
@@ -61,20 +62,20 @@ export default function AssignedDriversList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const rowsPerPage = 10;
 
   const [totalPages, setTotalPages] = useState(1);
 
   // FILTERS
-  const [tripStatus, setTripStatus] = useState("");
-  const [tempTripStatus, setTempTripStatus] = useState("");
+  const [tripStatus, setTripStatus] = useAdminListState("tripStatus", "");
+  const [tempTripStatus, setTempTripStatus] = useAdminListState("tempTripStatus", "");
 
-  const [search, setSearch] = useState("");
-  const [tempSearch, setTempSearch] = useState("");
+  const [search, setSearch] = useAdminListState("search", "");
+  const [tempSearch, setTempSearch] = useAdminListState("tempSearch", "");
 
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+  const [startDate, setStartDate] = useAdminListState("startDate", "");
+  const [endDate, setEndDate] = useAdminListState("endDate", "");
 
   // ───────────────────────────────
   // FORMAT TEXT

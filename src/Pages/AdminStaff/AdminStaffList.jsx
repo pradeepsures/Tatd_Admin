@@ -1,4 +1,5 @@
 import * as React from 'react';
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -46,10 +47,10 @@ export default function AdminStaffList() {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useAdminListState("searchQuery", '');
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useAdminListState("search", '');
   const [isLoading, setIsLoading] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);

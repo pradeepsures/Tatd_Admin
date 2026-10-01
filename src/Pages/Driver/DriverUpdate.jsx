@@ -4,6 +4,7 @@ import Breaker from "../../compoents/Breaker";
 import { getSingleDriver, updateDriver } from "../../Services/DriverApi";
 import { getAllVehiclePreferences } from "../../Services/VehiclePreferenceApi";
 import { getAllVehiclePreferenceCategories } from "../../Services/VehiclePreferenceCategoryApi";
+import useLocationOptions from "../../hooks/useLocationOptions";
 import Loader from "../../compoents/Loader";
 import toast from "react-hot-toast";
 import { Select, Switch } from "antd";
@@ -25,6 +26,8 @@ const UpdateDriver = () => {
   const permAutocompleteRef = useRef(null);
   const currAutocompleteRef = useRef(null);
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const stateResolved = useRef(false);
+  const cityResolved = useRef(false);
 
   // Form state - same structure as create
   const [formData, setFormData] = useState({
@@ -51,6 +54,36 @@ const UpdateDriver = () => {
     vehiclePreferences: [],
     vehiclePreferenceCategories: [],
   });
+  const { states, cities, statesLoading, citiesLoading } = useLocationOptions(formData.state);
+
+  useEffect(() => {
+    if (pageLoading || statesLoading || stateResolved.current) return;
+    const normalize = (value) => String(value || "").toLowerCase().replace(/[^a-z]/g, "");
+    const savedState = normalize(formData.state);
+    const savedCity = normalize(formData.city);
+    const matchedState = states.find((state) => {
+      const masterName = normalize(state.name);
+      return masterName === savedState || (masterName.length > 2 && savedCity.includes(masterName));
+    });
+    stateResolved.current = true;
+    setFormData((previous) => ({
+      ...previous,
+      state: matchedState?.name || "",
+      city: matchedState ? previous.city : "",
+    }));
+  }, [pageLoading, statesLoading, states, formData.state, formData.city]);
+
+  useEffect(() => {
+    if (pageLoading || !formData.state || citiesLoading || !cities.length || cityResolved.current) return;
+    const savedCity = String(formData.city || "").toLowerCase().replace(/[^a-z]/g, "");
+    const matchedCity = cities.find((city) => {
+      const masterName = city.name.toLowerCase().replace(/[^a-z]/g, "");
+      return masterName === savedCity || (masterName.length > 2 && savedCity.includes(masterName));
+    });
+    cityResolved.current = true;
+    if (matchedCity) setFormData((previous) => ({ ...previous, city: matchedCity.name }));
+    else setFormData((previous) => ({ ...previous, city: "" }));
+  }, [pageLoading, formData.state, formData.city, citiesLoading, cities]);
 
   // File previews (new uploads) + existing images from backend
   const [previews, setPreviews] = useState({
@@ -177,21 +210,11 @@ const UpdateDriver = () => {
   }, []);
 
   const parseAddressComponents = (place, addressType) => {
-    let state = "";
-    let city = "";
     let pincode = "";
 
     if (place.address_components) {
       for (const component of place.address_components) {
         const types = component.types;
-        if (types.includes("administrative_area_level_1")) {
-          state = component.long_name;
-        }
-        if (types.includes("locality") || types.includes("administrative_area_level_2")) {
-          if (!city || types.includes("locality")) {
-            city = component.long_name;
-          }
-        }
         if (types.includes("postal_code")) {
           pincode = component.long_name;
         }
@@ -203,8 +226,6 @@ const UpdateDriver = () => {
     setFormData((prev) => ({
       ...prev,
       [addressType]: formattedAddress,
-      state: state || prev.state,
-      city: city || prev.city,
       pincode: pincode || prev.pincode,
     }));
   };
@@ -280,6 +301,8 @@ const UpdateDriver = () => {
       errors.phone = "Phone number must be 10 digits";
     }
     if (!formData.email.trim()) errors.email = "Email is required.";
+    if (!formData.state) errors.state = "State is required.";
+    if (!formData.city) errors.city = "City is required.";
 
     if (Object.keys(errors).length > 0) {
       setApiError(errors);
@@ -478,25 +501,38 @@ const UpdateDriver = () => {
 
           {/* state */}
           <label className="ml-2 mt-5 font-normal block">State</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
+          <select
+            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500"
             name="state"
-            placeholder="Enter state"
             value={formData.state}
-            onChange={handleChange}
-          />
+            onChange={(event) => {
+              stateResolved.current = true;
+              cityResolved.current = true;
+              setFormData({ ...formData, state: event.target.value, city: "" });
+            }}
+            disabled={statesLoading}
+          >
+            <option value="">{statesLoading ? "Loading states..." : "Select state"}</option>
+            {states.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
+          </select>
+          {apiError.state && <p className="text-red-500 text-sm ml-2">{apiError.state}</p>}
 
           {/* city */}
           <label className="ml-2 mt-5 font-normal block">City</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
+          <select
+            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500 disabled:bg-gray-100"
             name="city"
-            placeholder="Enter city"
             value={formData.city}
-            onChange={handleChange}
-          />
+            onChange={(event) => {
+              cityResolved.current = true;
+              setFormData({ ...formData, city: event.target.value });
+            }}
+            disabled={!formData.state || citiesLoading}
+          >
+            <option value="">{citiesLoading ? "Loading cities..." : formData.state ? "Select city" : "Select a state first"}</option>
+            {cities.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
+          </select>
+          {apiError.city && <p className="text-red-500 text-sm ml-2">{apiError.city}</p>}
 
           {/* pincode */}
           <label className="ml-2 mt-5 font-normal block">Pincode</label>

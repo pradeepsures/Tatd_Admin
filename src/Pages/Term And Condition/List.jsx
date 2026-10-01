@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import toast from "react-hot-toast";
 import RichTextEditor from "react-rte";
 import "react-rte/lib/RichTextEditor.css";
@@ -8,7 +9,7 @@ import Loader from "../../compoents/Loader";
 
 const TermCondition = () => {
 
-  const [activeType, setActiveType] = useState("user");
+  const [activeType, setActiveType] = useAdminListState("activeType", "user");
 
   const [terms, setTerms] = useState({
     user: RichTextEditor.createEmptyValue(),

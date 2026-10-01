@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -64,21 +65,21 @@ export default function AdminList() {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
-  const [search, setSearch] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [zeroBalance, setZeroBalance] = useState(false);
-  const [notZeroBalance, setNotZeroBalance] = useState(false);
+  const [search, setSearch] = useAdminListState("search", "");
+  const [searchQuery, setSearchQuery] = useAdminListState("searchQuery", "");
+  const [startDate, setStartDate] = useAdminListState("startDate", null);
+  const [endDate, setEndDate] = useAdminListState("endDate", null);
+  const [zeroBalance, setZeroBalance] = useAdminListState("zeroBalance", false);
+  const [notZeroBalance, setNotZeroBalance] = useAdminListState("notZeroBalance", false);
   const [isDateFilterModalOpen, setIsDateFilterModalOpen] = useState(false);
-  const [tempStartDate, setTempStartDate] = useState(null);
-  const [tempEndDate, setTempEndDate] = useState(null);
+  const [tempStartDate, setTempStartDate] = useAdminListState("tempStartDate", null);
+  const [tempEndDate, setTempEndDate] = useAdminListState("tempEndDate", null);
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage, setRowsPerPage] = useState(7);
 
 
