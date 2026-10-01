@@ -56,6 +56,8 @@ export default function DriverList() {
     isVerified: "",
     isOnline: "",
     isAvailable: "",
+    state: "",
+    city: "",
     startDate: "",
     endDate: "",
   });
@@ -65,6 +67,8 @@ export default function DriverList() {
     isVerified: "",
     isOnline: "",
     isAvailable: "",
+    state: "",
+    city: "",
     startDate: "",
     endDate: "",
   });
@@ -85,11 +89,18 @@ export default function DriverList() {
         isVerified: showUnverifiedOnly ? false : (appliedFilters.isVerified || undefined),
         isOnline: appliedFilters.isOnline || undefined,
         isAvailable: appliedFilters.isAvailable || undefined,
+        state: appliedFilters.state || undefined,
+        city: appliedFilters.city || undefined,
         startDate: appliedFilters.startDate || undefined,
         endDate: appliedFilters.endDate || undefined,
       });
 
       if (result?.status) {
+        const lastPage = Math.max(1, result.totalPage || 1);
+        if (page > lastPage) {
+          setPage(lastPage);
+          return;
+        }
         setData(result.data.map((i) => ({ ...i, id: i._id })));
         setTotalPages(result.totalPage);
         setTotalRecord(result.totalResult);
@@ -125,6 +136,8 @@ export default function DriverList() {
       isVerified: "",
       isOnline: "",
       isAvailable: "",
+      state: "",
+      city: "",
       startDate: "",
       endDate: "",
     };
@@ -430,6 +443,35 @@ export default function DriverList() {
 
             </div>
 
+            <div className="flex flex-wrap items-end gap-3 mb-6 rounded-lg border bg-white p-4">
+                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
+                    Verification
+                    <select value={filters.isVerified} onChange={(e) => setFilters({ ...filters, isVerified: e.target.value })} className="min-w-40 rounded-lg border px-3 py-2 font-normal">
+                        <option value="">All drivers</option>
+                        <option value="true">Verified</option>
+                        <option value="false">Not verified</option>
+                    </select>
+                </label>
+                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
+                    Availability
+                    <select value={filters.isOnline} onChange={(e) => setFilters({ ...filters, isOnline: e.target.value })} className="min-w-40 rounded-lg border px-3 py-2 font-normal">
+                        <option value="">Online and offline</option>
+                        <option value="true">Online</option>
+                        <option value="false">Offline</option>
+                    </select>
+                </label>
+                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
+                    State
+                    <input value={filters.state} onChange={(e) => setFilters({ ...filters, state: e.target.value })} placeholder="Filter by state" className="rounded-lg border px-3 py-2 font-normal" />
+                </label>
+                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
+                    City
+                    <input value={filters.city} onChange={(e) => setFilters({ ...filters, city: e.target.value })} placeholder="Filter by city" className="rounded-lg border px-3 py-2 font-normal" />
+                </label>
+                <button onClick={applyFilters} className="rounded-lg bg-primary px-4 py-2 text-white">Apply filters</button>
+                <button onClick={clearFilters} className="rounded-lg border px-4 py-2 text-gray-700">Clear</button>
+            </div>
+
             {/* TABLE */}
 
             <TableContainer component={Paper} className="rounded-xl shadow">
@@ -461,7 +503,7 @@ export default function DriverList() {
                         {data.length === 0 ? (
 
                             <TableRow>
-                                <TableCell colSpan={7} align="center">
+                                <TableCell colSpan={8} align="center">
                                     No Drivers Found
                                 </TableCell>
                             </TableRow>
@@ -668,7 +710,7 @@ export default function DriverList() {
 
             </TableContainer>
 
-            {totalRecord > rowsPerPage && (
+            {totalPages > 1 && (
 
                 <Stack spacing={2} alignItems="center" mt={6}>
 

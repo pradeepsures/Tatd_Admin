@@ -31,20 +31,24 @@ export const getAllDrivers = async ({
     isVerified,
     isOnline,
     isAvailable,
+    state,
+    city,
     startDate,
     endDate
 }) => {
     const token = localStorage.getItem("token");
 
     try {
-        let url = `${BASE_URL}/api/admin/drivers?page=${page}&limit=${limit}`;
-
-        if (search) url += `&search=${search}`;
-        if (isVerified !== undefined) url += `&isVerified=${isVerified}`;
-        if (isOnline !== undefined) url += `&isOnline=${isOnline}`;
-        if (isAvailable !== undefined) url += `&isAvailable=${isAvailable}`;
-        if (startDate) url += `&startDate=${startDate}`;
-        if (endDate) url += `&endDate=${endDate}`;
+        const params = new URLSearchParams({ page: String(page), limit: String(limit) });
+        if (search) params.set("search", search);
+        if (isVerified !== undefined) params.set("isVerified", String(isVerified));
+        if (isOnline !== undefined) params.set("isOnline", String(isOnline));
+        if (isAvailable !== undefined) params.set("isAvailable", String(isAvailable));
+        if (state) params.set("state", state);
+        if (city) params.set("city", city);
+        if (startDate) params.set("startDate", startDate);
+        if (endDate) params.set("endDate", endDate);
+        const url = `${BASE_URL}/api/admin/drivers?${params.toString()}`;
 
         const res = await fetch(url, {
             method: "GET",
