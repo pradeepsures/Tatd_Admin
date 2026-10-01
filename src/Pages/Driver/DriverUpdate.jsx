@@ -57,7 +57,7 @@ const UpdateDriver = () => {
   const { states, cities, statesLoading, citiesLoading } = useLocationOptions(formData.state);
 
   useEffect(() => {
-    if (pageLoading || statesLoading || stateResolved.current) return;
+    if (pageLoading || statesLoading || !states.length || stateResolved.current) return;
     const normalize = (value) => String(value || "").toLowerCase().replace(/[^a-z]/g, "");
     const savedState = normalize(formData.state);
     const savedCity = normalize(formData.city);
@@ -263,9 +263,15 @@ const UpdateDriver = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
+    setFormData((previous) => ({
+      ...previous,
       [name]: type === "checkbox" ? checked : value,
+    }));
+    setApiError((previous) => {
+      if (!previous[name]) return previous;
+      const next = { ...previous };
+      delete next[name];
+      return next;
     });
   };
 
@@ -306,6 +312,8 @@ const UpdateDriver = () => {
 
     if (Object.keys(errors).length > 0) {
       setApiError(errors);
+      const firstError = Object.values(errors)[0];
+      toast.error(firstError || "Please complete the required fields.");
       setLoading(false);
       return;
     }
@@ -377,12 +385,6 @@ const UpdateDriver = () => {
         JSON.stringify(formData.vehiclePreferenceCategories || []),
       );
 
-      console.log("====== FINAL PAYLOAD (FormData) ======");
-
-      for (let [key, value] of formDataToSend.entries()) {
-        console.log(key, ":", value, "| type:", typeof value);
-      }
-
       const res = await updateDriver(id, formDataToSend);
 
       if (res?.status) {
@@ -417,7 +419,7 @@ const UpdateDriver = () => {
           {/* Personal Info */}
           <label className="ml-2 mt-4 font-normal block">Full Name *</label>
           <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+            className={`w-full h-10 mb-1 border rounded-xl pl-4 ${apiError.name ? "border-red-500" : "border-gray-500"}`}
             type="text"
             name="name"
             placeholder="Enter full name"
@@ -449,19 +451,20 @@ const UpdateDriver = () => {
             onChange={handleChange}
           />
 
-          <label className="ml-2 mt-5 font-normal block">Email</label>
+          <label className="ml-2 mt-5 font-normal block">Email *</label>
           <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+            className={`w-full h-10 mb-1 border rounded-xl pl-4 ${apiError.email ? "border-red-500" : "border-gray-500"}`}
             type="email"
             name="email"
             placeholder="Enter email"
             value={formData.email}
             onChange={handleChange}
           />
+          {apiError.email && <p className="text-red-500 text-sm ml-2">{apiError.email}</p>}
 
           <label className="ml-2 mt-5 font-normal block">Phone Number *</label>
           <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+            className={`w-full h-10 mb-1 border rounded-xl pl-4 ${apiError.phone ? "border-red-500" : "border-gray-500"}`}
             type="tel"
             name="phone"
             placeholder="Enter phone number"
@@ -470,7 +473,8 @@ const UpdateDriver = () => {
             inputMode="numeric"
             onChange={(e) => {
               const value = e.target.value.replace(/\D/g, "");
-              setFormData({ ...formData, phone: value });
+              setFormData((previous) => ({ ...previous, phone: value }));
+              setApiError((previous) => ({ ...previous, phone: "" }));
             }}
           />
           {apiError.phone && (
@@ -500,14 +504,15 @@ const UpdateDriver = () => {
           </Select>
 
           {/* state */}
-          <label className="ml-2 mt-5 font-normal block">State</label>
+          <label className="ml-2 mt-5 font-normal block">State <span className="text-red-600">*</span></label>
           <select
-            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500"
+            className={`w-full h-10 mb-1 border rounded-xl px-3 ${apiError.state ? "border-red-500" : "border-gray-500"}`}
             name="state"
             value={formData.state}
             onChange={(event) => {
               stateResolved.current = true;
               cityResolved.current = true;
+              setApiError((previous) => ({ ...previous, state: "", city: "" }));
               setFormData({ ...formData, state: event.target.value, city: "" });
             }}
             disabled={statesLoading}
@@ -518,13 +523,14 @@ const UpdateDriver = () => {
           {apiError.state && <p className="text-red-500 text-sm ml-2">{apiError.state}</p>}
 
           {/* city */}
-          <label className="ml-2 mt-5 font-normal block">City</label>
+          <label className="ml-2 mt-5 font-normal block">City <span className="text-red-600">*</span></label>
           <select
-            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500 disabled:bg-gray-100"
+            className={`w-full h-10 mb-1 border rounded-xl px-3 disabled:bg-gray-100 ${apiError.city ? "border-red-500" : "border-gray-500"}`}
             name="city"
             value={formData.city}
             onChange={(event) => {
               cityResolved.current = true;
+              setApiError((previous) => ({ ...previous, city: "" }));
               setFormData({ ...formData, city: event.target.value });
             }}
             disabled={!formData.state || citiesLoading}
@@ -978,10 +984,10 @@ const UpdateDriver = () => {
           <div className="flex justify-end items-center gap-4 mt-6">
             <button
               type="submit"
-              disabled={loading}
-              className="bg-primary text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 px-6 rounded-2xl"
+              disabled={loading || statesLoading}
+              className="bg-primary text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 px-6 rounded-2xl disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Updating Driver..." : "Update Driver"}
+              {loading ? "Updating Driver..." : statesLoading ? "Loading states..." : "Update Driver"}
             </button>
 
             <button
