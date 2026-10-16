@@ -60,10 +60,12 @@ const UpdateDriver = () => {
     if (pageLoading || statesLoading || !states.length || stateResolved.current) return;
     const normalize = (value) => String(value || "").toLowerCase().replace(/[^a-z]/g, "");
     const savedState = normalize(formData.state);
-    const savedCity = normalize(formData.city);
+    const savedLocation = normalize(
+      [formData.city, formData.currentAddress, formData.permanentAddress].filter(Boolean).join(" ")
+    );
     const matchedState = states.find((state) => {
       const masterName = normalize(state.name);
-      return masterName === savedState || (masterName.length > 2 && savedCity.includes(masterName));
+      return masterName === savedState || (masterName.length > 2 && savedLocation.includes(masterName));
     });
     stateResolved.current = true;
     setFormData((previous) => ({
@@ -75,10 +77,14 @@ const UpdateDriver = () => {
 
   useEffect(() => {
     if (pageLoading || !formData.state || citiesLoading || !cities.length || cityResolved.current) return;
-    const savedCity = String(formData.city || "").toLowerCase().replace(/[^a-z]/g, "");
+    const savedLocation = [formData.city, formData.currentAddress, formData.permanentAddress]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase()
+      .replace(/[^a-z]/g, "");
     const matchedCity = cities.find((city) => {
       const masterName = city.name.toLowerCase().replace(/[^a-z]/g, "");
-      return masterName === savedCity || (masterName.length > 2 && savedCity.includes(masterName));
+      return masterName === savedLocation || (masterName.length > 2 && savedLocation.includes(masterName));
     });
     cityResolved.current = true;
     if (matchedCity) setFormData((previous) => ({ ...previous, city: matchedCity.name }));
@@ -984,10 +990,10 @@ const UpdateDriver = () => {
           <div className="flex justify-end items-center gap-4 mt-6">
             <button
               type="submit"
-              disabled={loading || statesLoading}
+              disabled={loading}
               className="bg-primary text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 px-6 rounded-2xl disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {loading ? "Updating Driver..." : statesLoading ? "Loading states..." : "Update Driver"}
+              {loading ? "Updating Driver..." : "Update Driver"}
             </button>
 
             <button
