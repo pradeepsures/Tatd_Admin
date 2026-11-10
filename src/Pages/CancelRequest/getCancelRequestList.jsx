@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -33,7 +34,7 @@ export default function CancelRequestList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const rowsPerPage = 7;
 
   const [anchorEl, setAnchorEl] = useState(null);

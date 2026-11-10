@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -70,10 +71,10 @@ export default function RegionList() {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [page, setPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useAdminListState("searchQuery", "");
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage] = useState(7);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useAdminListState("search", "");
   const [isExporting, setIsExporting] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);

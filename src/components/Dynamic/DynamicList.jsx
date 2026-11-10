@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useNavigate } from "react-router-dom";
 import { styled } from "@mui/material/styles";
 import {
@@ -61,9 +62,9 @@ export default function DynamicList({ config }) {
   const [loading, setLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
   const [totalRecord, setTotalRecord] = useState(0);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useAdminListState("searchQuery", "");
   const [isExporting, setIsExporting] = useState(false);
   
   const [anchorEl, setAnchorEl] = useState(null);

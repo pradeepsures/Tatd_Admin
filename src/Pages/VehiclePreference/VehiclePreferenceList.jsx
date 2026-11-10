@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 
@@ -53,11 +54,11 @@ export default function VehiclePreferenceList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [totalPages, setTotalPages] = useState(1);
 
-  const [search, setSearch] = useState("");
-  const [tempSearch, setTempSearch] = useState("");
+  const [search, setSearch] = useAdminListState("search", "");
+  const [tempSearch, setTempSearch] = useAdminListState("tempSearch", "");
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedId, setSelectedId] = useState(null);

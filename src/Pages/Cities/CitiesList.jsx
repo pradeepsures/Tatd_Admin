@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { styled } from "@mui/material/styles";
@@ -64,20 +65,20 @@ export default function CitiesList() {
   const [states, setStates] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const rowsPerPage = 10;
 
   // SEARCH + FILTER STATES (TEMP)
-  const [search, setSearch] = useState("");
-  const [tempSearch, setTempSearch] = useState("");
+  const [search, setSearch] = useAdminListState("search", "");
+  const [tempSearch, setTempSearch] = useAdminListState("tempSearch", "");
 
-  const [stateFilter, setStateFilter] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [stateFilter, setStateFilter] = useAdminListState("stateFilter", "");
+  const [statusFilter, setStatusFilter] = useAdminListState("statusFilter", "");
 
   // ACTIVE FILTERS (APPLIED)
-  const [appliedSearch, setAppliedSearch] = useState("");
-  const [appliedState, setAppliedState] = useState("");
-  const [appliedStatus, setAppliedStatus] = useState("");
+  const [appliedSearch, setAppliedSearch] = useAdminListState("appliedSearch", "");
+  const [appliedState, setAppliedState] = useAdminListState("appliedState", "");
+  const [appliedStatus, setAppliedStatus] = useAdminListState("appliedStatus", "");
 
   const [totalPages, setTotalPages] = useState(1);
 

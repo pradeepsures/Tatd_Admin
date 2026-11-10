@@ -1,4 +1,5 @@
 // import React, { useState, useEffect } from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 // import toast from "react-hot-toast";
 // import RichTextEditor from "react-rte";
 // import "react-rte/lib/RichTextEditor.css";
@@ -6,7 +7,7 @@
 // import Breaker from "../../compoents/Breaker";
 // import Loader from "../../compoents/Loader";
 // const AboutUs = () => {
-//   const [activeType, setActiveType] = useState("user");
+//   const [activeType, setActiveType] = useAdminListState("activeType", "user");
 //   const [aboutValues, setAboutValues] = useState({
 //     user: RichTextEditor.createEmptyValue(),
 //     astrologer: RichTextEditor.createEmptyValue(),
@@ -167,7 +168,7 @@ import Breaker from "../../compoents/Breaker";
 import Loader from "../../compoents/Loader";
 
 const AboutUs = () => {
-  const [activeType, setActiveType] = useState("user");
+  const [activeType, setActiveType] = useAdminListState("activeType", "user");
 
   const [aboutValues, setAboutValues] = useState({
     user: RichTextEditor.createEmptyValue(),

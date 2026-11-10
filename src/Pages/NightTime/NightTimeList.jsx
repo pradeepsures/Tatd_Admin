@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 
@@ -64,7 +65,7 @@ export default function NightTimesList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const rowsPerPage = 10;
 
   const [totalPages, setTotalPages] = useState(1);

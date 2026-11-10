@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   IconButton, Menu, MenuItem, Pagination, Stack,
@@ -16,7 +17,7 @@ export default function TripCancelRequestList() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const [totalPages, setTotalPages] = useState(1);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selected, setSelected] = useState(null);

@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState } from "react";
 
 import { styled } from "@mui/material/styles";
@@ -100,7 +101,7 @@ export default function HourlyBookingList() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
 
   const rowsPerPage = 15;
 
@@ -120,7 +121,7 @@ export default function HourlyBookingList() {
   const [activeBooking, setActiveBooking] = useState(null);
 
   // FILTERS
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useAdminListState("filters", {
     searchQuery: "",
     startDate: "",
     endDate: "",

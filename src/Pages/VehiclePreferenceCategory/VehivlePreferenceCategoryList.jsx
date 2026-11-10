@@ -1,4 +1,5 @@
 import * as React from "react";
+import useAdminListState from "../../hooks/useAdminListState";
 import { useEffect, useState, useCallback } from "react";
 import { styled } from "@mui/material/styles";
 
@@ -82,22 +83,20 @@ export default function VehiclePreferenceCategoryList() {
 
   const [loading, setLoading] = useState(false);
 
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useAdminListState("page", 1);
   const rowsPerPage = 10;
 
   const [totalPages, setTotalPages] = useState(1);
 
   // FILTERS
-  const [tempSearch, setTempSearch] = useState("");
-  const [search, setSearch] = useState("");
+  const [tempSearch, setTempSearch] = useAdminListState("tempSearch", "");
+  const [search, setSearch] = useAdminListState("search", "");
 
-  const [statusFilter, setStatusFilter] = useState("");
-  const [vehiclePreferenceFilter, setVehiclePreferenceFilter] =
-    useState("");
+  const [statusFilter, setStatusFilter] = useAdminListState("statusFilter", "");
+  const [vehiclePreferenceFilter, setVehiclePreferenceFilter] = useAdminListState("vehiclePreferenceFilter", "");
 
-  const [appliedStatus, setAppliedStatus] = useState("");
-  const [appliedVehiclePreference, setAppliedVehiclePreference] =
-    useState("");
+  const [appliedStatus, setAppliedStatus] = useAdminListState("appliedStatus", "");
+  const [appliedVehiclePreference, setAppliedVehiclePreference] = useAdminListState("appliedVehiclePreference", "");
 
   // MODALS
   const [createModal, setCreateModal] = useState(false);

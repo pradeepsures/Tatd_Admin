@@ -8,6 +8,7 @@ import { Select, Switch } from "antd";
 const { Option } = Select;
 import { getAllVehiclePreferences } from "../../Services/VehiclePreferenceApi";
 import { getAllVehiclePreferenceCategories } from "../../Services/VehiclePreferenceCategoryApi";
+import useLocationOptions from "../../hooks/useLocationOptions";
 
 const CreateDriver = () => {
   const navigate = useNavigate();
@@ -48,6 +49,7 @@ const CreateDriver = () => {
     vehiclePreferences: [],
     vehiclePreferenceCategories: [],
   });
+  const { states, cities, statesLoading, citiesLoading } = useLocationOptions(formData.state);
 
   // File previews
   const [previews, setPreviews] = useState({
@@ -101,21 +103,11 @@ const CreateDriver = () => {
   }, []);
 
   const parseAddressComponents = (place, addressType) => {
-    let state = "";
-    let city = "";
     let pincode = "";
 
     if (place.address_components) {
       for (const component of place.address_components) {
         const types = component.types;
-        if (types.includes("administrative_area_level_1")) {
-          state = component.long_name;
-        }
-        if (types.includes("locality") || types.includes("administrative_area_level_2")) {
-          if (!city || types.includes("locality")) {
-            city = component.long_name;
-          }
-        }
         if (types.includes("postal_code")) {
           pincode = component.long_name;
         }
@@ -127,8 +119,6 @@ const CreateDriver = () => {
     setFormData((prev) => ({
       ...prev,
       [addressType]: formattedAddress,
-      state: state || prev.state,
-      city: city || prev.city,
       pincode: pincode || prev.pincode,
     }));
   };
@@ -241,6 +231,8 @@ const CreateDriver = () => {
       errors.phone = "Phone number must be 10 digits";
     }
     if (!formData.email.trim()) errors.email = "Email is required.";
+    if (!formData.state) errors.state = "State is required.";
+    if (!formData.city) errors.city = "City is required.";
 
     if (Object.keys(errors).length > 0) {
       setApiError(errors);
@@ -418,25 +410,31 @@ const CreateDriver = () => {
 
           {/* state */}
           <label className="ml-2 mt-5 font-normal block">State</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
+          <select
+            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500"
             name="state"
-            placeholder="Enter state"
             value={formData.state}
-            onChange={handleChange}
-          />
+            onChange={(event) => setFormData({ ...formData, state: event.target.value, city: "" })}
+            disabled={statesLoading}
+          >
+            <option value="">{statesLoading ? "Loading states..." : "Select state"}</option>
+            {states.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
+          </select>
+          {apiError.state && <p className="text-red-500 text-sm ml-2">{apiError.state}</p>}
 
           {/* city */}
           <label className="ml-2 mt-5 font-normal block">City</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
+          <select
+            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500 disabled:bg-gray-100"
             name="city"
-            placeholder="Enter city"
             value={formData.city}
-            onChange={handleChange}
-          />
+            onChange={(event) => setFormData({ ...formData, city: event.target.value })}
+            disabled={!formData.state || citiesLoading}
+          >
+            <option value="">{citiesLoading ? "Loading cities..." : formData.state ? "Select city" : "Select a state first"}</option>
+            {cities.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
+          </select>
+          {apiError.city && <p className="text-red-500 text-sm ml-2">{apiError.city}</p>}
 
           {/* pincode */}
           <label className="ml-2 mt-5 font-normal block">Pincode</label>
