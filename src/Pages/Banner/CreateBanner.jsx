@@ -91,20 +91,24 @@ const CreateAgency = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
-        <Breaker />
-      </div>
+    <div className="page-shell">
+      <Breaker />
 
-      <div className="ml-5 mt-8 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-5">
+          <p className="section-label">Banner</p>
+          <h1 className="page-title">Create Banner</h1>
+        </div>
         <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {/* Platform */}
-          <label className="ml-2 mt-4 font-normal block">Platform:</label>
+          <div>
+          <label className="field-label">Platform:</label>
           <select
             name="platform"
             value={formData.platform}
             onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
+            className="field"
           >
             <option value="">Select Platform</option>
             <option value="web">Web</option>
@@ -112,28 +116,32 @@ const CreateAgency = () => {
             <option value="both">Both</option>
           </select>
           {apiError.platform && (
-            <p className="text-red-500 text-sm ml-2">{apiError.platform}</p>
+            <p className="field-error">{apiError.platform}</p>
           )}
+          </div>
 
           {/* Type – NEW FIELD */}
-          <label className="ml-2 mt-5 font-normal block">Banner For:</label>
+          <div>
+          <label className="field-label">Banner For:</label>
           <select
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
+            className="field"
           >
             <option value="user">User</option>
             <option value="driver">Driver</option>
           </select>
           {apiError.type && (
-            <p className="text-red-500 text-sm ml-2">{apiError.type}</p>
+            <p className="field-error">{apiError.type}</p>
           )}
+          </div>
 
           {/* Priority */}
-          <label className="ml-2 mt-5 font-normal block">Priority:</label>
+          <div>
+          <label className="field-label">Priority:</label>
           <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+            className="field"
             type="number"
             name="priority"
             placeholder="Priority"
@@ -141,21 +149,23 @@ const CreateAgency = () => {
             onChange={handleChange}
           />
           {apiError.priority && (
-            <p className="text-red-500 text-sm ml-2">{apiError.priority}</p>
+            <p className="field-error">{apiError.priority}</p>
           )}
+          </div>
 
           {/* Image Upload */}
-          <label className="ml-2 mt-5 font-normal block">Banner Image:</label>
+          <div>
+          <label className="field-label">Banner Image:</label>
           {imagePreview && (
             <img
               src={imagePreview}
               alt="Preview"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+              className="mb-3 h-20 w-32 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
             />
           )}
           <label
             htmlFor="image-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
+            className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/70 px-4 text-sm font-medium text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
           >
             🖼️ Upload Image
           </label>
@@ -168,32 +178,36 @@ const CreateAgency = () => {
             onChange={handleImageChange}
           />
           {apiError.image && (
-            <p className="text-red-500 text-sm ml-2">{apiError.image}</p>
+            <p className="field-error">{apiError.image}</p>
           )}
+          </div>
 
           {/* Status */}
-          <label className="ml-2 mt-5 font-normal block">Status:</label>
+          <div>
+          <label className="field-label">Status:</label>
           <select
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
+            className="field"
           >
             <option value="">Select Status</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
           {apiError.status && (
-            <p className="text-red-500 text-sm ml-2">{apiError.status}</p>
+            <p className="field-error">{apiError.status}</p>
           )}
+          </div>
+          </div>
 
           {/* Submit */}
-          <div className="flex justify-end items-center gap-4 mt-8">
+          <div className="mt-8 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row-reverse sm:justify-start">
 
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary text-white py-3 px-6 rounded-2xl"
+              className="btn-primary w-full sm:w-auto"
             >
               {loading ? "Creating..." : "Create Banner"}
             </button>
@@ -201,7 +215,7 @@ const CreateAgency = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="bg-gray-500 text-white py-3 px-6 rounded-2xl"
+              className="btn-secondary w-full sm:w-auto"
             >
               Back
             </button>

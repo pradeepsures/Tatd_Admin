@@ -73,49 +73,51 @@ export default function FeedbackTags() {
   if (loading && tags.length === 0) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-gradient-to-r from-[#03045E] via-[#023E8A] to-[#0077B6] text-white p-5 rounded-xl shadow mb-6">
-        <h2 className="text-xl font-semibold">Feedback Tags</h2>
-        <p className="text-sm opacity-80 mt-1">Manage tags drivers and users see after a ride</p>
+    <div className="page-shell">
+      <div className="page-header">
+        <div>
+          <h2 className="page-title">Feedback Tags</h2>
+          <p className="page-subtitle">Manage tags drivers and users see after a ride</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         
         {/* ADD FORM */}
-        <div className="md:col-span-1">
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-4 text-[#03045E]">Add New Tag</h3>
-            <form onSubmit={handleCreate} className="space-y-4">
+        <div className="lg:col-span-1">
+          <div className="card card-pad">
+            <h3 className="card-title mb-5 border-b border-slate-200/70 pb-4">Add New Tag</h3>
+            <form onSubmit={handleCreate} className="space-y-5">
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tag Text</label>
+                <label className="field-label">Tag Text</label>
                 <input
                   type="text"
                   value={newTagText}
                   onChange={(e) => setNewTagText(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+                  className="field"
                   placeholder="e.g. Excellent Driving"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Emoji (Optional)</label>
+                <label className="field-label">Emoji (Optional)</label>
                 <input
                   type="text"
                   value={newTagEmoji}
                   onChange={(e) => setNewTagEmoji(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+                  className="field"
                   placeholder="🚗"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Type</label>
+                <label className="field-label">Type</label>
                 <select
                   value={newTagType}
                   onChange={(e) => setNewTagType(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+                  className="field"
                 >
                   <option value="positive">Positive</option>
                   <option value="negative">Negative</option>
@@ -125,7 +127,7 @@ export default function FeedbackTags() {
               <button
                 type="submit"
                 disabled={saving}
-                className="w-full bg-primary text-white px-4 py-2 rounded-lg font-medium hover:bg-opacity-90 disabled:opacity-50 transition-colors"
+                className="btn-primary w-full"
               >
                 {saving ? <LoderBtn /> : "Add Tag"}
               </button>
@@ -134,39 +136,39 @@ export default function FeedbackTags() {
         </div>
 
         {/* TAG LIST */}
-        <div className="md:col-span-2">
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-4 text-[#03045E]">Active Tags</h3>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+        <div className="lg:col-span-2">
+          <div className="card card-pad">
+            <h3 className="card-title mb-4">Active Tags</h3>
+
+            <div className="overflow-x-auto rounded-xl ring-1 ring-slate-200/70">
+              <table className="w-full min-w-[480px] text-left border-collapse text-sm">
                 <thead>
-                  <tr className="border-b">
-                    <th className="py-3 px-4 font-semibold text-gray-700">Emoji</th>
-                    <th className="py-3 px-4 font-semibold text-gray-700">Text</th>
-                    <th className="py-3 px-4 font-semibold text-gray-700">Type</th>
-                    <th className="py-3 px-4 font-semibold text-gray-700 text-center">Action</th>
+                  <tr className="border-b border-[#c99a2e]/40 bg-[#171b25] text-[11px] font-semibold uppercase tracking-wider text-white/75">
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75">Emoji</th>
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75">Text</th>
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75">Type</th>
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75 text-center">Action</th>
                   </tr>
                 </thead>
                 <tbody>
                   {tags.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="py-4 text-center text-gray-500">No Feedback Tags found</td>
+                      <td colSpan="4" className="py-14 text-center text-slate-400">No Feedback Tags found</td>
                     </tr>
                   ) : (
                     tags.map((tag) => (
-                      <tr key={tag._id} className="border-b hover:bg-gray-50">
+                      <tr key={tag._id} className="border-b border-slate-200/70 last:border-0 transition-colors hover:bg-slate-50/80">
                         <td className="py-3 px-4 text-xl">{tag.emoji}</td>
-                        <td className="py-3 px-4 font-medium">{tag.text}</td>
+                        <td className="py-3 px-4 font-medium text-slate-800">{tag.text}</td>
                         <td className="py-3 px-4">
-                          <span className={`px-2 py-1 text-xs rounded-full ${tag.type === 'positive' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          <span className={`capitalize ${tag.type === 'positive' ? 'badge-success' : 'badge-danger'}`}>
                             {tag.type}
                           </span>
                         </td>
                         <td className="py-3 px-4 text-center">
                           <button
                             onClick={() => handleDelete(tag._id)}
-                            className="text-red-500 hover:text-red-700 p-1"
+                            className="btn-icon hover:!bg-rose-50 hover:!text-rose-600"
                             title="Delete"
                           >
                             <TrashIcon className="h-5 w-5 mx-auto" />

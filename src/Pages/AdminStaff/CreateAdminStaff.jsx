@@ -92,55 +92,56 @@ const CreateAdminStaff = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
-        <Breaker />
-      </div>
-      <div className="ml-5 mt-10 bg-white p-8 max-w-2xl rounded-xl shadow-xl">
-        <h2 className="text-2xl font-semibold mb-6 text-gray-800">Add New Admin Staff</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="page-shell">
+      <Breaker />
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-5">
+          <p className="section-label">Access</p>
+          <h2 className="page-title">Add New Admin Staff</h2>
+        </div>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 md:grid-cols-2">
           
           <div>
-            <label className="block ml-1 opacity-85 font-medium mb-1">Name:</label>
+            <label className="field-label">Name:</label>
             <input
-              className="w-full h-11 border rounded-xl px-4 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="field"
               type="text"
               name="userName"
               placeholder="Full Name"
               value={formData.userName}
               onChange={handleChange}
             />
-            {apiError.userName && <p className="text-red-500 text-sm mt-1 ml-1">{apiError.userName}</p>}
+            {apiError.userName && <p className="field-error">{apiError.userName}</p>}
           </div>
 
           <div>
-            <label className="block ml-1 opacity-85 font-medium mb-1">Email:</label>
+            <label className="field-label">Email:</label>
             <input
-              className="w-full h-11 border rounded-xl px-4 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="field"
               type="email"
               name="email"
               placeholder="Email Address"
               value={formData.email}
               onChange={handleChange}
             />
-            {apiError.email && <p className="text-red-500 text-sm mt-1 ml-1">{apiError.email}</p>}
+            {apiError.email && <p className="field-error">{apiError.email}</p>}
           </div>
 
           <div>
-            <label className="block ml-1 opacity-85 font-medium mb-1">Password:</label>
+            <label className="field-label">Password:</label>
             <input
-              className="w-full h-11 border rounded-xl px-4 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="field"
               type="password"
               name="password"
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
             />
-            {apiError.password && <p className="text-red-500 text-sm mt-1 ml-1">{apiError.password}</p>}
+            {apiError.password && <p className="field-error">{apiError.password}</p>}
           </div>
 
           <div>
-            <label className="block ml-1 opacity-85 font-medium mb-1">Assign Role:</label>
+            <label className="field-label">Assign Role:</label>
             <Select
               showSearch
               placeholder="Select a Role"
@@ -158,14 +159,14 @@ const CreateAdminStaff = () => {
                 </Option>
               ))}
             </Select>
-            {apiError.role && <p className="text-red-500 text-sm mt-1 ml-1">{apiError.role}</p>}
+            {apiError.role && <p className="field-error">{apiError.role}</p>}
           </div>
 
-          <div className="flex justify-end pt-4">
+          <div className="flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end md:col-span-2">
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 bg-primary text-white font-medium hover:scale-105 active:scale-95 transition-transform duration-300 rounded-xl shadow-md"
+              className="btn-primary w-full sm:w-auto"
             >
               {loading ? "Creating..." : "Create Staff"}
             </button>

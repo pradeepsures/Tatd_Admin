@@ -1,27 +1,12 @@
 import React from 'react';
-import { Alert, Flex, Spin } from 'antd';
-import '../App.css'; // make sure to import the CSS file
 
-const contentStyle = {
-  width: 400,            // Added width
-  height: 400,           // Added height
-  padding: 50,
-  background: 'rgba(0, 0, 0, 0.05)',
-  borderRadius: 7,
-};
-
-const content = <div style={contentStyle} />;
-
-const App = () => (
-  <div className='min-h-screen flex justify-center items-center'>
-    <Flex gap="middle" vertical>
-      <Flex>
-        <Spin size="large">
-          {content}
-        </Spin>
-      </Flex>
-    </Flex>
+const Loader = () => (
+  <div className="flex min-h-[50vh] w-full items-center justify-center" role="status" aria-label="Loading">
+    <span
+      className="h-7 w-7 rounded-full border-2 border-gray-200 border-t-gray-800"
+      style={{ animation: 'spin-slow 0.75s linear infinite' }}
+    />
   </div>
 );
 
-export default App;
+export default Loader;

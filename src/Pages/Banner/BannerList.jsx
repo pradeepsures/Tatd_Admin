@@ -211,12 +211,12 @@ export default function BannerList() {
   }
   if (loading) return <Loader />;
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <Breaker />
-      </div>
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
+    <div className="page-shell">
+      <Breaker />
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Banners</h1>
+          <p className="page-subtitle">{totalRecord} record{totalRecord === 1 ? "" : "s"} found</p>
           {/* <input
             type="text"
             placeholder="Search banners by title..."
@@ -235,11 +235,11 @@ export default function BannerList() {
             Search
           </button> */}
         </div>
-        <div className="flex gap-4">
+        <div className="page-actions">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => exportFunc(data)}
-            className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-green-700 transition-colors"
+            className="btn-secondary"
             aria-label="Export banners to Excel"
           >
             {isExporting ? (
@@ -256,7 +256,7 @@ export default function BannerList() {
               whileTap={{ scale: 0.95 }}
               onClick={handleAddClick}
               data-aos="fade-left"
-              className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:shadow-lg transition-shadow"
+              className="btn-primary"
               aria-label="Add new banner"
             >
               {isLoading ? (
@@ -274,7 +274,7 @@ export default function BannerList() {
 
       <TableContainer
         component={Paper}
-        className="rounded-xl shadow-lg overflow-hidden"
+        className="overflow-hidden"
       >
         <Table sx={{ minWidth: 700 }} aria-label="banner table">
           <TableHead>
@@ -293,7 +293,7 @@ export default function BannerList() {
                 <StyledTableCell
                   colSpan={6}
                   align="center"
-                  className="py-8 text-gray-500 text-lg"
+                  className="!py-14 !text-slate-400"
                 >
                   No banners found
                 </StyledTableCell>
@@ -307,7 +307,7 @@ export default function BannerList() {
                   <StyledTableCell>
                     {row.image ? (
                       <img
-                        className="h-12 w-16 rounded-md object-cover border-2 border-gray-200 shadow-sm"
+                        className="h-12 w-20 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
                         src={getImageUrl(row.image)}
                         alt={row.title || "Banner image"}
                         onError={(e) =>
@@ -315,7 +315,7 @@ export default function BannerList() {
                         }
                       />
                     ) : (
-                      <div className="h-12 w-16 rounded-md bg-gray-100 flex items-center justify-center text-gray-500 text-sm font-medium">
+                      <div className="h-12 w-20 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 text-xs font-medium ring-1 ring-black/5">
                         N/A
                       </div>
                     )}
@@ -328,10 +328,10 @@ export default function BannerList() {
                   </StyledTableCell> */}
                   <StyledTableCell>
                     <span
-                      className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                      className={`${
                         row.status
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
+                          ? "badge-success"
+                          : "badge-danger"
                       }`}
                     >
                       {row.status ? "Active" : "Inactive"}
@@ -400,7 +400,7 @@ export default function BannerList() {
       </TableContainer>
 
       {totalRecord > rowsPerPage && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={4}>
           <Pagination
             count={totalPages}
             page={page}

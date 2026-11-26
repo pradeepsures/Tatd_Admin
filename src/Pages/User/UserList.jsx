@@ -36,7 +36,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import xlsx from "json-as-xlsx";
 import { useAuth } from "../../auth/AuthContext";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon, FunnelIcon } from "@heroicons/react/24/outline";
 import { getImageUrl } from "../../utils/imageUtils";
 import { StyledTableCell } from "../../compoents/TableComponents";
 
@@ -322,41 +322,52 @@ export default function AdminList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-4 bg-gray-50 min-h-screen">
-      <div className="mb-4">
-        <Breaker />
+    <div className="page-shell">
+      <Breaker />
+
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">App Users</h1>
+          <p className="page-subtitle">{totalRecord} records</p>
+        </div>
       </div>
 
       {/* Search + Buttons */}
-      <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
-        <div className="flex items-center gap-3 flex-wrap">
-          <input
-            type="text"
-            placeholder="Search by name, email, mobile..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="min-w-[280px] max-w-md w-full px-4 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500"
-          />
-          <button
-            onClick={handleSearch}
-            className="bg-gradient-to-l from-[#5F0099] to-[#9F00FF] text-white px-6 py-2.5 rounded-lg font-medium shadow hover:brightness-105"
-          >
-            Search
-          </button>
-          <button
-            onClick={handleClearFilters}
-            className="bg-gradient-to-r from-gray-600 to-gray-800 text-white px-6 py-2.5 rounded-lg font-medium shadow hover:brightness-105"
-          >
-            Clear
-          </button>
+      <div className="card card-pad flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
+          <div className="relative w-full sm:w-80">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by name, email, mobile..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-field w-full"
+            />
+          </div>
+          <div className="flex gap-3">
+            <button
+              onClick={handleSearch}
+              className="btn-primary flex-1 sm:flex-none"
+            >
+              Search
+            </button>
+            <button
+              onClick={handleClearFilters}
+              className="btn-secondary flex-1 sm:flex-none"
+            >
+              Clear
+            </button>
+          </div>
         </div>
 
-        <div className="flex flex-wrap gap-3">
+        <div className="page-actions">
           <motion.button
             whileTap={{ scale: 0.97 }}
             onClick={handleFilterMenuOpen}
-            className="bg-gradient-to-l from-[#5F0099] to-[#9F00FF] text-white px-6 py-2.5 rounded-lg font-medium shadow hover:brightness-105"
+            className="btn-secondary"
           >
+            <FunnelIcon className="h-4 w-4" />
             Filters
           </motion.button>
 
@@ -364,10 +375,10 @@ export default function AdminList() {
             anchorEl={filterAnchorEl}
             open={Boolean(filterAnchorEl)}
             onClose={handleFilterMenuClose}
-            PaperProps={{ sx: { minWidth: 280 } }}
+            PaperProps={{ sx: { minWidth: 280, borderRadius: "16px" } }}
           >
-            <div className="px-4 py-3 border-b">
-              <h6 className="font-semibold  text-gray-800">Filters</h6>
+            <div className="border-b border-slate-200/70 px-4 py-3">
+              <h6 className="text-sm font-bold text-slate-900">Filters</h6>
             </div>
 
             <MenuItem
@@ -380,15 +391,15 @@ export default function AdminList() {
             >
               Date Range{" "}
               {startDate && endDate && (
-                <span className="ml-2 text-xs text-green-600">(Active)</span>
+                <span className="badge-success ml-2">Active</span>
               )}
             </MenuItem>
 
-            <div className="px-4 py-3 border-t mt-2">
-              <p className="text-sm font-medium text-gray-700 mb-2">
+            <div className="mt-2 border-t border-slate-200/70 px-4 py-3">
+              <p className="section-label mb-2">
                 Wallet Balance
               </p>
-              <label className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2 rounded">
+              <label className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50">
                 <input
                   type="checkbox"
                   checked={zeroBalance}
@@ -398,11 +409,11 @@ export default function AdminList() {
                     setPage(1);
                     fetchData();
                   }}
-                  className="h-4 w-4 text-red-600"
+                  className="h-4 w-4 rounded accent-[#111827]"
                 />
                 <span>Zero Balance</span>
               </label>
-              <label className="flex items-center gap-2 py-1 cursor-pointer hover:bg-gray-50 px-2 rounded">
+              <label className="flex cursor-pointer items-center gap-2 rounded-lg px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50">
                 <input
                   type="checkbox"
                   checked={notZeroBalance}
@@ -412,13 +423,13 @@ export default function AdminList() {
                     setPage(1);
                     fetchData();
                   }}
-                  className="h-4 w-4 text-red-600"
+                  className="h-4 w-4 rounded accent-[#111827]"
                 />
                 <span>Has Balance</span>
               </label>
             </div>
 
-            <div className="p-3 border-t flex gap-2">
+            <div className="flex gap-2 border-t border-slate-200/70 p-3">
               {/* <button
                 onClick={applyFilters}
                 className="flex-1 bg-gradient-to-r from-red-600 to-red-700 text-white py-2 rounded font-medium"
@@ -433,7 +444,7 @@ export default function AdminList() {
                   fetchData();
                   handleFilterMenuClose();
                 }}
-                className="flex-1 bg-gray-200 text-gray-800 py-2 rounded font-medium hover:bg-gray-300"
+                className="btn-secondary w-full"
               >
                 Clear Balance
               </button>
@@ -444,9 +455,9 @@ export default function AdminList() {
             whileTap={{ scale: 0.97 }}
             onClick={handleExport}
             disabled={isExporting}
-            className={`px-6 py-2.5 rounded-lg font-medium shadow transition ${isExporting
-              ? "bg-gray-400 text-gray-200 cursor-not-allowed"
-              : "bg-green-600 text-white hover:bg-green-700"
+            className={`btn-success ${isExporting
+              ? "cursor-not-allowed opacity-60"
+              : ""
               }`}
           >
             {isExporting ? (
@@ -462,7 +473,7 @@ export default function AdminList() {
             <motion.button
               whileTap={{ scale: 0.97 }}
               onClick={handleAddClick}
-              className="bg-gradient-to-l from-[#5F0099] to-[#9F00FF] text-white px-6 py-2.5 rounded-lg font-medium shadow hover:brightness-105"
+              className="btn-primary"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
@@ -485,9 +496,9 @@ export default function AdminList() {
         okText="Apply"
         cancelText="Cancel"
       >
-        <div className="flex flex-col sm:flex-row gap-6 p-4">
+        <div className="flex flex-col gap-5 py-3 sm:flex-row">
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-1">Start Date</label>
+            <label className="field-label">Start Date</label>
             <DatePicker
               selected={tempStartDate}
               onChange={setTempStartDate}
@@ -495,11 +506,11 @@ export default function AdminList() {
               startDate={tempStartDate}
               endDate={tempEndDate}
               dateFormat="yyyy-MM-dd"
-              className="w-full px-3 py-2 border rounded-lg"
+              className="field"
             />
           </div>
           <div className="flex-1">
-            <label className="block text-sm font-medium mb-1">End Date</label>
+            <label className="field-label">End Date</label>
             <DatePicker
               selected={tempEndDate}
               onChange={setTempEndDate}
@@ -508,7 +519,7 @@ export default function AdminList() {
               endDate={tempEndDate}
               minDate={tempStartDate}
               dateFormat="yyyy-MM-dd"
-              className="w-full px-3 py-2 border rounded-lg"
+              className="field"
               disabled={!tempStartDate}
             />
           </div>
@@ -518,7 +529,7 @@ export default function AdminList() {
       {/* Table */}
       <TableContainer
         component={Paper}
-        className="shadow-lg rounded-lg overflow-hidden"
+        className="overflow-hidden"
       >
         <Table stickyHeader>
           <TableHead>
@@ -540,7 +551,7 @@ export default function AdminList() {
                 <StyledTableCell
                   colSpan={8}
                   align="center"
-                  className="py-12 text-gray-500"
+                  className="!py-14 !text-slate-400"
                 >
                   No app users found
                 </StyledTableCell>
@@ -555,17 +566,17 @@ export default function AdminList() {
                     <img
                       src={getImageUrl(row.profileImage || row.profilePic) || "/no-image.png"}
                       alt="profile"
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="h-10 w-10 rounded-full object-cover ring-1 ring-black/5"
                     />
                   </StyledTableCell>
                   <StyledTableCell>
-                    <div className="font-medium text-gray-900">
+                    <div className="font-semibold text-slate-900">
                       {row.name || "—"}
                     </div>
-                    <div className="text-sm text-gray-600">
+                    <div className="text-sm text-slate-600">
                       {row.email || "—"}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-slate-500">
                       {row.mobile || "—"}
                     </div>
                   </StyledTableCell>
@@ -583,10 +594,10 @@ export default function AdminList() {
                   </StyledTableCell>
                   <StyledTableCell>
                     <span
-                      className={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${row.status
-                        ? "bg-green-100 text-green-800"
-                        : "bg-red-100 text-red-800"
-                        }`}
+                      className={row.status
+                        ? "badge-success"
+                        : "badge-danger"
+                        }
                     >
                       {row.status ? "Active" : "Inactive"}
                     </span>
@@ -648,9 +659,9 @@ export default function AdminList() {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4">
+        <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
           <div className="flex items-center gap-3">
-            <span className="text-gray-700 font-medium">Rows per page:</span>
+            <span className="text-sm font-medium text-slate-600">Rows per page:</span>
             <Select
               value={rowsPerPage}
               onChange={handleRowsPerPageChange}

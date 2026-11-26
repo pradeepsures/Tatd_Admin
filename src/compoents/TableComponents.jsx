@@ -3,19 +3,18 @@ import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 
 export const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #0f172a, #1e293b, #334155)", // Unified premium slate gradient
-    color: "#ffffff",
+    background: "#f9fafb",
+    color: "#667085",
     fontWeight: 600,
-    fontSize: "0.875rem",
-    textTransform: "uppercase",
-    letterSpacing: "0.05em",
-    borderBottom: "none",
-    padding: "12px 16px",
+    fontSize: "0.75rem",
+    borderBottom: "1px solid #e4e7ec",
+    padding: "11px 16px",
+    whiteSpace: "nowrap",
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: "0.875rem",
-    color: "#334155",
-    borderBottom: "1px solid #f1f5f9",
+    color: "#344054",
+    borderBottom: "1px solid #eaecf0",
     padding: "12px 16px",
   },
 }));

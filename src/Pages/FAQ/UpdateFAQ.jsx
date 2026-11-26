@@ -59,12 +59,16 @@ export default function UpdateFAQ() {
   };
 
   return (
-    <div className="max-w-9xl    mx-auto bg-white shadow-lg rounded-2xl p-6">
+    <div className="page-shell">
       <Breaker />
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold mb-4 text-gray-700">Update FAQ</h2>
+    <div className="card p-5 sm:p-8">
+      <div className="mb-6 flex flex-col gap-3 border-b border-slate-200/70 pb-5 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="section-label">FAQ</p>
+          <h2 className="page-title">Update FAQ</h2>
+        </div>
 
-        <div className="mb-4 flex justify-end items-center gap-2">
+        <div className="flex items-center justify-end gap-2">
           {/* <label className="text-xl font-medium text-gray-600">
             Language:
           </label> */}
@@ -86,10 +90,10 @@ export default function UpdateFAQ() {
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Question */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="field-label">
             Question
           </label>
           <input
@@ -98,13 +102,13 @@ export default function UpdateFAQ() {
             value={formData.question}
             onChange={handleChange}
             required
-            className="w-full p-2 border rounded-md"
+            className="field"
           />
         </div>
 
         {/* Answer */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="field-label">
             Answer
           </label>
           <textarea
@@ -113,13 +117,13 @@ export default function UpdateFAQ() {
             onChange={handleChange}
             required
             rows="4"
-            className="w-full p-2 border rounded-md"
+            className="field"
           ></textarea>
         </div>
 
         {/* Type Dropdown */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="field-label">
             Type
           </label>
           <select
@@ -127,7 +131,7 @@ export default function UpdateFAQ() {
             value={formData.type}
             onChange={handleChange}
             required
-            className="w-full p-2 border rounded-md"
+            className="field"
           >
             <option value="">Select Type</option>
             <option value="user">User</option>
@@ -139,13 +143,16 @@ export default function UpdateFAQ() {
         </div>
 
         {/* Submit Button */}
+        <div className="mt-8 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
         <button
           type="submit"
-          className="w-full bg-primary text-white font-bold hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-6 rounded-2xl"
+          className="btn-primary w-full sm:w-auto"
         >
           Update FAQ
         </button>
+        </div>
       </form>
+    </div>
     </div>
   );
 }

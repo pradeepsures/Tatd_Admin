@@ -97,71 +97,73 @@ export default function AppConfig() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-gradient-to-r from-[#03045E] via-[#023E8A] to-[#0077B6] text-white p-5 rounded-xl shadow mb-6">
-        <h2 className="text-xl font-semibold">App Configuration</h2>
-        <p className="text-sm opacity-80 mt-1">Manage global app settings for Driver and User Apps</p>
+    <div className="page-shell">
+      <div className="page-header">
+        <div>
+          <h2 className="page-title">App Configuration</h2>
+          <p className="page-subtitle">Manage global app settings for Driver and User Apps</p>
+        </div>
       </div>
 
-      <div className="bg-white p-6 rounded-xl shadow max-w-2xl">
-        <form onSubmit={handleSave} className="space-y-6">
-          
+      <div className="card p-5 sm:p-8 max-w-4xl">
+        <form onSubmit={handleSave} className="grid grid-cols-1 gap-5 md:grid-cols-2">
+
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Support Phone Number</label>
+            <label className="field-label">Support Phone Number</label>
             <input
               type="text"
               value={supportPhone}
               onChange={(e) => setSupportPhone(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+              className="field"
               placeholder="+91 9999999999"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">SOS / Emergency Number</label>
+            <label className="field-label">SOS / Emergency Number</label>
             <input
               type="text"
               value={sosNumber}
               onChange={(e) => setSosNumber(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+              className="field"
               placeholder="100"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Support Email</label>
+            <label className="field-label">Support Email</label>
             <input
               type="email"
               value={supportEmail}
               onChange={(e) => setSupportEmail(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+              className="field"
               placeholder="support@dvagoo.in"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">User App Version (Optional)</label>
+            <label className="field-label">User App Version (Optional)</label>
             <input
               type="text"
               value={userAppVersion}
               onChange={(e) => setUserAppVersion(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+              className="field"
               placeholder="1.0.0"
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Driver App Version (Optional)</label>
+            <label className="field-label">Driver App Version (Optional)</label>
             <input
               type="text"
               value={driverAppVersion}
               onChange={(e) => setDriverAppVersion(e.target.value)}
-              className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+              className="field"
               placeholder="1.0.0"
             />
           </div>
 
-          <div className="flex items-center">
+          <div className="flex items-center rounded-xl border border-slate-200/70 bg-white/60 px-4 py-3 md:col-span-2">
             <input
               type="checkbox"
               id="maintenanceMode"
@@ -169,16 +171,16 @@ export default function AppConfig() {
               onChange={(e) => setMaintenanceMode(e.target.checked)}
               className="w-4 h-4 text-primary bg-gray-100 border-gray-300 rounded focus:ring-primary"
             />
-            <label htmlFor="maintenanceMode" className="ml-2 text-sm font-medium text-gray-900">
+            <label htmlFor="maintenanceMode" className="ml-3 cursor-pointer text-sm font-semibold text-slate-700">
               Enable Maintenance Mode
             </label>
           </div>
 
-          <div className="pt-4 border-t border-gray-200">
+          <div className="flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end md:col-span-2">
             <button
               type="submit"
               disabled={saving}
-              className="bg-primary text-white px-6 py-2 rounded-lg font-medium hover:bg-opacity-90 disabled:opacity-50 transition-colors"
+              className="btn-primary w-full sm:w-auto"
             >
               {saving ? <LoderBtn /> : "Save Changes"}
             </button>

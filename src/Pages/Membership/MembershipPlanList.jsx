@@ -14,7 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { Modal } from "antd";
 import toast from "react-hot-toast";
 
@@ -24,26 +24,30 @@ import { getMembershipPlans, deleteMembershipPlan } from "../../Services/Members
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
-    color: "#374151",
+    fontSize: "0.86rem",
+    color: "#1f2937",
     padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "rgba(248,250,252,0.6)",
   },
   "&:hover": {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "rgba(16,24,40,0.08)",
     transition: "background-color 0.2s ease",
   },
 }));
@@ -126,29 +130,37 @@ export default function MembershipPlanList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <Breaker />
+    <div className="page-shell">
+      <Breaker />
+
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Membership Plans</h1>
+        </div>
+        <div className="page-actions">
+          <button
+            onClick={() => navigate("/home/membership/create")}
+            className="btn-primary w-full sm:w-auto"
+          >
+            + Add Membership Plan
+          </button>
+        </div>
       </div>
 
-      <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-        <input
-          type="text"
-          placeholder="Search by plan name..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-96 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-
-        <button
-          onClick={() => navigate("/home/membership/create")}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg font-medium shadow transition-colors"
-        >
-          + Add Membership Plan
-        </button>
+      <div className="card card-pad">
+        <div className="relative w-full sm:w-96">
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search by plan name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-field w-full"
+          />
+        </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -165,7 +177,7 @@ export default function MembershipPlanList() {
           <TableBody>
             {filteredData.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={7} align="center">
+                <StyledTableCell colSpan={7} align="center" className="!py-14 !text-slate-400">
                   No membership plans found
                 </StyledTableCell>
               </StyledTableRow>
@@ -175,29 +187,29 @@ export default function MembershipPlanList() {
                   <StyledTableCell>{index + 1}</StyledTableCell>
                   <StyledTableCell>
                     {row.image ? (
-                      <img src={row.image} alt={row.planName} className="h-12 w-12 object-cover rounded shadow" />
+                      <img src={row.image} alt={row.planName} className="h-12 w-12 rounded-xl object-cover shadow-sm ring-1 ring-black/5" />
                     ) : (
-                      <div className="h-12 w-12 bg-gray-200 rounded flex items-center justify-center text-xs text-gray-500">N/A</div>
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-xs font-semibold text-slate-400 ring-1 ring-black/5">N/A</div>
                     )}
                   </StyledTableCell>
                   <StyledTableCell>
-                    <div className="font-medium text-gray-800">{row.planName}</div>
-                    {row.tag && <span className="text-xs text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full mt-1 inline-block">{row.tag}</span>}
+                    <div className="font-semibold text-slate-900">{row.planName}</div>
+                    {row.tag && <span className="badge-warning mt-1">{row.tag}</span>}
                   </StyledTableCell>
                   <StyledTableCell>
                     <div>{row.billingCycle}</div>
-                    <div className="text-xs text-gray-500">{row.tier} Tier</div>
+                    <div className="text-xs text-slate-500">{row.tier} Tier</div>
                   </StyledTableCell>
                   <StyledTableCell>
-                    <div className="font-medium">₹{row.price}</div>
-                    {row.originalPrice && <div className="text-xs text-red-500 line-through">₹{row.originalPrice}</div>}
-                    {row.savingsText && <div className="text-xs text-green-600">{row.savingsText}</div>}
+                    <div className="font-semibold text-slate-900">₹{row.price}</div>
+                    {row.originalPrice && <div className="text-xs text-slate-400 line-through">₹{row.originalPrice}</div>}
+                    {row.savingsText && <div className="text-xs font-medium text-emerald-600">{row.savingsText}</div>}
                   </StyledTableCell>
                   <StyledTableCell>
                     <span
-                      className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${
-                        row.status ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                      }`}
+                      className={
+                        row.status ? "badge-success" : "badge-danger"
+                      }
                     >
                       {row.status ? "Active" : "Inactive"}
                     </span>

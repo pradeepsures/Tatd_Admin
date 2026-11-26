@@ -37,25 +37,25 @@ export default function ComplaintView() {
   }, []);
 
   if (loading) return <Loader />;
-  if (!data) return <div className="p-6">No Data Found</div>;
+  if (!data) return <div className="py-14 text-center text-slate-400">No Data Found</div>;
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <div className="page-shell">
 
       <Breaker />
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
+      <div className="page-header">
 
         <div>
-          <h2 className="text-2xl mt-5 font-bold text-gray-800">
+          <h2 className="page-title">
             Complaint Details
           </h2>
         </div>
 
         <button
           onClick={() => navigate(-1)}
-          className="bg-primary text-white border px-4 py-2 rounded-lg shadow hover:bg-gray-50"
+          className="btn-secondary w-full sm:w-auto"
         >
           ← Back
         </button>
@@ -63,36 +63,36 @@ export default function ComplaintView() {
       </div>
 
       {/* TOP CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
-        <div className="bg-white p-4 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Ticket ID</p>
-          <p className="font-semibold text-gray-800">
+        <div className="card p-4">
+          <p className="detail-label">Ticket ID</p>
+          <p className="detail-value">
             {showValue(data.ticketId)}
           </p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Status</p>
-          <span className={`px-3 py-1 rounded-full text-sm font-medium 
+        <div className="card p-4">
+          <p className="detail-label mb-2">Status</p>
+          <span className={`capitalize 
             ${data.ticketStatus === "open"
-              ? "bg-yellow-100 text-yellow-700"
-              : "bg-green-100 text-green-700"
+              ? "badge-warning"
+              : "badge-success"
             }`}>
             {showValue(data.ticketStatus)}
           </span>
         </div>
 
-        <div className="bg-white p-4 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Category</p>
-          <p className="font-semibold capitalize">
+        <div className="card p-4">
+          <p className="detail-label">Category</p>
+          <p className="detail-value capitalize">
             {showValue(data.issueCategory)}
           </p>
         </div>
 
-        <div className="bg-white p-4 rounded-xl shadow">
-          <p className="text-sm text-gray-500">Created At</p>
-          <p className="font-semibold text-sm">
+        <div className="card p-4">
+          <p className="detail-label">Created At</p>
+          <p className="detail-value">
             {data.createdAt
               ? new Date(data.createdAt).toLocaleString()
               : "N/A"}
@@ -102,60 +102,60 @@ export default function ComplaintView() {
       </div>
 
       {/* MAIN GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
 
         {/* LEFT SIDE */}
-        <div className="md:col-span-2 space-y-6">
+        <div className="space-y-5 lg:col-span-2">
 
           {/* DESCRIPTION */}
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="text-lg font-semibold mb-3">
+          <div className="card card-pad">
+            <h3 className="card-title mb-3">
               Description
             </h3>
-            <p className="text-gray-700 leading-relaxed">
+            <p className="whitespace-pre-line break-words text-sm leading-relaxed text-slate-600">
               {showValue(data.description)}
             </p>
           </div>
 
           {/* IMAGES */}
           {data?.imageFiles?.length > 0 ? (
-            <div className="bg-white p-6 rounded-xl shadow">
-              <h3 className="text-lg font-semibold mb-4">
+            <div className="card card-pad">
+              <h3 className="card-title mb-4">
                 Uploaded Images
               </h3>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
                 {data.imageFiles.map((img, i) => (
                   <img
                     key={i}
                     src={img}
                     onClick={() => window.open(img, "_blank")}
-                    className="h-40 w-full object-cover rounded-lg border cursor-pointer hover:scale-105 transition"
+                    className="h-32 w-full cursor-pointer rounded-xl object-cover ring-1 ring-black/5 transition hover:opacity-90 sm:h-40"
                   />
                 ))}
               </div>
             </div>
           ) : (
-            <div className="bg-white p-6 rounded-xl shadow text-center text-gray-500">
+            <div className="card py-14 text-center text-slate-400">
               No Images Available
             </div>
           )}
 
           {/* VIDEO */}
           {data?.videoFiles ? (
-            <div className="bg-white p-6 rounded-xl shadow">
-              <h3 className="text-lg font-semibold mb-4">
+            <div className="card card-pad">
+              <h3 className="card-title mb-4">
                 Video
               </h3>
 
               <video
                 src={data.videoFiles}
                 controls
-                className="w-full rounded-lg"
+                className="w-full rounded-xl ring-1 ring-black/5"
               />
             </div>
           ) : (
-            <div className="bg-white p-6 rounded-xl shadow text-center text-gray-500">
+            <div className="card py-14 text-center text-slate-400">
               No Video Available
             </div>
           )}
@@ -163,43 +163,43 @@ export default function ComplaintView() {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="space-y-6">
+        <div className="space-y-5">
 
           {/* REPORTER CARD */}
-          <div className="bg-white p-6 rounded-xl shadow text-center">
+          <div className="card card-pad text-center">
 
             <img
               src={data?.reporter?.profilePic || "/no-image.png"}
-              className="w-20 h-20 rounded-full mx-auto border mb-3"
+              className="mx-auto mb-3 h-20 w-20 rounded-full object-cover ring-4 ring-white shadow-md"
             />
 
-            <h4 className="font-semibold text-gray-800">
+            <h4 className="card-title">
               {showValue(data?.reporter?.name)}
             </h4>
 
-            <p className="text-sm text-gray-500">
+            <p className="mt-0.5 break-all text-sm text-slate-500">
               {showValue(data?.reporter?.email)}
             </p>
 
           </div>
 
           {/* EXTRA INFO */}
-          <div className="bg-white p-6 rounded-xl shadow">
+          <div className="card card-pad">
 
-            <h3 className="font-semibold mb-3">
+            <h3 className="card-title mb-3 border-b border-slate-200/70 pb-3">
               Additional Info
             </h3>
 
-            <div className="space-y-2 text-sm">
+            <div className="space-y-3 text-sm">
 
-              <div className="flex justify-between">
-                <span className="text-gray-500">Model</span>
-                <span>{showValue(data.onModel)}</span>
+              <div className="flex justify-between gap-4">
+                <span className="text-slate-500">Model</span>
+                <span className="text-right font-semibold text-slate-800">{showValue(data.onModel)}</span>
               </div>
 
-              <div className="flex justify-between">
-                <span className="text-gray-500">Other Label</span>
-                <span>{showValue(data.otherLabel)}</span>
+              <div className="flex justify-between gap-4">
+                <span className="text-slate-500">Other Label</span>
+                <span className="text-right font-semibold text-slate-800">{showValue(data.otherLabel)}</span>
               </div>
 
             </div>

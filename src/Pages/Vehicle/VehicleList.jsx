@@ -15,7 +15,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Breaker from "../../compoents/Breaker";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -313,117 +313,105 @@ export default function VehicleList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="flex justify-between mb-6"><Breaker />
+    <div className="page-shell">
+      <Breaker />
+
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Vehicle Management</h1>
+          <p className="page-subtitle">{totalRecord} records</p>
+        </div>
 
         {stats && (
-          <div className="flex justify-end mb-2">
-            <div className="bg-primary text-white shadow-md rounded-lg px-4 py-2 text-sm flex items-center gap-3">
-
-              <span>
-                <span className="opacity-80">Total:</span>{" "}
-                <span className="font-semibold">{stats.total}</span>
+          <div className="flex flex-wrap gap-2">
+            <span className="badge-neutral !px-3 !py-1">
+              <span className="opacity-80">Total:</span>{" "}
+              <span className="font-bold">{stats.total}</span>
+            </span>
+            <span className="badge-warning !px-3 !py-1">
+              <span className="opacity-80">On Trip:</span>{" "}
+              <span className="font-bold">
+                {stats.onTripCount}
               </span>
-
-              <span className="opacity-50">|</span>
-
-              <span>
-                <span className="opacity-80">On Trip:</span>{" "}
-                <span className="font-semibold text-yellow-300">
-                  {stats.onTripCount}
-                </span>
+            </span>
+            <span className="badge-info !px-3 !py-1">
+              <span className="opacity-80">Available:</span>{" "}
+              <span className="font-bold">
+                {stats.availableCount}
               </span>
-
-              <span className="opacity-50">|</span>
-
-              <span>
-                <span className="opacity-80">Available:</span>{" "}
-                <span className="font-semibold text-green-300">
-                  {stats.availableCount}
-                </span>
+            </span>
+            <span className="badge-danger !px-3 !py-1">
+              <span className="opacity-80">Inactive:</span>{" "}
+              <span className="font-bold">
+                {stats.inactiveCount}
               </span>
-
-              <span className="opacity-50">|</span>
-
-              <span>
-                <span className="opacity-80">Inactive:</span>{" "}
-                <span className="font-semibold text-red-300">
-                  {stats.inactiveCount}
-                </span>
+            </span>
+            <span className="badge-success !px-3 !py-1">
+              <span className="opacity-80">Active:</span>{" "}
+              <span className="font-bold">
+                {stats.activeCount}
               </span>
-
-
-              <span className="opacity-50">|</span>
-
-              <span>
-                <span className="opacity-80">Active:</span>{" "}
-                <span className="font-semibold text-green-300">
-                  {stats.activeCount}
-                </span>
-              </span>
-
-            </div>
+            </span>
           </div>
         )}
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-3">
-        <h1 className="text-2xl font-bold text-gray-800">Vehicle Management</h1>
-
-        <div className="flex flex-wrap gap-3">
-          <div className="flex items-center gap-2">
+      <div className="card card-pad flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+        <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-center lg:w-auto">
+          <div className="relative w-full sm:w-80">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search Vehicle number or model..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              className="w-64 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="search-field w-full"
             />
-            <motion.button
-              whileTap={{ scale: 0.97 }}
-              onClick={handleSearch}
-              className="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
-            >
-              Search
-            </motion.button>
           </div>
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={handleSearch}
+            className="btn-primary w-full sm:w-auto"
+          >
+            Search
+          </motion.button>
+        </div>
 
-          <div className="flex gap-3">
+        <div className="page-actions">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => exportFunc(data)}
+            className="btn-success"
+          >
+            {isExporting ? (
+              <span className="flex items-center gap-2">
+                <LoderBtn /> Exporting...
+              </span>
+            ) : (
+              "Export Excel"
+            )}
+          </motion.button>
+
+          {hasPermission("Vehicle", "create") && (
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={() => exportFunc(data)}
-              className="bg-green-600 text-white px-5 py-2 rounded-lg font-medium shadow hover:bg-green-700"
+              onClick={handleAddClick}
+              className="btn-primary"
             >
-              {isExporting ? (
+              {isLoading ? (
                 <span className="flex items-center gap-2">
-                  <LoderBtn /> Exporting...
+                  <LoderBtn /> Adding...
                 </span>
               ) : (
-                "Export Excel"
+                "Add Vehicle"
               )}
             </motion.button>
-
-            {hasPermission("Vehicle", "create") && (
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={handleAddClick}
-                className="bg-primary text-white px-5 py-2 rounded-lg font-medium shadow hover:shadow-lg"
-              >
-                {isLoading ? (
-                  <span className="flex items-center gap-2">
-                    <LoderBtn /> Adding...
-                  </span>
-                ) : (
-                  "Add Vehicle"
-                )}
-              </motion.button>
-            )}
-          </div>
+          )}
         </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table sx={{ minWidth: 1000 }} aria-label="vehicle table">
           <TableHead>
             <TableRow>
@@ -441,7 +429,7 @@ export default function VehicleList() {
           <TableBody>
             {data.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={8} align="center" className="py-12 text-gray-500 text-lg">
+                <StyledTableCell colSpan={8} align="center" className="!py-14 !text-slate-400">
                   No vehicles found
                 </StyledTableCell>
               </StyledTableRow>
@@ -456,14 +444,14 @@ export default function VehicleList() {
                       <img
                         src={row.carImage[0]}
                         alt={`${row.brand} ${row.model}`}
-                        className="h-14 w-20 object-cover rounded-md border border-gray-200 shadow-sm"
+                        className="h-14 w-20 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
                         onError={(e) => {
                           e.currentTarget.onerror = null; // ✅ STOP LOOP
                           e.currentTarget.src = "/assets/placeholder-car.png";
                         }}
                       />
                     ) : (
-                      <div className="h-14 w-20 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 text-xs">
+                      <div className="flex h-14 w-20 items-center justify-center rounded-xl bg-slate-100 text-xs font-medium text-slate-400 ring-1 ring-black/5">
                         No Image
                       </div>
                     )}
@@ -472,10 +460,10 @@ export default function VehicleList() {
                   {/* Information */}
                   <StyledTableCell>
                     {row.carNumber || "—"}<br />
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-slate-500">
                       {row.model || "—"}
                     </span><br></br>
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-slate-500">
                       {row.brand || "—"}
                     </span>
                   </StyledTableCell>
@@ -489,7 +477,7 @@ export default function VehicleList() {
                   {/* DRIVER */}
                   {/* <StyledTableCell>
                     {row.driver?.name || "—"}<br />
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs text-slate-500">
                       {row.driver?.phone || "—"}<br />
                       {row.driver?.licenseNumber || "—"}
                     </span>
@@ -499,25 +487,25 @@ export default function VehicleList() {
                     {row.driver ? (
                       <>
                         {row.driver.name}<br />
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-slate-500">
                           {row.driver.phone}<br />
                           {row.driver.licenseNumber}
                         </span>
                          <br></br>
                         <button
                           onClick={() => openAssignModal(row)}
-                          className="mt-2 text-xs bg-yellow-500 text-white px-2 py-1 rounded"
+                          className="mt-2 inline-flex h-7 items-center rounded-lg bg-amber-500/10 px-2.5 text-xs font-semibold text-amber-700 ring-1 ring-inset ring-amber-500/30 transition hover:bg-amber-500/20"
                         >
                           Reassign
                         </button>
                       </>
                     ) : (
                       <>
-                        <span className="text-gray-400 text-sm">No Driver</span><br />
+                        <span className="text-sm text-slate-400">No Driver</span><br />
 
                         <button
                           onClick={() => openAssignModal(row)}
-                          className="mt-2 text-xs bg-blue-600 text-white px-2 py-1 rounded"
+                          className="mt-2 inline-flex h-7 items-center rounded-lg bg-slate-900 px-2.5 text-xs font-semibold text-white transition hover:bg-slate-700"
                         >
                           Assign
                         </button>

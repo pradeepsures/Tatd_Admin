@@ -119,26 +119,28 @@ const TermCondition = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-5">
+    <div className="page-shell">
 
-      <div className="mb-6">
-        <Breaker />
-      </div>
+      <Breaker />
 
-      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-6">
+      <div className="card card-pad">
 
-        <h1 className="text-2xl font-bold text-red-600 mb-4">
-          Terms and Conditions
-        </h1>
+        <div className="mb-6 flex flex-col gap-4 border-b border-slate-200/70 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="section-label">Content</p>
+          <h1 className="page-title">
+            Terms and Conditions
+          </h1>
+        </div>
 
-        <div className="flex space-x-4 mb-6">
+        <div className="inline-flex w-full rounded-xl bg-slate-100 p-1 sm:w-auto">
 
           <button
             onClick={() => handleTypeChange("user")}
-            className={`px-4 py-2 rounded-md font-semibold transition-colors ${
+            className={`flex-1 sm:flex-none rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
               activeType === "user"
-                ? "bg-primary text-white"
-                : "bg-gray-200 text-gray-700"
+                ? "bg-slate-900 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
             User Terms
@@ -146,19 +148,20 @@ const TermCondition = () => {
 
           <button
             onClick={() => handleTypeChange("driver")}
-            className={`px-4 py-2 rounded-md font-semibold transition-colors ${
+            className={`flex-1 sm:flex-none rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
               activeType === "driver"
-                ? "bg-primary text-white"
-                : "bg-gray-200 text-gray-700"
+                ? "bg-slate-900 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
             Driver Terms
           </button>
 
         </div>
+        </div>
 
         {loading ? (
-          <div className="text-center text-red-600">
+          <div className="flex justify-center py-14">
             <Loader />
           </div>
         ) : (
@@ -171,12 +174,14 @@ const TermCondition = () => {
               placeholder={`Enter ${activeType} terms and conditions...`}
             />
 
+            <div className="mt-6 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               onClick={handleUpdate}
-              className="mt-4 px-6 py-2 bg-primary text-white rounded-md hover:opacity-90 transition"
+              className="btn-primary w-full sm:w-auto"
             >
               Update Terms
             </button>
+            </div>
 
           </div>
         )}

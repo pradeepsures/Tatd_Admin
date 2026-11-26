@@ -108,36 +108,38 @@ export default function CancellationReasons() {
   if (loading && reasons.length === 0) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="bg-gradient-to-r from-[#03045E] via-[#023E8A] to-[#0077B6] text-white p-5 rounded-xl shadow mb-6">
-        <h2 className="text-xl font-semibold">Cancellation Reasons</h2>
-        <p className="text-sm opacity-80 mt-1">Manage the options shown when a user or driver cancels a ride</p>
+    <div className="page-shell">
+      <div className="page-header">
+        <div>
+          <h2 className="page-title">Cancellation Reasons</h2>
+          <p className="page-subtitle">Manage the options shown when a user or driver cancels a ride</p>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         
         {/* ADD / EDIT FORM */}
-        <div className="md:col-span-1">
-          <div className="bg-white p-6 rounded-xl shadow sticky top-24">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-semibold text-lg text-[#03045E]">
+        <div className="lg:col-span-1">
+          <div className="card card-pad lg:sticky lg:top-24">
+            <div className="mb-5 flex items-center justify-between border-b border-slate-200/70 pb-4">
+              <h3 className="card-title">
                 {editingId ? "Edit Reason" : "Add New Reason"}
               </h3>
               {editingId && (
-                <button onClick={resetForm} className="text-gray-400 hover:text-red-500">
+                <button onClick={resetForm} className="btn-icon hover:!text-rose-600">
                   <XMarkIcon className="h-5 w-5" />
                 </button>
               )}
             </div>
             
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Reason Text</label>
+                <label className="field-label">Reason Text</label>
                 <textarea
                   value={newReasonText}
                   onChange={(e) => setNewReasonText(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary resize-none"
+                  className="field resize-none"
                   placeholder="e.g. Passenger is unreachable"
                   rows="3"
                   required
@@ -145,11 +147,11 @@ export default function CancellationReasons() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Role (Target)</label>
+                <label className="field-label">Role (Target)</label>
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value)}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-primary focus:border-primary"
+                  className="field"
                 >
                   <option value="driver">Driver App</option>
                   <option value="user">User App</option>
@@ -157,7 +159,7 @@ export default function CancellationReasons() {
                 </select>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3 rounded-xl border border-slate-200/70 bg-white/60 px-4 py-3">
                 <input
                   type="checkbox"
                   id="isActive"
@@ -165,7 +167,7 @@ export default function CancellationReasons() {
                   onChange={(e) => setIsActive(e.target.checked)}
                   className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                 />
-                <label htmlFor="isActive" className="text-sm font-medium text-gray-700">
+                <label htmlFor="isActive" className="cursor-pointer text-sm font-semibold text-slate-700">
                   Active (Visible in App)
                 </label>
               </div>
@@ -173,7 +175,7 @@ export default function CancellationReasons() {
               <button
                 type="submit"
                 disabled={saving}
-                className={`w-full text-white px-4 py-2 rounded-lg font-medium transition-colors disabled:opacity-50 ${editingId ? 'bg-orange-500 hover:bg-orange-600' : 'bg-primary hover:bg-opacity-90'}`}
+                className={`w-full ${editingId ? 'btn-gold' : 'btn-primary'}`}
               >
                 {saving ? <LoderBtn /> : editingId ? "Update Reason" : "Add Reason"}
               </button>
@@ -182,36 +184,36 @@ export default function CancellationReasons() {
         </div>
 
         {/* REASONS LIST */}
-        <div className="md:col-span-2">
-          <div className="bg-white p-6 rounded-xl shadow">
-            <h3 className="font-semibold text-lg mb-4 text-[#03045E]">Active Reasons</h3>
-            
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+        <div className="lg:col-span-2">
+          <div className="card card-pad">
+            <h3 className="card-title mb-4">Active Reasons</h3>
+
+            <div className="overflow-x-auto rounded-xl ring-1 ring-slate-200/70">
+              <table className="w-full min-w-[560px] text-left border-collapse text-sm">
                 <thead>
-                  <tr className="border-b bg-gray-50">
-                    <th className="py-3 px-4 font-semibold text-gray-700">Reason</th>
-                    <th className="py-3 px-4 font-semibold text-gray-700 w-24">Role</th>
-                    <th className="py-3 px-4 font-semibold text-gray-700 w-24 text-center">Status</th>
-                    <th className="py-3 px-4 font-semibold text-gray-700 text-center w-28">Actions</th>
+                  <tr className="border-b border-[#c99a2e]/40 bg-[#171b25] text-[11px] font-semibold uppercase tracking-wider text-white/75">
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75">Reason</th>
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75 w-24">Role</th>
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75 w-24 text-center">Status</th>
+                    <th className="py-3 px-4 text-xs font-semibold text-white/75 text-center w-28">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {reasons.length === 0 ? (
                     <tr>
-                      <td colSpan="4" className="py-8 text-center text-gray-500">No Cancellation Reasons found</td>
+                      <td colSpan="4" className="py-14 text-center text-slate-400">No Cancellation Reasons found</td>
                     </tr>
                   ) : (
                     reasons.map((reason) => (
-                      <tr key={reason._id} className={`border-b hover:bg-gray-50 ${editingId === reason._id ? 'bg-orange-50' : ''}`}>
-                        <td className="py-3 px-4 font-medium text-gray-800">
+                      <tr key={reason._id} className={`border-b border-slate-200/70 last:border-0 transition-colors hover:bg-slate-50/80 ${editingId === reason._id ? 'bg-amber-50/70' : ''}`}>
+                        <td className="py-3 px-4 font-medium text-slate-800">
                           {reason.reasonText || reason.reason}
                         </td>
                         <td className="py-3 px-4">
-                          <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
-                            (reason.role || reason.type) === 'driver' ? 'bg-blue-100 text-blue-700' : 
-                            (reason.role || reason.type) === 'user' ? 'bg-purple-100 text-purple-700' : 
-                            'bg-green-100 text-green-700'
+                          <span className={`${
+                            (reason.role || reason.type) === 'driver' ? 'badge-info' :
+                            (reason.role || reason.type) === 'user' ? 'badge-warning' :
+                            'badge-neutral'
                           }`}>
                             {(reason.role || reason.type || "UNKNOWN").toUpperCase()}
                           </span>
@@ -219,8 +221,8 @@ export default function CancellationReasons() {
                         <td className="py-3 px-4 text-center">
                           <button
                             onClick={() => toggleActive(reason)}
-                            className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                              reason.isActive !== false ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'
+                            className={`cursor-pointer transition-opacity hover:opacity-80 ${
+                              reason.isActive !== false ? 'badge-success' : 'badge-danger'
                             }`}
                           >
                             {reason.isActive !== false ? "Active" : "Inactive"}
@@ -230,14 +232,14 @@ export default function CancellationReasons() {
                           <div className="flex items-center justify-center gap-2">
                             <button
                               onClick={() => handleEditInit(reason)}
-                              className="text-orange-500 hover:text-orange-700 p-1.5 rounded bg-orange-50 transition-colors"
+                              className="btn-icon hover:!text-gray-900"
                               title="Edit"
                             >
                               <PencilIcon className="h-4 w-4" />
                             </button>
                             <button
                               onClick={() => handleDelete(reason._id)}
-                              className="text-red-500 hover:text-red-700 p-1.5 rounded bg-red-50 transition-colors"
+                              className="btn-icon hover:!bg-rose-50 hover:!text-rose-600"
                               title="Delete"
                             >
                               <TrashIcon className="h-4 w-4" />

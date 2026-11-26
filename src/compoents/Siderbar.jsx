@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import { HiMenuAlt3, HiX } from "react-icons/hi";
-import {
-  MdOutlineDashboard,
-  MdOutlinePeople,
-  MdOutlineDirectionsCar,
-  MdOutlineAssignment,
-  MdOutlinePriceChange,
-  MdOutlineSupportAgent,
-  MdOutlineSettings,
-  MdOutlinePerson,
-  MdOutlineCancel,
-  MdOutlinePendingActions,
-} from "react-icons/md";
-import { RiShutDownFill } from "react-icons/ri";
+import { HiX, HiChevronDown, HiChevronDoubleLeft } from "react-icons/hi";
+import { RiShutDownLine } from "react-icons/ri";
 
 import { NAV_SECTIONS } from "../config/routesConfig";
 
 const pathMatches = (link, pathname) =>
   pathname === link || (link !== "/home" && pathname.startsWith(`${link}/`)) || pathname.startsWith(`${link}?`);
+
+const BrandMark = () => (
+  <div className="h-9 w-9 shrink-0 overflow-hidden rounded-lg bg-black ring-1 ring-[#c99a2e]/30">
+    <img src="/images/dvagoo.png" alt="Dvagoo" className="h-full w-full scale-[1.3] object-cover" />
+  </div>
+);
 
 const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
   const { logout, auth, hasPermission } = useAuth();
@@ -51,66 +45,83 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
     setExpanded((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
-  const renderLink = (item, className = "") => {
+  // On mobile the drawer always shows labels; collapsing only applies on desktop
+  const showLabels = open || mobileOpen;
+
+  const itemBase = "group relative flex w-full items-center gap-3 rounded-md px-2.5 py-2 text-sm font-medium transition-colors";
+  const itemIdle = "text-gray-400 hover:bg-white/[0.06] hover:text-gray-100";
+  const itemActive = "bg-gradient-to-r from-[#c99a2e]/[0.16] to-white/[0.04] text-white ring-1 ring-inset ring-white/[0.06] before:absolute before:-left-3 before:top-1.5 before:bottom-1.5 before:w-[3px] before:rounded-r before:bg-[#c99a2e]";
+  const iconClass = (active) => `shrink-0 ${active ? "text-[#c99a2e]" : "text-gray-500 group-hover:text-gray-300"}`;
+
+  const renderLink = (item) => {
     const active = pathMatches(item.link, fullPath) || pathMatches(item.link, pathname);
     return (
       <Link
         key={item.link + item.name}
         to={item.link}
         onClick={onMobileClose}
-        className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${className} ${
-          active
-            ? "bg-blue-600 text-white"
-            : "text-slate-300 hover:bg-slate-800 hover:text-white"
-        }`}
+        title={!showLabels ? item.name : undefined}
+        className={`${itemBase} ${active ? itemActive : itemIdle} ${!showLabels ? "justify-center" : ""}`}
       >
-        {item.icon && <item.icon size={20} className="shrink-0" />}
-        {open && <span className="truncate">{item.name}</span>}
+        {item.icon && <item.icon size={18} className={iconClass(active)} />}
+        {showLabels && <span className="truncate">{item.name}</span>}
       </Link>
     );
   };
 
+  const displayName = auth?.user?.userName || "Admin";
+  const initials = displayName
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <>
       <div
-        className={`fixed inset-0 z-40 bg-black/50 transition-opacity lg:hidden ${
+        className={`fixed inset-0 z-40 bg-black/40 transition-opacity duration-200 lg:hidden ${
           mobileOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onMobileClose}
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex h-screen flex-col bg-[#111827] border-r border-slate-800 text-slate-300 transition-all duration-300 lg:relative lg:translate-x-0 ${
-          open ? "w-[260px]" : "w-[72px]"
+        className={`glass-dark fixed inset-y-0 left-0 z-50 flex h-screen flex-col !bg-[#0e1016]/90 text-gray-300 transition-[width,transform] duration-200 ease-out lg:relative lg:m-3 lg:h-[calc(100vh-1.5rem)] lg:translate-x-0 lg:rounded-2xl lg:!bg-[#0e1016]/55 ${
+          open ? "w-[256px]" : "w-[256px] lg:w-[68px]"
         } ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Logo */}
-        <div className="flex h-20 shrink-0 items-center gap-4 border-b border-slate-800 px-5">
-          <img src="/images/dvagoo.png" alt="Dvagoo" className="h-12 w-12 md:h-14 md:w-14 shrink-0 object-contain rounded-xl shadow-md" />
-          {open && (
-            <div className="min-w-0 flex flex-col justify-center">
-              <p className="truncate text-base md:text-lg font-bold text-white tracking-wide">Dvagoo Admin</p>
-              <p className="truncate text-xs uppercase tracking-wider text-slate-400 font-medium mt-0.5">Control Panel</p>
+        <div
+          className={`flex h-14 shrink-0 items-center gap-2.5 border-b border-white/[0.06] ${
+            showLabels ? "px-4" : "justify-center"
+          }`}
+        >
+          <BrandMark />
+          {showLabels && (
+            <div className="min-w-0 leading-tight">
+              <p className="truncate text-[15px] font-semibold text-white">Dvagoo</p>
+              <p className="truncate text-xs text-[#c99a2e]/80">Admin Console</p>
             </div>
           )}
           <button
             type="button"
             onClick={onMobileClose}
-            className="ml-auto lg:hidden text-slate-400 hover:text-white"
+            className="ml-auto inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-400 hover:bg-white/10 hover:text-white lg:hidden"
             aria-label="Close menu"
           >
-            <HiX size={22} />
+            <HiX size={18} />
           </button>
         </div>
 
         {/* Nav */}
         <nav className="sidebar-scroll flex-1 overflow-y-auto px-3 py-4">
           {NAV_SECTIONS.map((section, si) => (
-            <div key={section.label} className="mb-5">
-              {open && (
-                <p className="mb-2 px-3 text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                  {section.label}
-                </p>
+            <div key={section.label} className="mb-5 last:mb-2">
+              {showLabels ? (
+                <p className="mb-1.5 px-2.5 text-xs font-medium text-gray-500">{section.label}</p>
+              ) : (
+                <div className="mx-auto mb-3 h-px w-5 bg-white/10" />
               )}
               <div className="space-y-0.5">
                 {section.items
@@ -130,21 +141,32 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
                       <div key={item.name}>
                         <button
                           type="button"
-                          onClick={() => toggleExpand(key)}
-                          className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                            isChildActive ? "bg-slate-800 text-white" : "text-slate-300 hover:bg-slate-800 hover:text-white"
-                          }`}
+                          onClick={() => {
+                            if (showLabels) return toggleExpand(key);
+                            // Collapsed rail: open the sidebar with this group expanded
+                            setOpen(true);
+                            setExpanded((prev) => ({ ...prev, [key]: true }));
+                          }}
+                          title={!showLabels ? item.name : undefined}
+                          className={`${itemBase} ${isChildActive ? "text-white" : itemIdle} ${
+                            !showLabels ? "justify-center" : ""
+                          } ${isChildActive && !showLabels ? itemActive : ""}`}
                         >
-                          <Icon size={20} className="shrink-0" />
-                          {open && (
+                          <Icon size={18} className={iconClass(isChildActive)} />
+                          {showLabels && (
                             <>
-                              <span className="flex-1 text-left truncate">{item.name}</span>
-                              <span className={`text-xs transition-transform ${expanded[key] ? "rotate-180" : ""}`}>▼</span>
+                              <span className="flex-1 truncate text-left">{item.name}</span>
+                              <HiChevronDown
+                                size={15}
+                                className={`shrink-0 text-gray-500 transition-transform duration-150 ${
+                                  expanded[key] ? "rotate-180" : ""
+                                }`}
+                              />
                             </>
                           )}
                         </button>
-                        {open && expanded[key] && (
-                          <div className="ml-4 mt-0.5 space-y-0.5 border-l border-slate-700 pl-2">
+                        {showLabels && expanded[key] && (
+                          <div className="ml-[19px] mt-0.5 space-y-0.5 border-l border-white/[0.08] pl-2.5">
                             {visibleChildren.map((child) => {
                               const active =
                                 pathMatches(child.link, fullPath) || pathMatches(child.link, pathname);
@@ -153,13 +175,14 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
                                   key={child.link}
                                   to={child.link}
                                   onClick={onMobileClose}
-                                  className={`block rounded-lg px-3 py-2 text-[13px] transition-colors ${
+                                  className={`relative flex items-center rounded-md px-2.5 py-1.5 text-[13px] transition-colors ${
                                     active
-                                      ? "bg-blue-600/90 text-white font-medium"
-                                      : "text-slate-400 hover:bg-slate-800 hover:text-white"
+                                      ? "bg-white/[0.08] font-medium text-white"
+                                      : "text-gray-400 hover:bg-white/[0.05] hover:text-gray-100"
                                   }`}
                                 >
-                                  {child.name}
+                                  {active && <span className="absolute -left-[11px] top-1.5 bottom-1.5 w-px bg-[#c99a2e]" />}
+                                  <span className="truncate">{child.name}</span>
                                 </Link>
                               );
                             })}
@@ -177,30 +200,38 @@ const Sidebar = ({ mobileOpen = false, onMobileClose }) => {
         </nav>
 
         {/* Footer */}
-        <div className="shrink-0 border-t border-slate-800 p-3 space-y-2">
-          {open && auth?.user && (
-            <div className="rounded-lg bg-slate-800/60 px-3 py-2">
-              <p className="truncate text-xs text-slate-400">{auth.user.email}</p>
-              <p className="truncate text-sm font-medium text-white">{auth.user.userName || "Admin"}</p>
+        <div className="shrink-0 space-y-1 border-t border-white/[0.06] p-3">
+          {showLabels && auth?.user && (
+            <div className="flex items-center gap-2.5 px-1.5 py-1.5">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#c99a2e]/15 text-xs font-semibold text-[#e0b955] ring-1 ring-[#c99a2e]/30">
+                {initials || "A"}
+              </div>
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium text-gray-100">{displayName}</p>
+                <p className="truncate text-xs text-gray-500">{auth.user.email}</p>
+              </div>
             </div>
           )}
           <button
             type="button"
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-red-400 hover:bg-red-500/10"
+            title={!showLabels ? "Logout" : undefined}
+            className={`flex w-full items-center gap-3 rounded-md px-2.5 py-2 text-sm font-medium text-gray-400 transition-colors hover:bg-white/[0.05] hover:text-gray-100 ${
+              !showLabels ? "justify-center" : ""
+            }`}
           >
-            <RiShutDownFill size={18} />
-            {open && <span>Logout</span>}
+            <RiShutDownLine size={17} />
+            {showLabels && <span>Logout</span>}
           </button>
         </div>
 
         <button
           type="button"
-          className="absolute -right-3 top-20 hidden h-6 w-6 items-center justify-center rounded-full border border-slate-700 bg-[#111827] text-slate-400 hover:text-white lg:flex"
+          className="absolute -right-3 top-[42px] z-10 hidden h-6 w-6 items-center justify-center rounded-full border border-[#c99a2e]/40 bg-[#14171f] text-[#d9ae4a] shadow-lg transition-colors hover:text-white lg:flex"
           onClick={() => setOpen(!open)}
           aria-label="Toggle sidebar"
         >
-          <HiMenuAlt3 size={14} />
+          <HiChevronDoubleLeft size={12} className={`transition-transform duration-200 ${open ? "" : "rotate-180"}`} />
         </button>
       </aside>
     </>

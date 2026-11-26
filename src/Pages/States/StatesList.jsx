@@ -21,7 +21,7 @@ import Stack from "@mui/material/Stack";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import { Modal, Form, Input, Switch, Button } from "antd";
 
@@ -40,32 +40,32 @@ import {
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
-    letterSpacing: "0.05em",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
   },
-
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
-    color: "#374151",
+    fontSize: "0.86rem",
+    color: "#1f2937",
     padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "rgba(248,250,252,0.45)",
   },
-
   "&:hover": {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "rgba(16,24,40,0.08)",
     transition: "background-color 0.2s ease",
   },
-
   "&:last-child td, &:last-child th": {
     border: 0,
   },
@@ -235,45 +235,55 @@ export default function StatesList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       {/* Breadcrumb */}
-      <div className="mb-6">
-        <Breaker />
-      </div>
+      <Breaker />
 
       {/* TOP */}
-      <div className="flex justify-between items-center mb-8">
-        {/* SEARCH */}
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search by state name..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-96 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">States</h1>
+        </div>
+
+        {/* ADD BUTTON */}
+        <div className="page-actions">
+          <button
+            onClick={openCreateModal}
+            className="btn-primary"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Create
+          </button>
+        </div>
+      </div>
+
+      {/* SEARCH */}
+      <div className="card card-pad">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-auto">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by state name..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-field sm:w-96"
+            />
+          </div>
 
           <button
             onClick={handleSearch}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium"
+            className="btn-primary w-full sm:w-auto"
           >
             Search
           </button>
         </div>
-
-        {/* ADD BUTTON */}
-        <button
-          onClick={openCreateModal}
-          className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow"
-        >
-          + Create
-        </button>
       </div>
 
       {/* TABLE */}
       <TableContainer
         component={Paper}
-        className="rounded-xl shadow-lg overflow-hidden"
+        className="overflow-hidden"
       >
         <Table>
           <TableHead>
@@ -289,7 +299,7 @@ export default function StatesList() {
           <TableBody>
             {data.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={5} align="center">
+                <StyledTableCell colSpan={5} align="center" className="!py-14 !text-slate-400">
                   No states found
                 </StyledTableCell>
               </StyledTableRow>
@@ -300,18 +310,12 @@ export default function StatesList() {
                     {(page - 1) * rowsPerPage + index + 1}
                   </StyledTableCell>
 
-                  <StyledTableCell className="font-medium">
+                  <StyledTableCell className="!font-semibold !text-slate-900">
                     {row.name || "—"}
                   </StyledTableCell>
 
                   <StyledTableCell>
-                    <span
-                      className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
-                        row.status
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
+                    <span className={row.status ? "badge-success" : "badge-danger"}>
                       {row.status ? "Active" : "Inactive"}
                     </span>
                   </StyledTableCell>
@@ -386,7 +390,7 @@ export default function StatesList() {
             <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
           </Form.Item> */}
 
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:justify-end">
             <Button onClick={() => setCreateModalVisible(false)}>Cancel</Button>
 
             <Button type="primary" htmlType="submit">
@@ -417,7 +421,7 @@ export default function StatesList() {
             <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
           </Form.Item> */}
 
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:justify-end">
             <Button onClick={() => setEditModalVisible(false)}>Cancel</Button>
 
             <Button type="primary" htmlType="submit">
@@ -429,7 +433,7 @@ export default function StatesList() {
 
       {/* PAGINATION */}
       {totalPages > 1 && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={2}>
           <Pagination
             count={totalPages}
             page={page}

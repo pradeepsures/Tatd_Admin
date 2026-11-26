@@ -102,22 +102,22 @@ const PrivacyPolicy = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-5">
-      <div className="mb-6">
-        <Breaker />
-      </div>
-      <div className="max-w-9xl mx-auto bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">Privacy Policy</h1>
-
-        <div className="flex justify-between items-center mb-6">
+    <div className="page-shell">
+      <Breaker />
+      <div className="card card-pad">
+        <div className="mb-6 flex flex-col gap-4 border-b border-slate-200/70 pb-5 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <p className="section-label">Content</p>
+          <h1 className="page-title">Privacy Policy</h1>
+        </div>
 
           {/* LEFT SIDE - Policy Buttons */}
-          <div className="flex space-x-4">
+          <div className="inline-flex w-full rounded-xl bg-slate-100 p-1 sm:w-auto">
             <button
               onClick={() => handleTypeChange("user")}
-              className={`px-4 py-2 rounded-md font-semibold transition-colors ${activeType === "user"
-                  ? "bg-primary text-white"
-                  : "bg-gray-200 text-gray-700"
+              className={`flex-1 sm:flex-none rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${activeType === "user"
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
                 }`}
             >
               User Policy
@@ -125,9 +125,9 @@ const PrivacyPolicy = () => {
 
             <button
               onClick={() => handleTypeChange("driver")}
-              className={`px-4 py-2 rounded-md font-semibold transition-colors ${activeType === "driver"
-                  ? "bg-primary text-white"
-                  : "bg-gray-200 text-gray-700"
+              className={`flex-1 sm:flex-none rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${activeType === "driver"
+                  ? "bg-slate-900 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
                 }`}
             >
               Driver Policy
@@ -136,7 +136,7 @@ const PrivacyPolicy = () => {
         </div>
      
         {loading ? (
-          <div className="text-center text-red-600">
+          <div className="flex justify-center py-14">
             <Loader></Loader>
           </div>
         ) : (
@@ -147,12 +147,14 @@ const PrivacyPolicy = () => {
               className="min-h-[300px] border border-gray-300 rounded-md"
               placeholder={`Enter ${activeType} privacy policy...`}
             />
+            <div className="mt-6 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               onClick={handleUpdate}
-              className="mt-4 px-6 py-2 bg-primary text-white rounded-md hover:bg-red-700 transition-colors"
+              className="btn-primary w-full sm:w-auto"
             >
               Update Policy
             </button>
+            </div>
           </div>
         )}
       </div>

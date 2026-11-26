@@ -68,28 +68,20 @@ const HourlyBookingFilters = ({ filters, setFilters, onApply }) => {
   // INPUT STYLE
   // ─────────────────────────────────────────────
 
-  const inputClass = `
-    border border-gray-300
-    px-3
-    py-2
-    rounded-xl
-    outline-none
-    focus:border-black
-    focus:ring-0
-    text-sm
-    w-full
-    bg-white
-    transition-all
-  `;
+  const inputClass = "field !h-10";
 
   // ─────────────────────────────────────────────
   // UI
   // ─────────────────────────────────────────────
 
   return (
-    <div className="bg-white p-5 rounded-3xl shadow-sm mb-6">
+    <div className="card card-pad">
+      <div className="mb-4">
+        <p className="section-label">Refine results</p>
+        <h3 className="card-title mt-1">Search & Filters</h3>
+      </div>
       {/* FILTERS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {/* SEARCH */}
         <input
           type="text"
@@ -208,42 +200,17 @@ const HourlyBookingFilters = ({ filters, setFilters, onApply }) => {
           className={inputClass}
         />
 
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-col gap-2.5 sm:flex-row sm:flex-wrap">
           <button
             onClick={handleApplyFilters}
-            className="
-    bg-gradient-to-r
-    from-[#1E3A8A]
-    to-[#3B82F6]
-    hover:from-[#172d6b]
-    hover:to-[#2563eb]
-    text-white
-    px-5
-    py-2
-    rounded-xl
-    text-sm
-    font-medium
-    transition-all
-    duration-300
-    shadow-sm
-  "
+            className="btn-primary w-full sm:w-auto"
           >
             Apply Filters
           </button>
 
           <button
             onClick={clearFilters}
-            className="
-            bg-gray-600
-            hover:bg-gray-900
-            text-white
-            px-5
-            py-2
-            rounded-xl
-            text-sm
-            font-medium
-            transition-all
-          "
+            className="btn-secondary w-full sm:w-auto"
           >
             Clear Filters
           </button>

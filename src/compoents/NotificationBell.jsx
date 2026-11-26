@@ -80,55 +80,71 @@ const NotificationBell = () => {
 
   return (
     <div className="relative" ref={dropdownRef}>
-      <button 
+      <button
         onClick={handleToggle}
-        className="relative p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors focus:outline-none"
+        aria-label="Notifications"
+        className={`relative inline-flex h-9 w-9 items-center justify-center rounded-md transition-colors focus:outline-none ${
+          isOpen ? "bg-white/15 text-white" : "text-gray-300 hover:bg-white/10 hover:text-white"
+        }`}
       >
-        <MdNotifications size={24} />
+        <MdNotifications size={20} />
         {unreadCount > 0 && (
-          <span className="absolute top-1 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+          <span className="absolute right-0.5 top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-rose-600 px-1 text-[10px] font-semibold text-white ring-2 ring-[#14171f]">
             {unreadCount > 99 ? '99+' : unreadCount}
           </span>
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 origin-top-right rounded-xl bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none z-50">
-          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3">
-            <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+        <div className="absolute right-0 z-50 mt-2 w-[calc(100vw-1.5rem)] max-w-[380px] origin-top-right overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg sm:w-96">
+          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-gray-900">Notifications</h3>
+              {unreadCount > 0 && (
+                <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600">
+                  {unreadCount} new
+                </span>
+              )}
+            </div>
             {unreadCount > 0 && (
-              <button 
+              <button
                 onClick={markAllAsRead}
-                className="text-xs font-medium text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                className="flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               >
                 <MdCheckCircle /> Mark all read
               </button>
             )}
           </div>
-          
+
           <div className="max-h-96 overflow-y-auto">
             {notifications.length === 0 ? (
-              <div className="px-4 py-8 text-center text-sm text-gray-500">
+              <div className="px-4 py-10 text-center text-sm text-gray-500">
                 No notifications yet.
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
                 {notifications.map((notif, idx) => (
-                  <div key={notif._id || idx} className={`p-4 hover:bg-gray-50 transition-colors ${!notif.isRead ? 'bg-blue-50/50' : ''}`}>
-                    <div className="flex justify-between items-start mb-1">
+                  <div
+                    key={notif._id || idx}
+                    className={`relative px-4 py-3 transition-colors hover:bg-gray-50 ${!notif.isRead ? 'bg-blue-50/40' : ''}`}
+                  >
+                    {!notif.isRead && (
+                      <span className="absolute left-1.5 top-[18px] h-1.5 w-1.5 rounded-full bg-blue-600" />
+                    )}
+                    <div className="mb-1 flex items-start justify-between gap-2">
                       <p className="text-sm font-medium text-gray-900">{notif.title}</p>
-                      <span className="text-[10px] text-gray-500 whitespace-nowrap ml-2">
+                      <span className="ml-2 whitespace-nowrap text-xs text-gray-400">
                         {formatTime(notif.createdAt)}
                       </span>
                     </div>
-                    <p className="text-sm text-gray-600 line-clamp-2">{notif.body}</p>
+                    <p className="line-clamp-2 text-[13px] text-gray-600">{notif.body}</p>
                   </div>
                 ))}
               </div>
             )}
           </div>
-          <div className="border-t border-gray-100 p-2 text-center">
-             <span className="text-xs text-gray-400">Showing recent notifications</span>
+          <div className="border-t border-gray-100 p-2.5 text-center">
+            <span className="text-xs text-gray-400">Showing recent notifications</span>
           </div>
         </div>
       )}

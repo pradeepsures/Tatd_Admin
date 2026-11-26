@@ -90,41 +90,52 @@ const PublicDeleteAccount = () => {
   };
 
   return (
-    <div style={{ height: '100vh', overflowY: 'auto', backgroundColor: '#f3f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <div style={{ padding: '30px', backgroundColor: '#fff', borderRadius: '8px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', maxWidth: '400px', width: '90%' }}>
+    <div className="h-screen w-full overflow-y-auto bg-slate-100">
+      <header className="relative overflow-hidden bg-[#111827]">
+        <div className="relative mx-auto max-w-3xl px-4 pb-24 pt-6 sm:px-6">
+          <div className="flex items-center gap-3">
+            <div className="h-11 w-11 shrink-0 overflow-hidden rounded-xl bg-black ring-1 ring-white/10">
+              <img src="/images/dvagoo.png" alt="Dvagoo" className="h-full w-full scale-[1.3] object-cover" />
+            </div>
+            <span className="text-lg font-semibold tracking-tight text-white">Dvagoo</span>
+          </div>
+        </div>
+      </header>
+      <main className="mx-auto -mt-16 w-full max-w-md px-4 pb-12">
+      <div className="rounded-2xl bg-white p-6 shadow-xl shadow-slate-900/5 ring-1 ring-slate-200/70 sm:p-8">
         
         {step !== 3 && (
-          <h2 style={{ color: '#dc2626', textAlign: 'center', marginBottom: '10px', fontSize: '24px', fontWeight: 'bold' }}>
+          <h2 className="mb-2 text-center text-2xl font-semibold tracking-tight text-slate-900">
             Delete Account
           </h2>
         )}
 
         {step === 1 && (
           <form onSubmit={handleSendOtp}>
-            <p style={{ color: '#4b5563', marginBottom: '20px', textAlign: 'center', fontSize: '14px' }}>
+            <p className="mb-6 text-center text-sm leading-relaxed text-slate-500">
               Select your account type and enter your registered mobile number or email to receive an OTP.
             </p>
             
-            <div style={{ marginBottom: '15px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#374151' }}>Account Type</label>
+            <div className="mb-4">
+              <label className="mb-1.5 block text-[13px] font-semibold text-slate-600">Account Type</label>
               <select 
                 value={type} 
                 onChange={(e) => setType(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-gray-400 focus:ring-4 focus:ring-gray-900/5"
               >
                 <option value="user">User</option>
                 <option value="driver">Driver</option>
               </select>
             </div>
 
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#374151' }}>Mobile Number / Email</label>
+            <div className="mb-6">
+              <label className="mb-1.5 block text-[13px] font-semibold text-slate-600">Mobile Number / Email</label>
               <input 
                 type="text" 
                 placeholder="Enter registered mobile or email" 
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #d1d5db' }}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-gray-400 focus:ring-4 focus:ring-gray-900/5"
                 required
               />
             </div>
@@ -132,7 +143,7 @@ const PublicDeleteAccount = () => {
             <button 
               type="submit" 
               disabled={loading}
-              style={{ width: '100%', padding: '12px', backgroundColor: '#dc2626', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: loading ? 'not-allowed' : 'pointer' }}
+              className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-rose-600 hover:bg-rose-700 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? 'Sending...' : 'Send OTP'}
             </button>
@@ -141,18 +152,18 @@ const PublicDeleteAccount = () => {
 
         {step === 2 && (
           <form onSubmit={handleVerifyOtp}>
-            <p style={{ color: '#4b5563', marginBottom: '20px', textAlign: 'center', fontSize: '14px' }}>
+            <p className="mb-6 text-center text-sm leading-relaxed text-slate-500">
               An OTP has been sent to <strong>{identifier}</strong>. Please enter it below to confirm account deletion.
             </p>
 
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold', color: '#374151' }}>Enter OTP</label>
+            <div className="mb-6">
+              <label className="mb-1.5 block text-[13px] font-semibold text-slate-600">Enter OTP</label>
               <input 
                 type="text" 
                 placeholder="Enter 4-digit OTP" 
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                style={{ width: '100%', padding: '10px', borderRadius: '4px', border: '1px solid #d1d5db', textAlign: 'center', letterSpacing: '2px', fontSize: '18px' }}
+                className="h-11 w-full rounded-xl border border-slate-200 bg-white px-3.5 text-sm text-slate-800 outline-none transition placeholder:text-slate-400 focus:border-gray-400 focus:ring-4 focus:ring-gray-900/5 !h-12 text-center !text-lg font-semibold tracking-wide"
                 maxLength={6}
                 required
               />
@@ -161,7 +172,7 @@ const PublicDeleteAccount = () => {
             <button 
               type="submit" 
               disabled={loading}
-              style={{ width: '100%', padding: '12px', backgroundColor: '#dc2626', color: '#fff', border: 'none', borderRadius: '4px', fontWeight: 'bold', cursor: loading ? 'not-allowed' : 'pointer', marginBottom: '10px' }}
+              className="inline-flex h-11 w-full items-center justify-center rounded-xl bg-rose-600 hover:bg-rose-700 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60 mb-3"
             >
               {loading ? 'Processing...' : 'Verify & Delete Account'}
             </button>
@@ -169,7 +180,7 @@ const PublicDeleteAccount = () => {
             <button 
               type="button" 
               onClick={() => setStep(1)}
-              style={{ width: '100%', padding: '10px', backgroundColor: '#e5e7eb', color: '#374151', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
+              className="inline-flex h-11 w-full items-center justify-center rounded-xl border border-slate-200 bg-white text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
             >
               Cancel
             </button>
@@ -177,18 +188,20 @@ const PublicDeleteAccount = () => {
         )}
 
         {step === 3 && (
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ width: '60px', height: '60px', borderRadius: '50%', backgroundColor: '#dcfce7', color: '#16a34a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '30px', margin: '0 auto 20px' }}>
+          <div className="py-2 text-center">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 text-3xl text-emerald-600 ring-1 ring-inset ring-emerald-500/25">
               ✓
             </div>
-            <h2 style={{ color: '#16a34a', marginBottom: '10px', fontSize: '24px', fontWeight: 'bold' }}>Account Deleted</h2>
-            <p style={{ color: '#4b5563', fontSize: '15px' }}>
+            <h2 className="mb-2 text-2xl font-semibold tracking-tight text-slate-900">Account Deleted</h2>
+            <p className="text-[15px] leading-relaxed text-slate-500">
               Your {type} account has been successfully deleted. We're sorry to see you go!
             </p>
           </div>
         )}
 
       </div>
+      <p className="mt-6 text-center text-xs text-slate-400">© Dvagoo. All rights reserved.</p>
+      </main>
     </div>
   );
 };

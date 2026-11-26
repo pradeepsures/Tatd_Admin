@@ -126,33 +126,39 @@ const UpdateBanner = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
-        <Breaker />
-      </div>
-      <div className="ml-5 mt-8 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
+    <div className="page-shell">
+      <Breaker />
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-5">
+          <p className="section-label">Banner</p>
+          <h1 className="page-title">Update Banner</h1>
+        </div>
         <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {/* Priority */}
-          <label className="ml-2 mt-4 font-normal block">Priority:</label>
+          <div>
+          <label className="field-label">Priority:</label>
           <input
             name="priority"
             value={formData.priority}
             onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+            className="field"
             type="number"
             placeholder="Priority"
           />
           {apiError.priority && (
-            <p className="text-red-500 text-sm ml-2">{apiError.priority}</p>
+            <p className="field-error">{apiError.priority}</p>
           )}
 
+          </div>
+          <div>
           {/* Platform */}
-          <label className="ml-2 mt-5 font-normal block">Platform:</label>
+          <label className="field-label">Platform:</label>
           <select
             name="platform"
             value={formData.platform}
             onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
+            className="field"
           >
             <option value="">Select Platform</option>
             <option value="web">Web</option>
@@ -160,42 +166,48 @@ const UpdateBanner = () => {
             <option value="both">Both</option>
           </select>
           {apiError.platform && (
-            <p className="text-red-500 text-sm ml-2">{apiError.platform}</p>
+            <p className="field-error">{apiError.platform}</p>
           )}
 
+          </div>
+          <div>
           {/* Type – same as create */}
-          <label className="ml-2 mt-5 font-normal block">Banner For:</label>
+          <label className="field-label">Banner For:</label>
           <select
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
+            className="field"
           >
             <option value="user">User</option>
             <option value="driver">Driver</option>
           </select>
           {apiError.type && (
-            <p className="text-red-500 text-sm ml-2">{apiError.type}</p>
+            <p className="field-error">{apiError.type}</p>
           )}
 
+          </div>
+          <div>
           {/* Status */}
-          <label className="ml-2 mt-5 font-normal block">Status:</label>
+          <label className="field-label">Status:</label>
           <select
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
+            className="field"
           >
             <option value="">Select Status</option>
             <option value="true">Active</option>
             <option value="false">Inactive</option>
           </select>
           {apiError.status && (
-            <p className="text-red-500 text-sm ml-2">{apiError.status}</p>
+            <p className="field-error">{apiError.status}</p>
           )}
 
+          </div>
+          <div>
           {/* Image Upload */}
-          <label className="ml-2 mt-5 font-normal block">Banner Image:</label>
+          <label className="field-label">Banner Image:</label>
           {imagePreview && (
             <img
               src={
@@ -205,12 +217,12 @@ const UpdateBanner = () => {
                   : `${BASE_URL}/${imagePreview}`
               }
               alt="Preview"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+              className="mb-3 h-20 w-32 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
             />
           )}
           <label
             htmlFor="image-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
+            className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/70 px-4 text-sm font-medium text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
           >
             🖼️ Upload / Replace Image
           </label>
@@ -223,17 +235,22 @@ const UpdateBanner = () => {
             onChange={handleImageChange}
           />
           {apiError.image && (
-            <p className="text-red-500 text-sm ml-2">{apiError.image}</p>
+            <p className="field-error">{apiError.image}</p>
           )}
 
+          </div>
+          </div>
+
           {/* Submit */}
+          <div className="mt-8 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-gradient-to-l from-[#5F0099] to-[#9F00FF] text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-8 rounded-2xl"
+            className="btn-primary w-full sm:w-auto"
           >
             {loading ? "Updating..." : "Update Banner"}
           </button>
+          </div>
         </form>
       </div>
     </div>

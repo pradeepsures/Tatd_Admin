@@ -61,34 +61,55 @@ export default function TripCancelRequestList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-4 sm:p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker />
 
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Trip Cancel Requests</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          Drivers requesting to cancel hourly / weekly / monthly trips. Approve or reject requests and view history.
-        </p>
-        {stats && (
-          <p className="text-xs text-gray-400 mt-2">
-            Total: {stats.total} · Pending: {stats.pendingCount ?? data.length}
+      <div className="page-header">
+        <div className="max-w-2xl">
+          <h1 className="page-title">Trip Cancel Requests</h1>
+          <p className="page-subtitle">
+            Drivers requesting to cancel hourly / weekly / monthly trips. Approve or reject requests and view history.
           </p>
+        </div>
+        {stats && (
+          <div className="page-actions">
+            <span className="badge-neutral !px-3 !py-1">
+              Total: {stats.total}
+            </span>
+            <span className="badge-warning !px-3 !py-1">
+              Pending: {stats.pendingCount ?? data.length}
+            </span>
+          </div>
         )}
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-sm">
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
-            <TableRow sx={{ bgcolor: "#111827" }}>
+            <TableRow>
               {["#", "Driver", "Booking Type", "Reason", "Status", "Requested", "Actions"].map((h) => (
-                <TableCell key={h} sx={{ color: "#fff", fontWeight: 600 }}>{h}</TableCell>
+                <TableCell
+                  key={h}
+                  sx={{
+                    background: "#f9fafb",
+                    color: "#667085",
+                    fontWeight: 700,
+                    fontSize: "0.72rem",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.08em",
+                    borderBottom: "1px solid rgba(16,24,40,0.08)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {h}
+                </TableCell>
               ))}
             </TableRow>
           </TableHead>
           <TableBody>
             {!data.length ? (
               <TableRow>
-                <TableCell colSpan={6} align="center" sx={{ py: 6, color: "#6b7280" }}>
+                <TableCell colSpan={7} align="center" className="!py-14 !text-slate-400">
                   No trip cancel requests found.
                 </TableCell>
               </TableRow>
@@ -97,25 +118,25 @@ export default function TripCancelRequestList() {
                 <TableRow key={row._id}>
                   <TableCell>{(page - 1) * 10 + i + 1}</TableCell>
                   <TableCell>
-                    <div className="font-medium">{row.driverId?.name || "—"}</div>
-                    <div className="text-xs text-gray-500">{row.driverId?.phone}</div>
+                    <div className="font-semibold text-slate-800">{row.driverId?.name || "—"}</div>
+                    <div className="text-xs text-slate-500">{row.driverId?.phone}</div>
                   </TableCell>
                   <TableCell className="capitalize">{row.bookingType || "—"}</TableCell>
-                  <TableCell>{row.reason || "No Reason Provided"}</TableCell>
+                  <TableCell className="max-w-xs !text-slate-600">{row.reason || "No Reason Provided"}</TableCell>
                   <TableCell>
                     <span
-                      className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      className={`whitespace-nowrap ${
                         row.status === "approved"
-                          ? "bg-green-100 text-green-700"
+                          ? "badge-success"
                           : row.status === "rejected"
-                          ? "bg-red-100 text-red-700"
-                          : "bg-amber-100 text-amber-700"
+                          ? "badge-danger"
+                          : "badge-warning"
                       }`}
                     >
                       {row.status?.toUpperCase()}
                     </span>
                   </TableCell>
-                  <TableCell>{row.requestedAt ? new Date(row.requestedAt).toLocaleString("en-IN") : "—"}</TableCell>
+                  <TableCell className="whitespace-nowrap !text-slate-500">{row.requestedAt ? new Date(row.requestedAt).toLocaleString("en-IN") : "—"}</TableCell>
                   <TableCell>
                     <IconButton size="small" onClick={(e) => { setAnchorEl(e.currentTarget); setSelected(row); }}>
                       <MoreVertIcon />
@@ -133,7 +154,7 @@ export default function TripCancelRequestList() {
       </TableContainer>
 
       {totalPages > 1 && (
-        <Stack alignItems="center" mt={4}>
+        <Stack alignItems="center" mt={2}>
           <Pagination count={totalPages} page={page} onChange={(_, v) => setPage(v)} />
         </Stack>
       )}
@@ -145,7 +166,7 @@ export default function TripCancelRequestList() {
         onOk={handleAction}
       >
         <textarea
-          className="w-full border rounded-lg p-3 text-sm"
+          className="field mt-2"
           rows={3}
           placeholder="Admin note (optional)"
           value={adminNote}

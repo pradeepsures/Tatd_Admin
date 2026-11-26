@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { TrashIcon } from '@heroicons/react/24/outline';
+import { TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Breaker from '../../compoents/Breaker';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -155,36 +155,20 @@ export default function AdminStaffList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <Breaker />
-      </div>
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search by name or email..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-80 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700 placeholder-gray-400"
-          />
-          <button
-            onClick={() => {
-              setSearchQuery(search);
-              setPage(1);
-            }}
-            className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium"
-          >
-            Search
-          </button>
+    <div className="page-shell">
+      <Breaker />
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Admin Staff</h1>
+          <p className="page-subtitle">{totalRecord} record{totalRecord === 1 ? "" : "s"} found</p>
         </div>
-        <div className="flex gap-4">
+        <div className="page-actions">
           {hasPermission("AdminStaff", "create") && (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={handleAddClick}
               data-aos="fade-left"
-              className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:shadow-lg transition-shadow"
+              className="btn-primary"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
@@ -199,7 +183,31 @@ export default function AdminStaffList() {
         </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+      <div className="card card-pad">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-80">
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-field w-full"
+          />
+          </div>
+          <button
+            onClick={() => {
+              setSearchQuery(search);
+              setPage(1);
+            }}
+            className="btn-primary w-full sm:w-auto"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table sx={{ minWidth: 700 }}>
           <TableHead>
             <TableRow>
@@ -213,7 +221,7 @@ export default function AdminStaffList() {
           <TableBody>
             {data.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={5} align="center" className="py-8 text-gray-500 text-lg">
+                <StyledTableCell colSpan={5} align="center" className="!py-14 !text-slate-400">
                   No staff members found
                 </StyledTableCell>
               </StyledTableRow>
@@ -221,10 +229,10 @@ export default function AdminStaffList() {
               data.map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell>{(page - 1) * rowsPerPage + index + 1}</StyledTableCell>
-                  <StyledTableCell className="font-medium text-gray-800">{row.userName || 'N/A'}</StyledTableCell>
+                  <StyledTableCell className="!font-semibold !text-slate-800">{row.userName || 'N/A'}</StyledTableCell>
                   <StyledTableCell>{row.email || 'N/A'}</StyledTableCell>
                   <StyledTableCell>
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+                    <span className="badge-info">
                       {row.role?.name || 'No Role Assigned'}
                     </span>
                   </StyledTableCell>
@@ -257,7 +265,7 @@ export default function AdminStaffList() {
       </TableContainer>
 
       {totalRecord > rowsPerPage && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={4}>
           <Pagination
             count={totalPages}
             page={page}

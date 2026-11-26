@@ -1,12 +1,13 @@
 import * as React from 'react';
-import Stack from '@mui/material/Stack';
-import CircularProgress from '@mui/material/CircularProgress';
 
+// Small inline spinner used inside buttons — inherits the button's text colour
 export default function CircularSize() {
   return (
-    <Stack spacing={2} direction="row" alignItems="center">
-      <CircularProgress size="20px"   />
-    
-    </Stack>
+    <span
+      className="inline-block h-4 w-4 shrink-0 rounded-full border-2 border-current border-t-transparent opacity-90"
+      style={{ animation: 'spin-slow 0.7s linear infinite' }}
+      role="status"
+      aria-label="Loading"
+    />
   );
 }

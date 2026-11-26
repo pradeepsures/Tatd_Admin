@@ -1,10 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Card } from "antd";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 import Loader from "../../compoents/Loader";
 import toast from "react-hot-toast";
 
 import { getPricingApi } from "../../Services/PricingApi";
+
+// Presentational helpers
+const Section = ({ title, children }) => (
+  <div className="card card-pad">
+    <div className="mb-5 border-b border-slate-200/70 pb-3">
+      <h3 className="card-title">{title}</h3>
+    </div>
+    {children}
+  </div>
+);
+
+const Item = ({ label, children }) => (
+  <div className="rounded-xl bg-white/60 px-4 py-3 ring-1 ring-slate-900/5">
+    <p className="detail-label">{label}</p>
+    <p className="detail-value">{children}</p>
+  </div>
+);
+
+const GRID = "grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3";
 
 // ✅ HELPER
 const showValue = (val) => {
@@ -41,101 +60,110 @@ export default function PricingDetails() {
   }, [id]);
 
   if (loading) return <Loader />;
-  if (!data) return <div>No Data Found</div>;
+  if (!data) return <div className="py-14 text-center text-slate-400">No Data Found</div>;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <h2 className="text-2xl font-semibold mb-6">Pricing Details</h2>
+    <div className="page-shell">
+      <div className="page-header">
+        <div>
+          <p className="section-label">Pricing</p>
+          <h1 className="page-title">Pricing Details</h1>
+        </div>
+        <div className="page-actions">
+          {/* BACK */}
+          <button
+            onClick={() => navigate(-1)}
+            className="btn-secondary"
+          >
+            <ArrowLeftIcon className="h-4 w-4" />
+            Back
+          </button>
+        </div>
+      </div>
 
       {/* BASIC INFO */}
-      <Card title="Basic Info" className="mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <p><strong>Booking Type:</strong> {data.bookingType}</p>
-          <p><strong>Region:</strong> {data.region?.name}</p>
-          <p><strong>State:</strong> {data.region?.state}</p>
-          <p><strong>Segment:</strong> {data.segment?.name}</p>
-          <p><strong>Capacity:</strong> {data.segment?.maxCapacity}</p>
-          <p><strong>GST %:</strong> {data.gstPercent}</p>
-          <p><strong>Surge Mode:</strong> {data.surgeActive}</p>
-          <p><strong>Active:</strong> {showValue(data.isActive)}</p>
-          <p><strong>Created At:</strong> {new Date(data.createdAt).toLocaleString()}</p>
-          <p><strong>Updated At:</strong> {new Date(data.updatedAt).toLocaleString()}</p>
+      <Section title="Basic Info">
+        <div className={GRID}>
+          <Item label="Booking Type">{data.bookingType}</Item>
+          <Item label="Region">{data.region?.name}</Item>
+          <Item label="State">{data.region?.state}</Item>
+          <Item label="Segment">{data.segment?.name}</Item>
+          <Item label="Capacity">{data.segment?.maxCapacity}</Item>
+          <Item label="GST %">{data.gstPercent}</Item>
+          <Item label="Surge Mode">{data.surgeActive}</Item>
+          <Item label="Active">{showValue(data.isActive)}</Item>
+          <Item label="Created At">{new Date(data.createdAt).toLocaleString()}</Item>
+          <Item label="Updated At">{new Date(data.updatedAt).toLocaleString()}</Item>
         </div>
-      </Card>
+      </Section>
 
       {/* DAY */}
-      <Card title="Day Pricing" className="mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <p>Base Fare: ₹{showValue(data.day?.baseFare)}</p>
-          <p>Per Km: ₹{showValue(data.day?.perKmRate)}</p>
-          <p>Per Min: ₹{showValue(data.day?.perMinRate)}</p>
-          <p>Min Fare: ₹{showValue(data.day?.minFare)}</p>
-          <p>Cancellation Fee: ₹{showValue(data.day?.cancellationFee)}</p>
+      <Section title="Day Pricing">
+        <div className={GRID}>
+          <Item label="Base Fare">₹{showValue(data.day?.baseFare)}</Item>
+          <Item label="Per Km">₹{showValue(data.day?.perKmRate)}</Item>
+          <Item label="Per Min">₹{showValue(data.day?.perMinRate)}</Item>
+          <Item label="Min Fare">₹{showValue(data.day?.minFare)}</Item>
+          <Item label="Cancellation Fee">₹{showValue(data.day?.cancellationFee)}</Item>
         </div>
-      </Card>
+      </Section>
 
       {/* NIGHT */}
-      <Card title="Night Pricing" className="mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <p>Base Fare: ₹{showValue(data.night?.baseFare)}</p>
-          <p>Per Km: ₹{showValue(data.night?.perKmRate)}</p>
-          <p>Per Min: ₹{showValue(data.night?.perMinRate)}</p>
-          <p>Min Fare: ₹{showValue(data.night?.minFare)}</p>
-          <p>Cancellation Fee: ₹{showValue(data.night?.cancellationFee)}</p>
+      <Section title="Night Pricing">
+        <div className={GRID}>
+          <Item label="Base Fare">₹{showValue(data.night?.baseFare)}</Item>
+          <Item label="Per Km">₹{showValue(data.night?.perKmRate)}</Item>
+          <Item label="Per Min">₹{showValue(data.night?.perMinRate)}</Item>
+          <Item label="Min Fare">₹{showValue(data.night?.minFare)}</Item>
+          <Item label="Cancellation Fee">₹{showValue(data.night?.cancellationFee)}</Item>
         </div>
-      </Card>
+      </Section>
 
       {/* HOURLY PACKAGE */}
-      <Card title="Hourly Package" className="mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <p>Hours: {showValue(data.hourlyPackage?.hours)}</p>
-          <p>Included Kms: {showValue(data.hourlyPackage?.includedKms)}</p>
-          <p>Package Fare: ₹{showValue(data.hourlyPackage?.packageFare)}</p>
-          <p>Extra Per Km: ₹{showValue(data.hourlyPackage?.extraPerKm)}</p>
-          <p>Extra Per Min: ₹{showValue(data.hourlyPackage?.extraPerMin)}</p>
+      <Section title="Hourly Package">
+        <div className={GRID}>
+          <Item label="Hours">{showValue(data.hourlyPackage?.hours)}</Item>
+          <Item label="Included Kms">{showValue(data.hourlyPackage?.includedKms)}</Item>
+          <Item label="Package Fare">₹{showValue(data.hourlyPackage?.packageFare)}</Item>
+          <Item label="Extra Per Km">₹{showValue(data.hourlyPackage?.extraPerKm)}</Item>
+          <Item label="Extra Per Min">₹{showValue(data.hourlyPackage?.extraPerMin)}</Item>
         </div>
-      </Card>
+      </Section>
 
       {/* DRIVER FARE */}
-      <Card title="Driver Fare" className="mb-6">
-        <div className="grid grid-cols-2 gap-4">
-          <p>Per Km Rate: ₹{showValue(data.driverFare?.perKmRate)}</p>
-          <p>Flat Per Trip: ₹{showValue(data.driverFare?.flatPerTrip)}</p>
-          <p>Min Guarantee: ₹{showValue(data.driverFare?.minGuarantee)}</p>
-          <p>Allowance Per Day: ₹{showValue(data.driverFare?.allowancePerDay)}</p>
-          <p>Toll Included: {showValue(data.driverFare?.tollIncluded)}</p>
+      <Section title="Driver Fare">
+        <div className={GRID}>
+          <Item label="Per Km Rate">₹{showValue(data.driverFare?.perKmRate)}</Item>
+          <Item label="Flat Per Trip">₹{showValue(data.driverFare?.flatPerTrip)}</Item>
+          <Item label="Min Guarantee">₹{showValue(data.driverFare?.minGuarantee)}</Item>
+          <Item label="Allowance Per Day">₹{showValue(data.driverFare?.allowancePerDay)}</Item>
+          <Item label="Toll Included">{showValue(data.driverFare?.tollIncluded)}</Item>
         </div>
-      </Card>
+      </Section>
 
       {/* SURGE WINDOWS */}
-      <Card title="Surge Windows" className="mb-6">
+      <Section title="Surge Windows">
         {data.surgeWindows?.length > 0 ? (
-          data.surgeWindows.map((item, i) => (
-            <div key={i} className="border p-4 mb-3 rounded bg-gray-100">
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+          {data.surgeWindows.map((item, i) => (
+            <div key={i} className="rounded-xl bg-white/60 p-4 ring-1 ring-slate-900/5">
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <div><p className="detail-label">Label</p><p className="detail-value">{item.label}</p></div>
+                <div><p className="detail-label">Type</p><p className="detail-value">{item.type}</p></div>
 
-              <p><strong>Label:</strong> {item.label}</p>
-              <p><strong>Type:</strong> {item.type}</p>
+                <div><p className="detail-label">From</p><p className="detail-value">{showValue(item.fromHour)}:{showValue(item.fromMin)}</p></div>
+                <div><p className="detail-label">To</p><p className="detail-value">{showValue(item.toHour)}:{showValue(item.toMin)}</p></div>
 
-              <p><strong>From:</strong> {showValue(item.fromHour)}:{showValue(item.fromMin)}</p>
-              <p><strong>To:</strong> {showValue(item.toHour)}:{showValue(item.toMin)}</p>
-
-              <p><strong>Multiplier:</strong> {item.multiplier}x</p>
-              <p><strong>Active:</strong> {showValue(item.isActive)}</p>
+                <div><p className="detail-label">Multiplier</p><p className="detail-value">{item.multiplier}x</p></div>
+                <div><p className="detail-label">Active</p><p className="detail-value">{showValue(item.isActive)}</p></div>
+              </div>
             </div>
-          ))
+          ))}
+          </div>
         ) : (
-          <p>No Surge Windows</p>
+          <p className="py-10 text-center text-sm text-slate-400">No Surge Windows</p>
         )}
-      </Card>
-
-
-      {/* BACK */}
-      <button
-        onClick={() => navigate(-1)}
-        className="bg-blue-600 text-white px-6 py-2 rounded mt-6"
-      >
-        Back
-      </button>
+      </Section>
     </div>
   );
 }

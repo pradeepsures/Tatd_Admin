@@ -8,7 +8,7 @@ import {
     TableHead, TableRow, Paper, IconButton, Menu, MenuItem
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import { Modal } from "antd";
@@ -152,18 +152,46 @@ export default function PricingList() {
     if (!auth.user) return null;
 
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="page-shell">
             <Breaker />
 
+            <div className="page-header">
+                <div>
+                    <h1 className="page-title">Pricing</h1>
+                    <p className="page-subtitle">{totalRecord} records</p>
+                </div>
+
+                <div className="page-actions">
+                    {/* ✅ EXPORT BUTTON */}
+                    <button
+                        onClick={exportFunc}
+                        className="btn-secondary"
+                    >
+                        {isExporting ? <LoderBtn /> : "Export Excel"}
+                    </button>
+
+                    {/* ADD BUTTON */}
+                    {hasPermission("Pricing", "create") && (
+                        <button
+                            onClick={() => navigate("create")}
+                            className="btn-primary"
+                        >
+                            <PlusIcon className="h-4 w-4" />
+                            Add Pricing
+                        </button>
+                    )}
+                </div>
+            </div>
+
             {/* FILTER */}
-            <div className="flex justify-between mb-6 mt-4">
-                <div className="flex gap-3">
+            <div className="card card-pad">
+                <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
                     <select
                         value={filters.bookingType}
                         onChange={(e) =>
                             setFilters((p) => ({ ...p, bookingType: e.target.value }))
                         }
-                        className="border px-3 py-2 rounded"
+                        className="field !h-10 sm:w-48"
                     >
                         <option value="">All Booking</option>
                         <option value="one_way">One Way</option>
@@ -175,7 +203,7 @@ export default function PricingList() {
                         onChange={(e) =>
                             setFilters((p) => ({ ...p, isActive: e.target.value }))
                         }
-                        className="border px-3 py-2 rounded"
+                        className="field !h-10 sm:w-48"
                     >
                         <option value="">All Status</option>
                         <option value="true">Active</option>
@@ -185,36 +213,15 @@ export default function PricingList() {
                     {/* ✅ APPLY BUTTON FIXED */}
                     <button
                         onClick={() => setPage(1)}
-                        className="bg-blue-600 text-white px-4 rounded"
+                        className="btn-primary w-full sm:w-auto"
                     >
                         Apply
                     </button>
                 </div>
-
-                <div className="flex gap-3">
-                    {/* ✅ EXPORT BUTTON */}
-                    <button
-                        onClick={exportFunc}
-                        className="bg-green-600 text-white px-5 py-2 rounded-lg"
-                    >
-                        {isExporting ? <LoderBtn /> : "Export Excel"}
-                    </button>
-
-                    {/* ADD BUTTON */}
-                    {hasPermission("Pricing", "create") && (
-                        <button
-                            onClick={() => navigate("create")}
-                            className="bg-primary text-white px-5 py-2 rounded-lg"
-                        >
-                            Add Pricing
-                        </button>
-                    )}
-                </div>
-
             </div>
 
             {/* TABLE */}
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} className="overflow-hidden">
                 <Table>
                     <TableHead>
                         <TableRow>
@@ -234,12 +241,14 @@ export default function PricingList() {
                             .map((row, index) => (
                                 <TableRow key={row.id}>
                                     <TableCell>{(page - 1) * rowsPerPage + index + 1}</TableCell>
-                                    <TableCell>{row.region?.name || "N/A"}</TableCell>
+                                    <TableCell className="!font-semibold !text-slate-900">{row.region?.name || "N/A"}</TableCell>
                                     <TableCell>{row.segment?.name || "N/A"}</TableCell>
-                                    <TableCell>{row.bookingType}</TableCell>
-                                    <TableCell>₹{row.day?.baseFare}</TableCell>
+                                    <TableCell><span className="badge-neutral">{row.bookingType}</span></TableCell>
+                                    <TableCell className="!font-semibold !text-slate-900">₹{row.day?.baseFare}</TableCell>
                                     <TableCell>
-                                        {row.isActive ? "Active" : "Inactive"}
+                                        <span className={row.isActive ? "badge-success" : "badge-danger"}>
+                                            {row.isActive ? "Active" : "Inactive"}
+                                        </span>
                                     </TableCell>
 
                                     <TableCell align="center">
@@ -254,13 +263,13 @@ export default function PricingList() {
                                         >
                                             {hasPermission("Pricing", "read") && (
                                                 <MenuItem onClick={() => navigate(`pricingview/${row.id}`)}>
-                                                    <EyeIcon className="h-5 w-5 mr-2" /> View
+                                                    <EyeIcon className="h-5 w-5 mr-2 text-blue-600" /> View
                                                 </MenuItem>
                                             )}
 
                                             {hasPermission("Pricing", "update") && (
                                                 <MenuItem onClick={() => navigate(`update/${row.id}`)}>
-                                                    <PencilIcon className="h-5 w-5 mr-2" /> Edit
+                                                    <PencilIcon className="h-5 w-5 mr-2 text-green-600" /> Edit
                                                 </MenuItem>
                                             )}
 
@@ -271,7 +280,7 @@ export default function PricingList() {
                                                 </MenuItem>
                                             )}
                                             {/* <MenuItem onClick={() => navigate(`pricingview/${row.id}`)}>
-                                            <EyeIcon className="h-5 w-5 mr-2" /> View
+                                            <EyeIcon className="h-5 w-5 mr-2 text-blue-600" /> View
                                         </MenuItem>
                                         <MenuItem onClick={() => navigate(`update/${row.id}`)}>
                                             <PencilIcon className="h-5 w-5 mr-2" /> Edit
@@ -290,7 +299,7 @@ export default function PricingList() {
 
             {/* PAGINATION */}
             {totalRecord > rowsPerPage && (
-                <Stack mt={4} alignItems="center">
+                <Stack mt={1} alignItems="center">
                     <Pagination
                         count={totalPages}
                         page={page}

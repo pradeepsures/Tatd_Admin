@@ -76,20 +76,22 @@ const UpdateComplaint = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
-        <Breaker />
-      </div>
-      <div className="ml-5 mt-8 bg-white p-6 max-w-7xl rounded-xl shadow-xl">
-        <h2 className="text-2xl font-bold mb-6">Update Complaint</h2>
-        <form onSubmit={handleSubmit}>
+    <div className="page-shell">
+      <Breaker />
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-4">
+          <p className="section-label">Support</p>
+          <h2 className="page-title mt-1">Update Complaint</h2>
+        </div>
+        <form onSubmit={handleSubmit} className="space-y-5">
           {/* Ticket Status */}
-          <label className="ml-2 mt-2 font-normal block">Ticket Status:</label>
+          <div className="max-w-xl">
+          <label className="field-label">Ticket Status:</label>
           <select
             name="ticketStatus"
             value={formData.ticketStatus}
             onChange={handleChange}
-            className="w-full h-12 mb-1 border rounded-xl pl-4 border-gray-500"
+            className="field"
           >
             <option value="">Select Status</option>
             {validStatuses.map((status) => (
@@ -99,33 +101,36 @@ const UpdateComplaint = () => {
             ))}
           </select>
           {apiError.ticketStatus && (
-            <p className="text-red-500 text-sm ml-2">{apiError.ticketStatus}</p>
+            <p className="field-error">{apiError.ticketStatus}</p>
           )}
+          </div>
 
           {/* Admin Note */}
-          <label className="ml-2 mt-5 font-normal block">Admin Note (Optional):</label>
+          <div>
+          <label className="field-label">Admin Note (Optional):</label>
           <textarea
             name="adminNote"
             value={formData.adminNote}
             onChange={handleChange}
             rows={5}
-            className="w-full border rounded-xl p-3 border-gray-500"
+            className="field"
             placeholder="Add an admin note if needed..."
           />
+          </div>
 
           {/* Buttons */}
-          <div className="flex justify-end mt-6 space-x-2">
+          <div className="flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="bg-gray-400 text-white py-2 px-4 rounded-xl hover:bg-gray-500 transition-colors duration-300"
+              className="btn-secondary w-full sm:w-auto"
             >
               Back
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary text-white py-2 px-6 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-500"
+              className="btn-primary w-full sm:w-auto"
             >
               {loading ? "Updating..." : "Update"}
             </button>

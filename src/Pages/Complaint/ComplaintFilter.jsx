@@ -43,14 +43,17 @@ export default function ComplaintFilter({ appliedFilters, onApply, onReset }) {
   };
 
   return (
-    <div className="bg-white p-5 rounded-xl shadow mb-6">
-      <h3 className="text-lg font-semibold mb-4">Search & Filters</h3>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div className="card card-pad">
+      <div className="mb-4">
+        <p className="section-label">Refine results</p>
+        <h3 className="card-title mt-1">Search & Filters</h3>
+      </div>
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {/* SEARCH */}
         <input
           type="text"
           placeholder="Search by Ticket ID / Reporter Name / Email / Phone / Description"
-          className="border p-2 rounded-lg"
+          className="field !h-10"
           value={localFilters.searchQuery}
           onChange={(e) => handleChange("searchQuery", e.target.value)}
         />
@@ -60,7 +63,7 @@ export default function ComplaintFilter({ appliedFilters, onApply, onReset }) {
         <input
           type={localFilters.startDate ? "date" : "text"}
           placeholder="Start Date"
-          className="border p-2 rounded-lg"
+          className="field !h-10"
           value={localFilters.startDate || ""}
           onFocus={(e) => (e.target.type = "date")}
           onBlur={(e) => {
@@ -77,7 +80,7 @@ export default function ComplaintFilter({ appliedFilters, onApply, onReset }) {
         <input
           type={localFilters.endDate ? "date" : "text"}
           placeholder="End Date"
-          className="border p-2 rounded-lg"
+          className="field !h-10"
           value={localFilters.endDate || ""}
           onFocus={(e) => (e.target.type = "date")}
           onBlur={(e) => {
@@ -110,7 +113,7 @@ export default function ComplaintFilter({ appliedFilters, onApply, onReset }) {
           placeholder="Issue Category"
           value={localFilters.issueCategory || undefined}
           onChange={(val) => handleChange("issueCategory", val)}
-          className="border p-2 rounded-lg w-full"
+          className="custom-select w-full"
           filterOption={(input, option) =>
             option?.children?.toLowerCase().includes(input.toLowerCase())
           }
@@ -130,7 +133,7 @@ export default function ComplaintFilter({ appliedFilters, onApply, onReset }) {
           placeholder="Ticket Status"
           value={localFilters.ticketStatus || undefined}
           onChange={(val) => handleChange("ticketStatus", val)}
-          className="border p-2 rounded-lg w-full"
+          className="custom-select w-full"
           filterOption={(input, option) =>
             option?.children?.toLowerCase().includes(input.toLowerCase())
           }
@@ -150,7 +153,7 @@ export default function ComplaintFilter({ appliedFilters, onApply, onReset }) {
           placeholder="On Model"
           value={localFilters.onModel || undefined}
           onChange={(val) => handleChange("onModel", val)}
-          className="border p-2 rounded-lg w-full"
+          className="custom-select w-full"
           filterOption={(input, option) =>
             option?.children?.toLowerCase().includes(input.toLowerCase())
           }
@@ -164,18 +167,18 @@ export default function ComplaintFilter({ appliedFilters, onApply, onReset }) {
       </div>
 
       {/* BUTTONS */}
-      <div className="flex gap-3 mt-5">
+      <div className="mt-5 flex flex-col gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:justify-end">
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={handleApply}
-          className="bg-primary text-white px-5 py-2 rounded-lg"
+          className="btn-primary w-full sm:w-auto"
         >
           Apply Filters
         </motion.button>
         <motion.button
           whileTap={{ scale: 0.95 }}
           onClick={handleReset}
-          className="bg-gray-400 text-white px-5 py-2 rounded-lg"
+          className="btn-secondary w-full sm:w-auto"
         >
           Reset
         </motion.button>

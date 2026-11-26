@@ -188,15 +188,17 @@ const UpdateRole = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
-        <Breaker />
-      </div>
-      <div className="ml-5 mt-10 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
+    <div className="page-shell">
+      <Breaker />
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-5">
+          <p className="section-label">Access</p>
+          <h1 className="page-title">Update Role</h1>
+        </div>
         <form onSubmit={handleSubmit}>
-          <label className="ml-2 opacity-85 font-normal">Role Name:</label>
+          <label className="field-label">Role Name:</label>
           <input
-            className="w-full h-10 mt-1 mb-1 border rounded-xl pl-4 border-gray-500"
+            className="field"
             type="text"
             name="name"
             placeholder="Role Name"
@@ -204,19 +206,19 @@ const UpdateRole = () => {
             onChange={handleChange}
           />
           {apiError.name && (
-            <p className="text-red-500 text-sm ml-2 mb-2">{apiError.name}</p>
+            <p className="field-error">{apiError.name}</p>
           )}
 
-          <label className="ml-2 opacity-85 font-normal mt-4 block">
+          <label className="field-label mt-6">
             Permissions:
           </label>
 
           {formData.permission.map((perm, index) => (
-            <div key={index} className="border p-4 mt-2 rounded-lg relative">
+            <div key={index} className="relative mt-3 rounded-xl border border-slate-200/70 bg-white/60 p-4 pr-12">
               <button
                 type="button"
                 onClick={() => handleDeletePermission(index)}
-                className="absolute top-2 right-2 text-red-600 hover:text-red-800 font-bold"
+                className="btn-icon absolute right-2 top-2 font-bold hover:!bg-rose-50 hover:!text-rose-600"
                 title="Delete this permission"
               >
                 ✕
@@ -234,7 +236,7 @@ const UpdateRole = () => {
               <Select
                 showSearch
                 placeholder="Select Section"
-                className="w-3/4 h-10"
+                className="w-full sm:w-80 h-10"
                 value={perm.sectionName || undefined}
                 onChange={(value) =>
                   handlePermissionChange(index, "sectionName", value)
@@ -250,12 +252,12 @@ const UpdateRole = () => {
                 ))}
               </Select>
               {apiError[`sectionName_${index}`] && (
-                <p className="text-red-500 text-sm ml-2">
+                <p className="field-error">
                   {apiError[`sectionName_${index}`]}
                 </p>
               )}
-              <div className="flex gap-4 mt-2">
-                <label>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isCreate}
@@ -263,7 +265,7 @@ const UpdateRole = () => {
                   />{" "}
                   Create
                 </label>
-                <label>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isRead}
@@ -271,7 +273,7 @@ const UpdateRole = () => {
                   />{" "}
                   Read
                 </label>
-                <label>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isUpdate}
@@ -279,7 +281,7 @@ const UpdateRole = () => {
                   />{" "}
                   Update
                 </label>
-                <label>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isDelete}
@@ -292,20 +294,20 @@ const UpdateRole = () => {
           ))}
 
           {/* Move Add Permission button here */}
-          <div className=" flex justify-end">
+          <div className="mt-4 flex justify-end">
             <button
               type="button"
-              className="bg-red-500 text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-2 mt-6  text-sm px-4  rounded hover:bg-red-600"
+              className="btn-secondary w-full sm:w-auto"
               onClick={handleAddPermission}
             >
               + Add Permission
             </button>
           </div>
 
-          <div className="flex justify-end">
+          <div className="mt-8 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               type="submit"
-              className="px-5 bg-primary text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-6 rounded-2xl"
+              className="btn-primary w-full sm:w-auto"
             >
               {loading ? "Updating..." : "Update Role"}
             </button>

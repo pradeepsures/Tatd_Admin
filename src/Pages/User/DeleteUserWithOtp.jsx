@@ -88,7 +88,7 @@ const DeleteUser = () => {
             <button
               onClick={handleSendOtp}
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-950 via-zinc-950 to-slate-900 text-white py-2 rounded-lg"
+              className="w-full bg-[#111827] hover:bg-[#1f2937] text-white py-2 rounded-lg"
             >
               {loading ? "Sending..." : "Send OTP"}
             </button>
@@ -111,7 +111,7 @@ const DeleteUser = () => {
             <button
               onClick={handleVerifyOtp}
               disabled={loading}
-              className="w-full bg-gradient-to-r from-indigo-950 via-zinc-950 to-slate-900 text-white py-2 rounded-lg"
+              className="w-full bg-[#111827] hover:bg-[#1f2937] text-white py-2 rounded-lg"
             >
               {loading ? "Verifying..." : "Verify & Delete"}
             </button>

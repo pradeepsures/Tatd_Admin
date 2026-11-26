@@ -222,65 +222,70 @@ export default function DriverBookingDetails() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <Breaker />
+      <Breaker />
 
-        {/* STATS */}
-        {stats && (
-          <div className="bg-gradient-to-r from-[#03045E] to-[#0077B6] text-white px-4 py-2 rounded-lg flex flex-wrap gap-4 text-sm shadow">
-            <span>Total: <b>{stats.totalBookings}</b></span>
-            <span>On Trip: <b>{stats.onTripCount}</b></span>
-            <span>Completed: <b>{stats.completedCount}</b></span>
-            <span>Cancelled: <b>{stats.cancelledCount}</b></span>
-            <span>Pending: <b>{stats.pendingPaymentCount}</b></span>
-          </div>
-        )}
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Driver Trips</h1>
+          <p className="page-subtitle">All bookings handled by this driver</p>
+        </div>
       </div>
+
+      {/* STATS */}
+      {stats && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="card px-4 py-3"><p className="detail-label">Total:</p><p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">{stats.totalBookings}</p></div>
+          <div className="card px-4 py-3"><p className="detail-label">On Trip:</p><p className="mt-1 text-xl font-semibold tracking-tight text-amber-600">{stats.onTripCount}</p></div>
+          <div className="card px-4 py-3"><p className="detail-label">Completed:</p><p className="mt-1 text-xl font-semibold tracking-tight text-emerald-600">{stats.completedCount}</p></div>
+          <div className="card px-4 py-3"><p className="detail-label">Cancelled:</p><p className="mt-1 text-xl font-semibold tracking-tight text-rose-600">{stats.cancelledCount}</p></div>
+          <div className="card px-4 py-3"><p className="detail-label">Pending:</p><p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">{stats.pendingPaymentCount}</p></div>
+        </div>
+      )}
 
       {/* NO DATA */}
       {!loading && data.length === 0 && (
-        <div className="text-center py-20 text-gray-500 text-lg bg-white rounded-xl shadow">
+        <div className="card py-14 text-center text-slate-400">
           No bookings found
         </div>
       )}
 
       {/* TABLE */}
-      <div className="bg-white rounded-xl shadow overflow-x-auto">
-        <table className="min-w-full text-sm">
+      <div className="card overflow-x-auto">
+        <table className="min-w-[960px] w-full text-sm">
 
           {/* HEADER */}
-          <thead className="bg-gray-100 text-gray-700 uppercase text-xs">
+          <thead className="border-b border-[#c99a2e]/40 bg-[#171b25] text-[11px] font-semibold uppercase tracking-wider text-white/75">
             <tr>
-              <th className="px-4 py-3 text-left">Booking</th>
-              <th className="px-4 py-3 text-left">User</th>
-              <th className="px-4 py-3 text-left">Vehicle</th>
-              <th className="px-4 py-3 text-left">Route</th>
-              <th className="px-4 py-3 text-left">Fare</th>
-              <th className="px-4 py-3 text-left">Trip</th>
-              <th className="px-4 py-3 text-left">Status</th>
-              <th className="px-4 py-3 text-left">Timeline</th>
+              <th className="px-4 py-3 text-left font-semibold">Booking</th>
+              <th className="px-4 py-3 text-left font-semibold">User</th>
+              <th className="px-4 py-3 text-left font-semibold">Vehicle</th>
+              <th className="px-4 py-3 text-left font-semibold">Route</th>
+              <th className="px-4 py-3 text-left font-semibold">Fare</th>
+              <th className="px-4 py-3 text-left font-semibold">Trip</th>
+              <th className="px-4 py-3 text-left font-semibold">Status</th>
+              <th className="px-4 py-3 text-left font-semibold">Timeline</th>
             </tr>
           </thead>
 
           {/* BODY */}
-          <tbody className="divide-y">
+          <tbody className="divide-y divide-slate-200/70 text-slate-700">
 
             {data.map((item) => (
-              <tr key={item._id} className="hover:bg-gray-50">
+              <tr key={item._id} className="transition-colors odd:bg-slate-50/40 hover:bg-amber-50/50">
 
                 {/* BOOKING */}
                 <td className="px-4 py-3">
-                  <div className="font-semibold text-gray-800">
+                  <div className="font-semibold text-slate-800">
                     {item.bookingNumber}
                   </div>
-                  <div className="text-xs text-gray-500 mb-1">
+                  <div className="mb-1.5 text-xs text-slate-500">
                     {item.createdAtIST}
                   </div>
                   {item.collectionType && (
-                    <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-purple-100 text-purple-700 uppercase tracking-wide">
+                    <span className="badge-neutral text-[10px] uppercase tracking-wide">
                       {item.collectionType.replace("Booking", "").replace("booking", "standard")}
                     </span>
                   )}
@@ -296,22 +301,22 @@ export default function DriverBookingDetails() {
                   <div className="font-medium">
                     {item.vehicle?.brand} {item.vehicle?.model}
                   </div>
-                  <div className="text-xs text-gray-500">
+                  <div className="text-xs text-slate-500">
                     {item.vehicle?.carNumber}
                   </div>
-                  <div className="text-xs text-gray-400 capitalize">
+                  <div className="text-xs text-slate-400 capitalize">
                     {item.vehicle?.fuelType} / {item.vehicle?.color}
                   </div>
                 </td>
 
                 {/* ROUTE */}
                 <td className="px-4 py-3">
-                  <div className="text-xs text-gray-500">From:</div>
+                  <div className="text-xs text-slate-500">From:</div>
                   <div className="text-sm truncate max-w-[150px]" title={item.pickup?.address}>{item.pickup?.address || "N/A"}</div>
 
                   {item.dropoff?.address && (
                     <>
-                      <div className="text-xs text-gray-500 mt-1">To:</div>
+                      <div className="text-xs text-slate-500 mt-1">To:</div>
                       <div className="text-sm truncate max-w-[150px]" title={item.dropoff?.address}>{item.dropoff?.address}</div>
                     </>
                   )}
@@ -320,7 +325,7 @@ export default function DriverBookingDetails() {
                 {/* FARE */}
                 <td className="px-4 py-3">
                   <div>₹ {item.estimatedFare}</div>
-                  {/* <div className="text-xs text-gray-500">
+                  {/* <div className="text-xs text-slate-500">
                     Final: ₹ {item.fareBreakup?.final?.totalFare || 0}
                   </div> */}
                 </td>
@@ -339,7 +344,7 @@ export default function DriverBookingDetails() {
                     )}
                   </div>
                   {(!["hourlyBooking", "weeklyBooking", "monthlyBooking", "outstationBooking"].includes(item.collectionType)) && (
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-slate-500">
                       {item.estimatedMins || 0} mins
                     </div>
                   )}
@@ -348,27 +353,27 @@ export default function DriverBookingDetails() {
                 {/* STATUS */}
                 <td className="px-4 py-3">
                   <div
-                    className={`inline-block px-2 py-1 rounded-full text-xs font-semibold capitalize
+                    className={`whitespace-nowrap capitalize
                     ${
                       item.tripStatus === "completed"
-                        ? "bg-green-100 text-green-700"
+                        ? "badge-success"
                         : item.tripStatus === "in_progress"
-                        ? "bg-yellow-100 text-yellow-700"
+                        ? "badge-warning"
                         : item.tripStatus === "cancelled"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-blue-100 text-blue-700"
+                        ? "badge-danger"
+                        : "badge-info"
                     }`}
                   >
                     {item.tripStatus.replace("_", " ")}
                   </div>
 
-                  <div className="text-xs text-gray-500 mt-1 capitalize">
+                  <div className="text-xs text-slate-500 mt-1 capitalize">
                     {item.paymentStatus} | {item.assignmentStatus}
                   </div>
                 </td>
 
                 {/* TIMELINE */}
-                <td className="px-4 py-3 text-xs text-gray-500">
+                <td className="whitespace-nowrap px-4 py-3 text-xs leading-5 text-slate-500">
                   <div>Sch: {item.scheduledAtIST || "—"}</div>
                   <div>Start: {item.tripStartAtIST || "—"}</div>
                   <div>End: {item.tripEndAtIST || "—"}</div>

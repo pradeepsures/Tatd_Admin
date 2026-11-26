@@ -326,17 +326,17 @@ export default function HourlyBookingDetails() {
       .replace(/\b\w/g, (c) => c.toUpperCase());
 
   const cardClass =
-    "bg-white shadow-md rounded-xl p-5 mb-4 border border-gray-100";
+    "card card-pad";
 
   const renderField = (label, value) => {
     if (value === null || value === undefined || value === "") return null;
 
     return (
-      <div>
-        <div className="text-gray-500 text-xs">
+      <div className="min-w-0">
+        <div className="detail-label">
           {formatLabel(label)}
         </div>
-        <div className="text-sm font-semibold text-gray-800 break-words">
+        <div className="detail-value">
           {formatText(value)}
         </div>
       </div>
@@ -353,11 +353,11 @@ export default function HourlyBookingDetails() {
       if (typeof value === "object") return null;
 
       return (
-        <div key={key}>
-          <div className="text-gray-500 text-xs">
+        <div key={key} className="min-w-0">
+          <div className="detail-label">
             {formatLabel(key)}
           </div>
-          <div className="text-sm font-semibold text-gray-800">
+          <div className="detail-value">
             {formatText(value)}
           </div>
         </div>
@@ -366,27 +366,30 @@ export default function HourlyBookingDetails() {
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
 
       {/* HEADER */}
-      <div className="mb-4">
-        <Breaker />
+      <Breaker />
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Booking Details</h1>
+        </div>
 
+        <div className="page-actions">
         <button
           onClick={() => navigate(-1)}
-          className="mt-3 bg-gray-800 text-white px-4 py-2 rounded-lg text-sm"
+          className="btn-secondary"
         >
           ← Back
         </button>
 
-        <div className="mt-3 flex gap-3">
           <button
             onClick={async () => {
               setSelectedDriverId("");
               setDriverModalOpen(true);
               await fetchUnassignedDrivers();
             }}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm shadow"
+            className="btn-primary"
           >
             {data?.assignmentStatus === "assigned" ? "Reassign Driver" : "Assign Driver"}
           </button>
@@ -395,9 +398,9 @@ export default function HourlyBookingDetails() {
 
       {/* BOOKING INFO */}
       <div className={cardClass}>
-        <h2 className="text-lg font-bold mb-3">Booking Info</h2>
+        <h2 className="card-title mb-4 border-b border-slate-200/70 pb-3">Booking Info</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
           {renderField("bookingNumber", data.bookingNumber)}
           {renderField("tripType", data.tripType)}
@@ -417,9 +420,9 @@ export default function HourlyBookingDetails() {
 
       {/* USER */}
       <div className={cardClass}>
-        <h2 className="text-lg font-bold mb-3">User Info</h2>
+        <h2 className="card-title mb-4 border-b border-slate-200/70 pb-3">User Info</h2>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {renderField("name", data.user?.name)}
           {renderField("email", data.user?.email)}
           {renderField("travellerPhone", data.travellerPhone)}
@@ -429,12 +432,12 @@ export default function HourlyBookingDetails() {
       {/* VEHICLE */}
       {data.vechiclePreferenceCategory && (
         <div className={cardClass}>
-          <h2 className="text-lg font-bold mb-3">
+          <h2 className="card-title mb-4 border-b border-slate-200/70 pb-3">
             Vehicle Preference
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="space-y-4">
               {renderField("category", data.vechiclePreferenceCategory?.name)}
               {renderField(
                 "vehicleName",
@@ -449,7 +452,7 @@ export default function HourlyBookingDetails() {
                   data.vechiclePreferenceCategory.vehiclePreference.image
                 }
                 alt="vehicle"
-                className="w-32 h-32 object-contain rounded-lg border"
+                className="h-32 w-32 rounded-xl bg-white object-contain p-2 ring-1 ring-black/5"
               />
             )}
           </div>
@@ -459,9 +462,9 @@ export default function HourlyBookingDetails() {
       {/* PRICING */}
       {data.pricingSnapshot && (
         <div className={cardClass}>
-          <h2 className="text-lg font-bold mb-3">Pricing Snapshot</h2>
+          <h2 className="card-title mb-4 border-b border-slate-200/70 pb-3">Pricing Snapshot</h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {renderObject(data.pricingSnapshot)}
           </div>
         </div>
@@ -470,11 +473,11 @@ export default function HourlyBookingDetails() {
       {/* FARE BREAKUP - ESTIMATED */}
       {data.fareBreakup?.estimated && (
         <div className={cardClass}>
-          <h2 className="text-lg font-bold mb-3">
+          <h2 className="card-title mb-4 border-b border-slate-200/70 pb-3">
             Fare Breakup Estimated
           </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {renderObject(data.fareBreakup.estimated)}
           </div>
         </div>
@@ -483,11 +486,11 @@ export default function HourlyBookingDetails() {
       {/* FARE BREAKUP - FINAL */}
       {data.fareBreakup?.final && (
         <div className={cardClass}>
-          <h2 className="text-lg font-bold mb-3">
+          <h2 className="card-title mb-4 border-b border-slate-200/70 pb-3">
             Fare Breakup Final
           </h2>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {renderObject(data.fareBreakup.final)}
           </div>
         </div>
@@ -502,7 +505,7 @@ export default function HourlyBookingDetails() {
         okText={data?.assignmentStatus === "assigned" ? "Reassign Driver" : "Assign Driver"}
       >
         <div className="space-y-3">
-          <p className="text-sm text-gray-600">Select a driver for this booking.</p>
+          <p className="text-sm text-slate-500">Select a driver for this booking.</p>
           <Select
             showSearch
             placeholder="Select driver"
@@ -523,9 +526,9 @@ export default function HourlyBookingDetails() {
       {/* SCHEDULE */}
       {(data.scheduledAtIST || data.createdAtIST) && (
         <div className={cardClass}>
-          <h2 className="text-lg font-bold mb-3">Schedule</h2>
+          <h2 className="card-title mb-4 border-b border-slate-200/70 pb-3">Schedule</h2>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             {renderField("scheduledAt", data.scheduledAtIST)}
             {renderField("createdAt", data.createdAtIST)}
           </div>

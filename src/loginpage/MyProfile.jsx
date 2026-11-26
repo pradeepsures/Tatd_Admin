@@ -85,37 +85,37 @@ const ProfilePage = () => {
         setPreviewImage(formatImageUrl(profile?.profileImage));
     };
 
-    if (!profile) return <div className="p-6 flex justify-center mt-20"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>;
+    if (!profile) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-8 w-8 border-2 border-slate-200 border-t-[#d0d5dd]"></div></div>;
 
     return (
-        <div className="p-6">
-            <div className="mb-6 flex justify-between items-center">
+        <div className="page-shell">
+            <div className="mx-auto flex w-full max-w-2xl flex-wrap items-center justify-between gap-3">
                 <button
                     onClick={() => navigate(-1)}
-                    className="px-4 py-2 bg-white border border-gray-200 hover:bg-gray-50 rounded-lg text-sm font-medium shadow-sm transition-colors"
+                    className="btn-secondary"
                 >
                     ← Back
                 </button>
                 {!isEditing ? (
                     <button
                         onClick={() => setIsEditing(true)}
-                        className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow-sm transition-colors"
+                        className="btn-primary"
                     >
                         <MdEdit /> Edit Profile
                     </button>
                 ) : (
-                    <div className="flex gap-3">
+                    <div className="flex flex-wrap gap-2.5">
                         <button
                             onClick={handleCancel}
                             disabled={saving}
-                            className="flex items-center gap-2 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg text-sm font-semibold shadow-sm transition-colors disabled:opacity-50"
+                            className="btn-secondary"
                         >
                             <MdCancel /> Cancel
                         </button>
                         <button
                             onClick={handleSave}
                             disabled={saving}
-                            className="flex items-center gap-2 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-semibold shadow-sm transition-colors disabled:opacity-50"
+                            className="btn-success"
                         >
                             <MdSave /> {saving ? 'Saving...' : 'Save Changes'}
                         </button>
@@ -123,13 +123,15 @@ const ProfilePage = () => {
                 )}
             </div>
 
-            <div className="max-w-xl mx-auto bg-white shadow-sm border border-gray-100 rounded-2xl p-8">
+            <div className="card mx-auto w-full max-w-2xl overflow-hidden">
+                <div className="h-24 bg-[#111827] border-b border-gray-200"></div>
+                <div className="px-5 pb-8 sm:px-8">
                 {/* Profile Image */}
-                <div className="flex justify-center mb-8 relative w-max mx-auto">
+                <div className="relative mx-auto -mt-16 mb-8 flex w-max justify-center">
                     <img
                         src={previewImage || '/mannFleet2.png'}
                         alt="Profile"
-                        className="w-32 h-32 rounded-full object-cover border-4 border-white shadow-lg"
+                        className="h-32 w-32 rounded-full object-cover border-4 border-white shadow-xl ring-1 ring-black/5"
                         onError={(e) => { 
                             if (!e.target.src.includes('mannFleet2.png')) {
                                 e.target.src = '/mannFleet2.png';
@@ -137,7 +139,7 @@ const ProfilePage = () => {
                         }}
                     />
                     {isEditing && (
-                        <label className="absolute bottom-0 right-0 p-2 bg-blue-600 text-white rounded-full cursor-pointer hover:bg-blue-700 shadow-md transition-colors">
+                        <label className="absolute bottom-1 right-1 cursor-pointer rounded-full bg-[#0b0f19] p-2 text-gray-300 shadow-md ring-2 ring-white transition hover:brightness-125">
                             <MdCameraAlt size={20} />
                             <input type="file" className="hidden" accept="image/*" onChange={handleImageChange} />
                         </label>
@@ -147,47 +149,48 @@ const ProfilePage = () => {
                 {/* Form Details */}
                 <div className="space-y-5">
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Full Name</label>
+                        <label className="field-label">Full Name</label>
                         {isEditing ? (
                             <input
                                 type="text"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                className="field"
                                 value={formData.userName}
                                 onChange={(e) => setFormData({...formData, userName: e.target.value})}
                             />
                         ) : (
-                            <p className="text-gray-900 font-medium px-4 py-2 bg-gray-50 rounded-lg border border-transparent">{profile.userName || "N/A"}</p>
+                            <p className="flex min-h-11 items-center rounded-xl border border-slate-200/70 bg-white/60 px-3.5 text-sm font-semibold text-slate-800 break-all">{profile.userName || "N/A"}</p>
                         )}
                     </div>
                     
                     <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Email Address</label>
+                        <label className="field-label">Email Address</label>
                         {isEditing ? (
                             <input
                                 type="email"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                className="field"
                                 value={formData.email}
                                 onChange={(e) => setFormData({...formData, email: e.target.value})}
                             />
                         ) : (
-                            <p className="text-gray-900 font-medium px-4 py-2 bg-gray-50 rounded-lg border border-transparent">{profile.email || "N/A"}</p>
+                            <p className="flex min-h-11 items-center rounded-xl border border-slate-200/70 bg-white/60 px-3.5 text-sm font-semibold text-slate-800 break-all">{profile.email || "N/A"}</p>
                         )}
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-100 mt-6">
-                        <div className="col-span-2 sm:col-span-1">
-                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Assigned Role</label>
-                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800 capitalize">
+                    <div className="grid grid-cols-1 gap-4 pt-5 border-t border-slate-200/70 mt-6 sm:grid-cols-2">
+                        <div>
+                            <label className="detail-label mb-1.5 block">Assigned Role</label>
+                            <span className="badge-warning capitalize">
                                 {profile.role?.name || "N/A"}
                             </span>
                         </div>
-                        <div className="col-span-2">
-                            <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Member Since</label>
-                            <p className="text-sm font-medium text-gray-600">
+                        <div>
+                            <label className="detail-label mb-1.5 block">Member Since</label>
+                            <p className="text-sm font-semibold text-slate-800">
                                 {profile.createdAt ? new Date(profile.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : "N/A"}
                             </p>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </div>

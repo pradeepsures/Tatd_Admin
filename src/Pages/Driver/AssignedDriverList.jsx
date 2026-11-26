@@ -29,31 +29,33 @@ import { getAssignedHourlyDrivers } from "../../Services/HourlyBookingApi";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
+    background: "#111827",
     color: theme.palette.common.white,
     fontWeight: 700,
-    fontSize: "0.82rem",
+    fontSize: "0.75rem",
+    letterSpacing: "0.06em",
     padding: "14px 12px",
     textTransform: "uppercase",
     whiteSpace: "nowrap",
-    borderBottom: "none",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
   },
 
   [`&.${tableCellClasses.body}`]: {
     fontSize: "0.88rem",
     padding: "16px 12px",
     verticalAlign: "top",
-    borderBottom: "1px solid #edf2f7",
+    color: "#334155",
+    borderBottom: "1px solid rgba(226,232,240,0.7)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "rgba(248,250,252,0.45)",
   },
 
   "&:hover": {
-    backgroundColor: "#eef4ff",
+    backgroundColor: "rgba(16,24,40,0.08)",
     transition: "0.2s",
   },
 }));
@@ -96,19 +98,19 @@ export default function AssignedDriversList() {
   const getStatusColor = (status) => {
     switch (status) {
       case "completed":
-        return "bg-green-100 text-green-700";
+        return "badge-success";
 
       case "arrived":
-        return "bg-yellow-100 text-yellow-700";
+        return "badge-warning";
 
       case "not_started":
-        return "bg-blue-100 text-blue-700";
+        return "badge-info";
 
       case "cancelled":
-        return "bg-red-100 text-red-700";
+        return "badge-danger";
 
       default:
-        return "bg-gray-100 text-gray-700";
+        return "badge-neutral";
     }
   };
 
@@ -300,16 +302,22 @@ export default function AssignedDriversList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-4 md:p-6 bg-gray-50 min-h-screen w-full overflow-hidden">
+    <div className="page-shell">
       <Breaker />
 
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Assigned Drivers</h1>
+        </div>
+      </div>
+
       {/* HEADER */}
-      <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4 mb-6 mt-5">
+      <div className="card card-pad">
         {/* FILTERS */}
-        <div className="flex flex-wrap gap-3 w-full">
+        <div className="flex w-full flex-col flex-wrap gap-3 sm:flex-row sm:items-center">
           {/* SEARCH */}
           <input
-            className="px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition w-full sm:w-[260px]"
+            className="field h-11 w-full border sm:w-[260px]"
             placeholder="Search booking / driver / address"
             value={tempSearch}
             onChange={(e) =>
@@ -321,9 +329,9 @@ export default function AssignedDriversList() {
           <Select
             allowClear
             placeholder="Trip Status"
+            className="w-full sm:!w-[180px]"
             style={{
-              width: 180,
-              height: 45,
+              height: 44,
             }}
             value={tempTripStatus || undefined}
             onChange={(v) =>
@@ -346,7 +354,7 @@ export default function AssignedDriversList() {
           {/* START DATE */}
           <input
             type="date"
-            className="px-4 py-2 rounded-lg border border-gray-200"
+            className="field h-11 w-full border sm:w-auto"
             value={startDate}
             onChange={(e) =>
               setStartDate(e.target.value)
@@ -356,7 +364,7 @@ export default function AssignedDriversList() {
           {/* END DATE */}
           <input
             type="date"
-            className="px-4 py-2 rounded-lg border border-gray-200"
+            className="field h-11 w-full border sm:w-auto"
             value={endDate}
             onChange={(e) =>
               setEndDate(e.target.value)
@@ -366,7 +374,7 @@ export default function AssignedDriversList() {
           {/* APPLY */}
           <button
             onClick={applyFilters}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium shadow-md"
+            className="btn-primary h-11 w-full px-6 sm:w-auto"
           >
             Apply
           </button>
@@ -374,7 +382,7 @@ export default function AssignedDriversList() {
           {/* CLEAR */}
           <button
             onClick={clearFilters}
-            className="bg-gray-600 text-white px-6 py-2.5 rounded-lg font-medium shadow-md"
+            className="btn-secondary h-11 w-full px-6 sm:w-auto"
           >
             Clear
           </button>
@@ -382,7 +390,7 @@ export default function AssignedDriversList() {
           {/* EXPORT */}
           <button
             onClick={exportToExcel}
-            className="bg-green-600 hover:bg-green-700 text-white px-6 py-2.5 rounded-lg font-medium shadow-md"
+            className="btn-success h-11 w-full px-6 sm:ml-auto sm:w-auto"
           >
             Export Excel
           </button>
@@ -391,14 +399,14 @@ export default function AssignedDriversList() {
 
       {/* EMPTY */}
       {!loading && data.length === 0 && (
-        <div className="bg-white rounded-xl shadow py-20 text-center text-gray-500">
+        <div className="card py-14 text-center text-slate-400">
           No Assigned Drivers Found
         </div>
       )}
 
       {/* TABLE */}
       {data.length > 0 && (
-        <div className="w-full overflow-hidden rounded-2xl shadow bg-white">
+        <div className="w-full overflow-hidden">
           <TableContainer
             component={Paper}
             sx={{
@@ -472,28 +480,28 @@ export default function AssignedDriversList() {
                             row.driver?.profilePic
                           }
                           alt=""
-                          className="w-14 h-14 rounded-full object-cover border"
+                          className="h-12 w-12 shrink-0 rounded-full object-cover shadow-sm ring-1 ring-black/5"
                         />
 
                         <div className="space-y-1">
-                          <div className="font-semibold text-sm text-gray-800">
+                          <div className="font-semibold text-sm text-slate-800">
                             {row.driver?.name ||
                               "—"}
                           </div>
 
-                          <div className="text-xs text-gray-600">
+                          <div className="text-xs text-slate-600">
                             {row.driver?.phone ||
                               "—"}
                           </div>
 
                           <div className="flex flex-wrap gap-2">
                             <span
-                              className={`text-[10px] px-2 py-1 rounded-full font-semibold
+                              className={`text-[10px]
                               ${
                                 row.driver
                                   ?.isOnline
-                                  ? "bg-green-100 text-green-700"
-                                  : "bg-gray-100 text-gray-600"
+                                  ? "badge-success"
+                                  : "badge-neutral"
                               }
                             `}
                             >
@@ -502,19 +510,19 @@ export default function AssignedDriversList() {
                                 : "Offline"}
                             </span>
 
-                            <span className="text-[10px] px-2 py-1 rounded-full font-semibold bg-yellow-100 text-yellow-700">
+                            <span className="badge-warning text-[10px]">
                               ⭐{" "}
                               {row.driver?.rating ||
                                 0}
                             </span>
 
                             <span
-                              className={`text-[10px] px-2 py-1 rounded-full font-semibold
+                              className={`text-[10px]
                               ${
                                 row.driver
                                   ?.isAvailable
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-red-100 text-red-700"
+                                  ? "badge-info"
+                                  : "badge-danger"
                               }
                             `}
                             >
@@ -531,22 +539,22 @@ export default function AssignedDriversList() {
                     {/* BOOKING DETAILS */}
                     <StyledTableCell>
                       <div className="space-y-2 min-w-[220px]">
-                        <div className="font-semibold text-gray-800">
+                        <div className="font-semibold text-slate-800">
                           {
                             row.bookingNumber
                           }
                         </div>
 
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-slate-500">
                           Scheduled:
                         </div>
 
-                        <div className="text-xs text-gray-700">
+                        <div className="text-xs text-slate-700">
                           {row.scheduledAtIST ||
                             "—"}
                         </div>
 
-                        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold inline-block">
+                        <span className="badge-info">
                           {formatText(
                             row.tripType
                           )}
@@ -557,22 +565,22 @@ export default function AssignedDriversList() {
                     {/* PICKUP */}
                     <StyledTableCell>
                       <div className="space-y-2 min-w-[320px]">
-                        <span className="bg-green-100 text-green-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                        <span className="badge-success text-[10px] uppercase tracking-wide">
                           Pickup
                         </span>
 
-                        <div className="text-sm text-gray-700 break-words leading-6">
+                        <div className="text-sm text-slate-700 break-words leading-6">
                           {
                             row.pickup?.address
                           }
                         </div>
 
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-slate-500">
                           Lat:{" "}
                           {row.pickup?.lat}
                         </div>
 
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-slate-500">
                           Lng:{" "}
                           {row.pickup?.lng}
                         </div>
@@ -582,22 +590,22 @@ export default function AssignedDriversList() {
                     {/* DROP */}
                     <StyledTableCell>
                       <div className="space-y-2 min-w-[320px]">
-                        <span className="bg-red-100 text-red-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                        <span className="badge-danger text-[10px] uppercase tracking-wide">
                           Drop
                         </span>
 
-                        <div className="text-sm text-gray-700 break-words leading-6">
+                        <div className="text-sm text-slate-700 break-words leading-6">
                           {
                             row.dropoff?.address
                           }
                         </div>
 
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-slate-500">
                           Lat:{" "}
                           {row.dropoff?.lat}
                         </div>
 
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-slate-500">
                           Lng:{" "}
                           {row.dropoff?.lng}
                         </div>
@@ -607,7 +615,7 @@ export default function AssignedDriversList() {
                     {/* VEHICLE */}
                     <StyledTableCell>
                       <div className="space-y-2 min-w-[180px]">
-                        <div className="font-semibold text-gray-800">
+                        <div className="font-semibold text-slate-800">
                           {
                             row
                               .vechiclePreferenceCategory
@@ -615,7 +623,7 @@ export default function AssignedDriversList() {
                           }
                         </div>
 
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-slate-500">
                           {
                             row
                               .vechiclePreferenceCategory
@@ -636,7 +644,7 @@ export default function AssignedDriversList() {
                                 ?.image
                             }
                             alt=""
-                            className="w-16 h-16 object-contain"
+                            className="h-16 w-16 rounded-xl bg-white/70 object-contain p-1 ring-1 ring-black/5"
                           />
                         )}
                       </div>
@@ -645,23 +653,23 @@ export default function AssignedDriversList() {
                     {/* TRIP DETAILS */}
                     <StyledTableCell>
                       <div className="space-y-2 min-w-[180px]">
-                        <div className="text-sm font-medium text-gray-700">
+                        <div className="text-sm font-medium text-slate-700">
                           Hours:{" "}
                           {row.bookedHours}
                         </div>
 
-                        <div className="text-sm font-medium text-gray-700">
+                        <div className="text-sm font-medium text-slate-700">
                           Overall:
                         </div>
 
-                        <span className="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-semibold inline-block">
+                        <span className="badge-neutral">
                           {formatText(
                             row.overallStatus
                           )}
                         </span>
 
                         <div>
-                          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold inline-block">
+                          <span className="badge-success">
                             {formatText(
                               row.assignmentStatus
                             )}
@@ -672,7 +680,7 @@ export default function AssignedDriversList() {
 
                     {/* FARE */}
                     <StyledTableCell>
-                      <div className="font-bold text-green-700 text-lg min-w-[120px]">
+                      <div className="min-w-[120px] whitespace-nowrap text-base font-semibold text-slate-900">
                         ₹{" "}
                         {row.estimatedFare}
                       </div>
@@ -682,7 +690,7 @@ export default function AssignedDriversList() {
                     <StyledTableCell>
                       <div className="min-w-[150px]">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap ${getStatusColor(
+                          className={`whitespace-nowrap ${getStatusColor(
                             row.tripStatus
                           )}`}
                         >
@@ -701,7 +709,7 @@ export default function AssignedDriversList() {
       )}
 
       {/* PAGINATION */}
-      <Stack alignItems="center" mt={4}>
+      <Stack alignItems="center" mt={2}>
         <Pagination
           count={totalPages}
           page={page}

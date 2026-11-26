@@ -16,9 +16,9 @@ const { Option } = Select;
 const Field = ({ label, value }) => {
   if (value === null || value === undefined || value === "" || value === "-") return null;
   return (
-    <div className="flex justify-between items-center gap-4 py-3 border-b border-gray-100/80 last:border-b-0 hover:bg-blue-50/30 transition-colors px-2 rounded-lg">
-      <span className="text-gray-500 text-sm font-medium tracking-wide">{label}</span>
-      <span className="text-gray-900 text-sm font-semibold text-right break-words max-w-[60%]">
+    <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-1 py-2.5 last:border-b-0">
+      <span className="shrink-0 text-[13px] font-medium text-slate-500">{label}</span>
+      <span className="min-w-0 max-w-[60%] break-words text-right text-sm font-semibold text-slate-800">
         {value}
       </span>
     </div>
@@ -27,13 +27,13 @@ const Field = ({ label, value }) => {
 
 // ✅ Section
 const Section = ({ title, children }) => (
-  <div className="bg-white/90 backdrop-blur-xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow duration-300 rounded-2xl">
-    <div className="flex items-center gap-3 mb-5 border-b border-gray-100 pb-3">
-      <h3 className="text-lg font-bold text-gray-800 bg-gradient-to-r from-indigo-700 to-blue-600 bg-clip-text text-transparent">
+  <div className="card card-pad">
+    <div className="mb-3 flex items-center gap-2.5 border-b border-slate-200/70 pb-3">
+      <h3 className="card-title">
         {title}
       </h3>
     </div>
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-1">
+    <div className="grid grid-cols-1 gap-x-10 lg:grid-cols-2">
       {children}
     </div>
   </div>
@@ -125,28 +125,28 @@ useEffect(() => {
   if (loading || !data) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker />
 
       {/* ✅ HEADER */}
-      <div className="mb-6 mt-2">
+      <div className="card card-pad">
         <button
           onClick={() => navigate(-1)}
-          className="mb-4 bg-primary text-white px-6 py-2.5 rounded-lg font-medium shadow hover:shadow-md transition-all"
+          className="btn-secondary mb-4 !h-9"
         >
           ← Back
         </button>
 
-        <div className="flex justify-between items-center mt-2 mb-4">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
-          <h2 className="text-2xl font-semibold text-gray-800">
+          <h2 className="page-title">
             Booking Details
           </h2>
 
           {data?.driverResponse?.status === "pending" && data?.overallStatus !== "completed" && (
             <button
               onClick={() => setShowReassignModal(true)}
-              className="bg-red-600 text-white px-5 py-2 rounded-lg shadow"
+              className="btn-danger w-full sm:w-auto"
             >
               Reassign Driver
             </button>
@@ -154,12 +154,12 @@ useEffect(() => {
 
         </div>
 
-        <p className="text-gray-500 text-sm mt-1">
+        <p className="page-subtitle">
           {data.bookingNumber}
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-5">
 
         {/* BOOKING */}
         <Section title="Booking Info">
@@ -208,7 +208,7 @@ useEffect(() => {
         <Section title="Trip Location">
           {/* LEFT SIDE = PICKUP */}
           <div>
-            <h3 className="text-sm font-semibold text-gray-700 mb-2">
+            <h3 className="section-label mb-1 mt-2">
               Pickup
             </h3>
             <Field label="Address" value={data.pickup?.address} />
@@ -221,7 +221,7 @@ useEffect(() => {
           {/* RIGHT SIDE = DROP */}
           {data.dropoff && (
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">
+              <h3 className="section-label mb-1 mt-2">
                 Drop
               </h3>
               <Field label="Address" value={data.dropoff?.address} />

@@ -116,16 +116,19 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
     };
 
     return (
-        <div className="bg-white p-5 rounded-xl shadow mb-6">
-            <h3 className="text-2xl font-semibold mb-4">Search & Filters</h3>
+        <div className="card card-pad">
+            <div className="mb-4">
+                <p className="section-label">Refine results</p>
+                <h3 className="card-title mt-1">Search & Filters</h3>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
 
                 {/* SEARCH */}
                 <input
                     type="text"
                     placeholder="Search booking /user /chauffeur /vehicle"
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.searchQuery || ""}
                     onChange={(e) => handleChange("searchQuery", e.target.value)}
                 />
@@ -135,7 +138,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                 <input
                     type={localFilters.startDate ? "date" : "text"}
                     placeholder="Start Date"
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.startDate}
                     onFocus={(e) => (e.target.type = "date")}
                     onBlur={(e) => {
@@ -151,7 +154,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                 <input
                     type={localFilters.endDate ? "date" : "text"}
                     placeholder="End Date"
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.endDate}
                     onFocus={(e) => (e.target.type = "date")}
                     onBlur={(e) => {
@@ -165,21 +168,21 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                 />
                 {/* <input
                     type="date"
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.startDate || ""}
                     onChange={(e) => handleChange("startDate", e.target.value)}
                 />
 
                 <input
                     type="date"
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.endDate || ""}
                     onChange={(e) => handleChange("endDate", e.target.value)}
                 /> */}
 
                 {/* BOOKING TYPE */}
                 <select
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.bookingType || ""}
                     onChange={(e) => handleChange("bookingType", e.target.value)}
                 >
@@ -190,7 +193,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
 
                 {/* PAYMENT STATUS */}
                 <select
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.paymentStatus || ""}
                     onChange={(e) => handleChange("paymentStatus", e.target.value)}
                 >
@@ -203,7 +206,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
 
                 {/* ASSIGNMENT STATUS */}
                 <select
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.assignmentStatus || ""}
                     onChange={(e) => handleChange("assignmentStatus", e.target.value)}
                 >
@@ -216,7 +219,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
 
                 {/* TRIP STATUS */}
                 <select
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.tripStatus || ""}
                     onChange={(e) => handleChange("tripStatus", e.target.value)}
                 >
@@ -231,7 +234,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
 
                 {/* OVERALL STATUS */}
                 <select
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.overallStatus || ""}
                     onChange={(e) => handleChange("overallStatus", e.target.value)}
                 >
@@ -250,7 +253,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                     placeholder="Segment"
                     value={localFilters.segment || undefined}
                     onChange={(val) => handleChange("segment", val)}
-                    className="custom-select w-full "
+                    className="custom-select w-full"
                     loading={segmentLoading}
                 >
                     {segments.map((s) => (
@@ -285,7 +288,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                         handleChange("driverId", val);
                         handleChange("driverName", option.label);
                     }}
-                    className="custom-select w-full "
+                    className="custom-select w-full"
                     loading={driverLoading}
                 >
                     {drivers.map((d) => (
@@ -303,18 +306,18 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                 <input
                     type="text"
                     placeholder="Vehicle Number"
-                    className="border p-2 rounded-2xl"
+                    className="field !h-10"
                     value={localFilters.carNumber || ""}
                     onChange={(e) => handleChange("carNumber", e.target.value)}
                 />
             </div>
 
             {/* BUTTONS */}
-            <div className="flex gap-3 mt-5">
+            <div className="mt-5 flex flex-col gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:justify-end">
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleApply}
-                    className="bg-primary text-white px-5 py-2 rounded-2xl"
+                    className="btn-primary w-full sm:w-auto"
                 >
                     Apply Filters
                 </motion.button>
@@ -322,7 +325,7 @@ export default function BookingFilter({ appliedFilters, onApply, onReset }) {
                 <motion.button
                     whileTap={{ scale: 0.95 }}
                     onClick={handleReset}
-                    className="bg-gray-400 text-white px-5 py-2 rounded-2xl"
+                    className="btn-secondary w-full sm:w-auto"
                 >
                     Reset
                 </motion.button>

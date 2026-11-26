@@ -192,12 +192,14 @@ export default function DynamicForm({ config, readOnly = false }) {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6"><Breaker /></div>
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
-          {readOnly ? `View ${title}` : isEditMode ? `Edit ${title}` : `Create ${title}`}
-        </h2>
+    <div className="page-shell">
+      <Breaker />
+      <div className="card mx-auto max-w-4xl p-5 sm:p-7">
+        <div className="mb-6 border-b border-gray-200 pb-4">
+          <h2 className="text-lg font-semibold text-gray-900">
+            {readOnly ? `View ${title}` : isEditMode ? `Edit ${title}` : `Create ${title}`}
+          </h2>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -208,8 +210,8 @@ export default function DynamicForm({ config, readOnly = false }) {
 
               return (
                 <div key={index} className={field.fullWidth ? "col-span-1 md:col-span-2" : ""}>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {field.label} {field.required && <span className="text-red-500">*</span>}
+                  <label className="field-label">
+                    {field.label} {field.required && <span className="text-rose-500">*</span>}
                   </label>
 
                   {field.type === "textarea" ? (
@@ -219,7 +221,7 @@ export default function DynamicForm({ config, readOnly = false }) {
                       onChange={(e) => handleChange(e, field)}
                       required={field.required}
                       disabled={readOnly}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all disabled:bg-gray-100 disabled:text-gray-500"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg transition-all"
                       rows="4"
                     />
                   ) : (field.type === "select" || field.type === "dynamic_select" || field.type === "state_select") ? (
@@ -229,7 +231,7 @@ export default function DynamicForm({ config, readOnly = false }) {
                       onChange={(e) => handleChange(e, field)}
                       required={field.required}
                       disabled={readOnly}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:bg-gray-100 disabled:text-gray-500"
+                      className="h-11 w-full px-3.5 border border-gray-300 rounded-lg"
                     >
                       <option value="">Select {field.label}</option>
                       {options.map(opt => (
@@ -237,16 +239,16 @@ export default function DynamicForm({ config, readOnly = false }) {
                       ))}
                     </select>
                   ) : field.type === "boolean" ? (
-                    <label className="flex items-center space-x-3 cursor-pointer mt-2">
+                    <label className="flex h-10 cursor-pointer items-center gap-2.5">
                       <input
                         type="checkbox"
                         name={field.key}
                         checked={formData[field.key] || false}
                         onChange={(e) => handleChange(e, field)}
                         disabled={readOnly}
-                        className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500 disabled:opacity-50"
+                        className="h-4 w-4 rounded disabled:opacity-50"
                       />
-                      <span className="text-gray-700 font-medium">Yes / Active</span>
+                      <span className="text-sm font-medium text-slate-700">Yes / Active</span>
                     </label>
                   ) : field.type === "file" ? (
                     <input
@@ -255,7 +257,7 @@ export default function DynamicForm({ config, readOnly = false }) {
                       onChange={(e) => handleChange(e, field)}
                       required={field.required && !isEditMode}
                       disabled={readOnly}
-                      className="w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 disabled:opacity-50"
+                      className="w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 file:cursor-pointer disabled:opacity-50"
                     />
                   ) : (
                     <input
@@ -265,7 +267,7 @@ export default function DynamicForm({ config, readOnly = false }) {
                       onChange={(e) => handleChange(e, field)}
                       required={field.required}
                       disabled={readOnly}
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all disabled:bg-gray-100 disabled:text-gray-500"
+                      className="h-11 w-full px-3.5 border border-gray-300 rounded-lg transition-all"
                     />
                   )}
                 </div>
@@ -273,11 +275,11 @@ export default function DynamicForm({ config, readOnly = false }) {
             })}
           </div>
 
-          <div className="flex justify-end gap-4 mt-8 pt-6 border-t">
+          <div className="mt-8 flex flex-col-reverse gap-2 border-t border-gray-200 pt-5 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={() => navigate(basePath)}
-              className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              className="btn-secondary"
             >
               {readOnly ? "Back" : "Cancel"}
             </button>
@@ -285,7 +287,7 @@ export default function DynamicForm({ config, readOnly = false }) {
               <button
                 type="submit"
                 disabled={submitLoading}
-                className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all disabled:opacity-70 flex items-center justify-center min-w-[120px]"
+                className="btn-primary min-w-[96px]"
               >
                 {submitLoading ? <LoderBtn /> : (isEditMode ? "Update" : "Save")}
               </button>

@@ -183,29 +183,29 @@ export default function CancelRequestList() {
 
   return (
 
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
 
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Driver Cancel Requests</h1>
-        <p className="text-sm text-gray-500 mt-1">
-          When an assigned driver requests to cancel a trip mid-ride, requests appear here.
-          Approve, reject, or reassign another driver.
-        </p>
+      <div className="page-header">
+        <div className="max-w-2xl">
+          <h1 className="page-title">Driver Cancel Requests</h1>
+          <p className="page-subtitle">
+            When an assigned driver requests to cancel a trip mid-ride, requests appear here.
+            Approve, reject, or reassign another driver.
+          </p>
+        </div>
+
+        <div className="page-actions">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={exportExcel}
+            className="btn-secondary"
+          >
+            {isExporting ? <LoderBtn /> : "Export Excel"}
+          </motion.button>
+        </div>
       </div>
 
-<div className="flex justify-between mb-6">
-  <div />
-
-  <motion.button
-    whileTap={{ scale: 0.95 }}
-    onClick={exportExcel}
-    className="bg-green-600 text-white px-5 py-2 rounded-lg"
-  >
-    {isExporting ? <LoderBtn /> : "Export Excel"}
-  </motion.button>
-</div>
-
-      <TableContainer component={Paper} className="rounded-xl shadow">
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -222,7 +222,7 @@ export default function CancelRequestList() {
           <TableBody>
             {!data.length ? (
               <TableRow>
-                <TableCell colSpan={7} align="center" sx={{ py: 6, color: "#6b7280" }}>
+                <TableCell colSpan={7} align="center" className="!py-14 !text-slate-400">
                   No driver cancel requests. Empty list is normal — requests appear when a driver asks to cancel an assigned trip.
                 </TableCell>
               </TableRow>
@@ -233,21 +233,21 @@ export default function CancelRequestList() {
                     {(page - 1) * rowsPerPage + index + 1}
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap !font-semibold !text-slate-900">
                     {row.booking?.bookingNumber}
                   </TableCell>
 
-                  <TableCell>{row.driver?.name}</TableCell>
+                  <TableCell className="!font-medium">{row.driver?.name}</TableCell>
 
-                  <TableCell>{row.reason}</TableCell>
+                  <TableCell className="max-w-xs !text-slate-600">{row.reason}</TableCell>
 
                   <TableCell>
-                    <span className="text-yellow-600 font-semibold">
+                    <span className={`capitalize ${row.status === "approved" ? "badge-success" : row.status === "rejected" ? "badge-danger" : "badge-warning"}`}>
                       {row.status}
                     </span>
                   </TableCell>
 
-                  <TableCell>
+                  <TableCell className="whitespace-nowrap !text-slate-500">
                     {new Date(row.requestedAt).toLocaleString()}
                   </TableCell>
 

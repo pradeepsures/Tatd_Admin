@@ -14,7 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Breaker from "../../compoents/Breaker";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -37,27 +37,30 @@ import { useAuth } from "../../auth/AuthContext";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
-    letterSpacing: "0.05em",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
-    color: "#374151",
+    fontSize: "0.86rem",
+    color: "#1f2937",
     padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "rgba(248,250,252,0.45)",
   },
   "&:hover": {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "rgba(16,24,40,0.08)",
     transition: "background-color 0.2s ease",
   },
   "&:last-child td, &:last-child th": {
@@ -283,43 +286,31 @@ export default function RegionList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       {/* Breadcrumb */}
-      <div className="mb-6">
+      <div>
         <Breaker />
-        <div className="mt-4 text-sm text-gray-600 flex items-center gap-2">
-          <Link to="/dashboard" className="hover:text-blue-600 transition-colors">
+        <div className="mt-2 flex items-center gap-2 text-xs font-medium text-slate-500">
+          <Link to="/dashboard" className="transition-colors hover:text-slate-900">
             Dashboard
           </Link>
-          <span className="text-gray-400">/</span>
-          <span className="font-medium text-gray-800">Region List</span>
+          <span className="text-slate-300">/</span>
+          <span className="font-semibold text-slate-700">Region List</span>
         </div>
       </div>
 
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search by name or state..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-96 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 placeholder-gray-400 transition-all duration-200"
-          />
-
-          <button
-            onClick={handleSearch}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium shadow hover:shadow-md transition-all"
-          >
-            Search
-          </button>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Region List</h1>
+          <p className="page-subtitle">{totalRecord} records</p>
         </div>
 
-        <div className="flex gap-4">
+        <div className="page-actions">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={exportFunc}
             disabled={isExporting}
-            className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-green-700 transition-colors"
+            className="btn-secondary"
           >
             {isExporting ? (
               <span className="flex items-center gap-2">
@@ -334,15 +325,38 @@ export default function RegionList() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={openCreateModal}
-              className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:shadow-lg transition-shadow"
+              className="btn-primary"
             >
+              <PlusIcon className="h-4 w-4" />
               Add Region
             </motion.button>
           )}
         </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+      <div className="card card-pad">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-auto">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search by name or state..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="search-field sm:w-96"
+            />
+          </div>
+
+          <button
+            onClick={handleSearch}
+            className="btn-primary w-full sm:w-auto"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table sx={{ minWidth: 700 }} aria-label="region table">
           <TableHead>
             <TableRow>
@@ -359,7 +373,7 @@ export default function RegionList() {
           <TableBody>
             {data.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={6} align="center" className="py-12 text-gray-500 text-lg">
+                <StyledTableCell colSpan={7} align="center" className="!py-14 !text-slate-400">
                   {search.trim() ? "No matching regions found" : "No regions found"}
                 </StyledTableCell>
               </StyledTableRow>
@@ -367,19 +381,15 @@ export default function RegionList() {
               data.map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell>{(page - 1) * rowsPerPage + index + 1}</StyledTableCell>
-                  <StyledTableCell className="font-medium text-gray-800">{row.name || "—"}</StyledTableCell>
-                  <StyledTableCell className="text-gray-700">{row.state?.name?.name || "—"}</StyledTableCell>
-                  <StyledTableCell className="text-gray-700">{row.radiusKm != null ? `${row.radiusKm} km` : "—"}</StyledTableCell>
+                  <StyledTableCell className="!font-semibold !text-slate-900">{row.name || "—"}</StyledTableCell>
+                  <StyledTableCell className="!text-slate-600">{row.state?.name?.name || "—"}</StyledTableCell>
+                  <StyledTableCell className="!text-slate-600">{row.radiusKm != null ? `${row.radiusKm} km` : "—"}</StyledTableCell>
                   <StyledTableCell>
-                    <span
-                      className={`inline-flex px-3 py-1 rounded-full text-sm font-medium ${
-                        row.isActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
-                      }`}
-                    >
+                    <span className={row.isActive ? "badge-success" : "badge-danger"}>
                       {row.isActive ? "Active" : "Inactive"}
                     </span>
                   </StyledTableCell>
-                  <StyledTableCell className="text-gray-600">
+                  <StyledTableCell className="!text-slate-500">
                     {row.createdAt
                       ? new Date(row.createdAt).toLocaleDateString("en-IN", {
                           day: "2-digit",
@@ -393,7 +403,7 @@ export default function RegionList() {
                     {(hasPermission("Region", "update") || hasPermission("Region", "delete")) && (
                       <IconButton
                         onClick={(e) => handleMenuOpen(e, row.id)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="!text-slate-500 hover:!text-slate-900"
                       >
                         <MoreVertIcon />
                       </IconButton>
@@ -455,7 +465,7 @@ export default function RegionList() {
           <Form.Item name="isActive" label="Status" valuePropName="checked" initialValue={true}>
             <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
           </Form.Item>
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:justify-end">
             <Button onClick={() => setCreateModalVisible(false)}>Cancel</Button>
             <Button type="primary" htmlType="submit">Create Region</Button>
           </div>
@@ -483,7 +493,7 @@ export default function RegionList() {
           <Form.Item name="isActive" label="Status" valuePropName="checked">
             <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
           </Form.Item>
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:justify-end">
             <Button onClick={() => setEditModalVisible(false)}>Cancel</Button>
             <Button type="primary" htmlType="submit">Update Region</Button>
           </div>
@@ -491,7 +501,7 @@ export default function RegionList() {
       </Modal>
 
       {totalPages > 1 && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={2}>
           <Pagination
             count={totalPages}
             page={page}

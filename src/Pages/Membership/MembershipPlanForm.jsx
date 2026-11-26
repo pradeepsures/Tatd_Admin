@@ -192,38 +192,43 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
   };
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker />
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-4">
-          {isEditMode ? "Update Membership Plan" : "Create Membership Plan"}
-        </h2>
+      <div className="card mx-auto w-full max-w-5xl p-5 sm:p-8">
+        <div className="mb-7 flex items-center gap-3 border-b border-slate-200/70 pb-5">
+          <div>
+            <p className="section-label">{isEditMode ? "Update record" : "New record"}</p>
+            <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+              {isEditMode ? "Update Membership Plan" : "Create Membership Plan"}
+            </h2>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
           {/* Section 1: Basic Information */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Basic Details</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <h3 className="card-title mb-4">Basic Details</h3>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Plan Name *</label>
+                <label className="field-label">Plan Name *</label>
                 <input
                   type="text"
                   name="planName"
                   value={formData.planName}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="field disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="e.g. Premium Plan"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Billing Cycle *</label>
+                <label className="field-label">Billing Cycle *</label>
                 <select
                   name="billingCycle"
                   value={formData.billingCycle}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  className="field"
                 >
                   <option value="Monthly">Monthly</option>
                   <option value="Quarterly">Quarterly</option>
@@ -232,12 +237,12 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tier *</label>
+                <label className="field-label">Tier *</label>
                 <select
                   name="tier"
                   value={formData.tier}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  className="field"
                 >
                   <option value="Basic">Basic</option>
                   <option value="Standard">Standard</option>
@@ -246,13 +251,13 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tag (Optional)</label>
+                <label className="field-label">Tag (Optional)</label>
                 <input
                   type="text"
                   name="tag"
                   value={formData.tag}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="field disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="e.g. Most Popular"
                 />
               </div>
@@ -261,10 +266,10 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
 
           {/* Section 2: Pricing */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 border-t pt-6">Pricing</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <h3 className="card-title mb-4 border-t border-slate-200/70 pt-6">Pricing</h3>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price (₹) *</label>
+                <label className="field-label">Price (₹) *</label>
                 <input
                   type="number"
                   name="price"
@@ -272,31 +277,31 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
                   onChange={handleChange}
                   required
                   min="0"
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="field disabled:cursor-not-allowed disabled:opacity-60"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Original Price (₹)</label>
+                <label className="field-label">Original Price (₹)</label>
                 <input
                   type="number"
                   name="originalPrice"
                   value={formData.originalPrice}
                   onChange={handleChange}
                   min="0"
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="field disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="For strike-through price"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Savings Text</label>
+                <label className="field-label">Savings Text</label>
                 <input
                   type="text"
                   name="savingsText"
                   value={formData.savingsText}
                   onChange={handleChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="field disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="e.g. Save 25%"
                 />
               </div>
@@ -305,13 +310,13 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
 
           {/* Section 3: Image */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 border-t pt-6">Plan Image</h3>
-            <div className="flex items-center gap-6">
-              <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center overflow-hidden bg-gray-50 relative">
+            <h3 className="card-title mb-4 border-t border-slate-200/70 pt-6">Plan Image</h3>
+            <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+              <div className="relative flex h-32 w-32 shrink-0 flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-white/60 ring-1 ring-black/5">
                 {previewUrl ? (
                   <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
                 ) : (
-                  <PhotoIcon className="w-8 h-8 text-gray-400" />
+                  <PhotoIcon className="h-8 w-8 text-slate-400" />
                 )}
               </div>
               <div>
@@ -324,27 +329,27 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
                 />
                 <label
                   htmlFor="imageUpload"
-                  className="cursor-pointer bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-medium hover:bg-blue-100 transition-colors"
+                  className="btn-secondary cursor-pointer"
                 >
                   Choose Image to Crop
                 </label>
-                <p className="text-xs text-gray-500 mt-2">Required aspect ratio approx 16:9 or 1:1 depending on UI.</p>
+                <p className="mt-2 text-xs text-slate-500">Required aspect ratio approx 16:9 or 1:1 depending on UI.</p>
               </div>
             </div>
           </div>
 
           {/* Section 4: Dynamic Benefits */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 border-t pt-6">Dynamic Benefits</h3>
-            <p className="text-sm text-gray-500 mb-4">These values will be automatically applied by the system.</p>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <h3 className="card-title mb-4 border-t border-slate-200/70 pt-6">Dynamic Benefits</h3>
+            <p className="-mt-2 mb-4 text-sm text-slate-500">These values will be automatically applied by the system.</p>
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Discount Type</label>
+                <label className="field-label">Discount Type</label>
                 <select
                   name="discountType"
                   value={benefits.discountType}
                   onChange={handleBenefitChange}
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none bg-white"
+                  className="field"
                 >
                   <option value="none">None</option>
                   <option value="percentage">Percentage (%)</option>
@@ -353,55 +358,55 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
               </div>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Discount Value</label>
+                <label className="field-label">Discount Value</label>
                 <input
                   type="number"
                   name="discountValue"
                   value={benefits.discountValue}
                   onChange={handleBenefitChange}
                   min="0"
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="field disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="e.g. 5 or 50"
                   disabled={benefits.discountType === "none"}
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Free Rides Per Month</label>
+                <label className="field-label">Free Rides Per Month</label>
                 <input
                   type="number"
                   name="freeRidesPerMonth"
                   value={benefits.freeRidesPerMonth}
                   onChange={handleBenefitChange}
                   min="0"
-                  className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                  className="field disabled:cursor-not-allowed disabled:opacity-60"
                   placeholder="e.g. 2"
                 />
               </div>
 
-              <div className="flex items-center mt-6">
-                <label className="flex items-center space-x-3 cursor-pointer">
+              <div className="flex items-end">
+                <label className="flex h-11 w-full cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white/60 px-3.5">
                   <input
                     type="checkbox"
                     name="zeroCancellationFee"
                     checked={benefits.zeroCancellationFee}
                     onChange={handleBenefitChange}
-                    className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    className="h-5 w-5 rounded border-slate-300 accent-[#111827]"
                   />
-                  <span className="text-gray-700 font-medium text-sm">Zero Cancellation Fee</span>
+                  <span className="text-sm font-semibold text-slate-700">Zero Cancellation Fee</span>
                 </label>
               </div>
 
-              <div className="flex items-center mt-6">
-                <label className="flex items-center space-x-3 cursor-pointer">
+              <div className="flex items-end">
+                <label className="flex h-11 w-full cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white/60 px-3.5">
                   <input
                     type="checkbox"
                     name="priorityDriverAssignment"
                     checked={benefits.priorityDriverAssignment}
                     onChange={handleBenefitChange}
-                    className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                    className="h-5 w-5 rounded border-slate-300 accent-[#111827]"
                   />
-                  <span className="text-gray-700 font-medium text-sm">Priority Driver Assignment</span>
+                  <span className="text-sm font-semibold text-slate-700">Priority Driver Assignment</span>
                 </label>
               </div>
             </div>
@@ -409,31 +414,31 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
 
           {/* Section 5: Features */}
           <div>
-            <h3 className="text-lg font-semibold text-gray-700 mb-4 border-t pt-6">Visual Features (Text)</h3>
+            <h3 className="card-title mb-4 border-t border-slate-200/70 pt-6">Visual Features (Text)</h3>
             <div className="space-y-4">
               {features.map((feature, index) => (
-                <div key={index} className="flex gap-4 items-start bg-gray-50 p-4 rounded-lg border">
+                <div key={index} className="flex items-start gap-3 rounded-xl border border-slate-200/70 bg-slate-50/60 p-4">
                   <div className="flex-1 space-y-3">
                     <input
                       type="text"
                       value={feature.title}
                       onChange={(e) => handleFeatureChange(index, "title", e.target.value)}
                       placeholder="Feature Title (e.g. Free Cancellation)"
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="field disabled:cursor-not-allowed disabled:opacity-60"
                     />
                     <textarea
                       value={feature.description}
                       onChange={(e) => handleFeatureChange(index, "description", e.target.value)}
                       placeholder="Feature Description (Optional)"
                       rows="2"
-                      className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                      className="field disabled:cursor-not-allowed disabled:opacity-60"
                     />
                   </div>
                   {features.length > 1 && (
                     <button
                       type="button"
                       onClick={() => removeFeature(index)}
-                      className="text-red-500 hover:text-red-700 p-2"
+                      className="btn-icon text-rose-500 hover:bg-rose-50 hover:text-rose-700"
                     >
                       <TrashIcon className="w-5 h-5" />
                     </button>
@@ -443,40 +448,40 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
               <button
                 type="button"
                 onClick={addFeature}
-                className="flex items-center text-blue-600 font-medium hover:text-blue-800 transition-colors"
+                className="btn-ghost -ml-2"
               >
-                <PlusIcon className="w-4 h-4 mr-1" /> Add Feature
+                <PlusIcon className="h-4 w-4" /> Add Feature
               </button>
             </div>
           </div>
 
           {/* Section 5: Status */}
-          <div className="border-t pt-6">
-            <label className="flex items-center space-x-3 cursor-pointer">
+          <div className="border-t border-slate-200/70 pt-6">
+            <label className="inline-flex h-11 cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-white/60 px-3.5">
               <input
                 type="checkbox"
                 name="status"
                 checked={formData.status}
                 onChange={handleChange}
-                className="w-5 h-5 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
+                className="h-5 w-5 rounded border-slate-300 accent-[#111827]"
               />
-              <span className="text-gray-700 font-medium">Active Status</span>
+              <span className="text-sm font-semibold text-slate-700">Active Status</span>
             </label>
           </div>
 
           {/* Actions */}
-          <div className="flex justify-end gap-4 border-t pt-6">
+          <div className="flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={() => navigate("/home/membership")}
-              className="px-6 py-2.5 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              className="btn-secondary px-6"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center min-w-[120px]"
+              className="btn-primary min-w-[130px] px-6"
             >
               {loading ? <LoderBtn /> : isEditMode ? "Update Plan" : "Create Plan"}
             </button>
@@ -494,7 +499,7 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
         width={600}
         destroyOnClose
       >
-        <div className="relative w-full h-[400px] bg-gray-900 rounded-lg overflow-hidden mt-4">
+        <div className="relative mt-4 h-[300px] w-full overflow-hidden rounded-xl bg-slate-900 sm:h-[400px]">
           {imageSrc && (
             <Cropper
               image={imageSrc}
@@ -507,8 +512,8 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
             />
           )}
         </div>
-        <div className="mt-4 px-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">Zoom</label>
+        <div className="mt-4 px-1">
+          <label className="field-label">Zoom</label>
           <input
             type="range"
             value={zoom}
@@ -517,7 +522,7 @@ export default function MembershipPlanForm({ initialData = {}, onSubmit, loading
             step={0.1}
             aria-labelledby="Zoom"
             onChange={(e) => setZoom(e.target.value)}
-            className="w-full"
+            className="w-full accent-gray-900"
           />
         </div>
       </Modal>

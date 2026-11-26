@@ -41,8 +41,8 @@ const BannerView = () => {
   if (isLoading) return <Loader />;
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="bg-white p-6 rounded-xl shadow-md text-center text-red-600 font-medium">
+      <div className="flex min-h-[60vh] items-center justify-center px-4">
+        <div className="card card-pad text-center text-rose-600 font-medium">
           {error}
         </div>
       </div>
@@ -52,39 +52,44 @@ const BannerView = () => {
   const handleBackClick = () => navigate(-1);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="page-shell">
       <Breaker />
-      <div className="max-w-5xl mt-1 mx-auto">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">
-          Banner <span className="text-red-500">Overview</span>
-        </h1>
+      <div className="mx-auto w-full max-w-5xl space-y-5">
+        <div className="page-header">
+          <div>
+            <p className="section-label">Banner</p>
+            <h1 className="page-title">
+              Banner <span className="text-gray-900">Overview</span>
+            </h1>
+          </div>
+        </div>
 
-        <div className="bg-white p-8 rounded-2xl shadow-xl space-y-10">
+        <div className="card p-5 sm:p-8 space-y-8">
           {/* Image */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            <h2 className="card-title mb-4">
               Banner Preview
             </h2>
             {bannerData.image ? (
               <img
                 src={getImageUrl(bannerData.image)}
                 alt={bannerData.title || "Banner"}
-                className="w-full max-w-md h-48 object-cover rounded-lg shadow-md hover:scale-105 transition-transform duration-300"
+                className="w-full max-w-md h-48 object-cover rounded-xl shadow-sm ring-1 ring-black/5"
                 onError={(e) =>
                   (e.target.src = "https://via.placeholder.com/256x160")
                 }
               />
             ) : (
-              <p className="text-sm text-gray-500">No image uploaded</p>
+              <p className="text-sm text-slate-400">No image uploaded</p>
             )}
           </section>
 
           {/* Details */}
           <section>
-            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+            <h2 className="card-title mb-4">
               Banner Information
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
               <Detail label="Type" value={bannerData.type} />
               <Detail label="Priority" value={bannerData.priority} />
               <Detail
@@ -100,9 +105,9 @@ const BannerView = () => {
                 label="Status"
                 value={
                   bannerData.status ? (
-                    <span className="text-green-600 font-medium">Active</span>
+                    <span className="badge-success">Active</span>
                   ) : (
-                    <span className="text-red-600 font-medium">Inactive</span>
+                    <span className="badge-danger">Inactive</span>
                   )
                 }
               />
@@ -125,10 +130,10 @@ const BannerView = () => {
           </section>
 
           {/* Action */}
-          <div className="flex justify-end">
+          <div className="flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               onClick={handleBackClick}
-              className="bg-primary text-white font-semibold py-3 px-6 rounded-xl hover:scale-105 active:scale-95 transition-transform duration-300"
+              className="btn-secondary w-full sm:w-auto"
             >
               Back
             </button>
@@ -141,9 +146,9 @@ const BannerView = () => {
 
 // Reusable Detail Component
 const Detail = ({ label, value }) => (
-  <div>
-    <p className="text-gray-500 font-medium mb-1">{label}</p>
-    <p className="text-gray-800">{value || "Not provided"}</p>
+  <div className="rounded-xl border border-slate-200/70 bg-white/60 p-4">
+    <p className="detail-label">{label}</p>
+    <div className="detail-value">{value || "Not provided"}</div>
   </div>
 );
 

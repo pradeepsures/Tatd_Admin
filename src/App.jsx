@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import { ThemeProvider as MuiThemeProvider, createTheme } from "@mui/material/styles";
+import { ConfigProvider } from "antd";
 import {
   createBrowserRouter,
   RouterProvider,
@@ -176,11 +178,17 @@ import MembershipPlanUpdate from "./Pages/Membership/MembershipPlanUpdate";
 // import UserPrivacyPolicyView from "./Pages/PrivacyPolicy/PrivacyPolicyView";
 
 const Unauthorized = () => (
-  <div className="flex min-h-screen items-center justify-center bg-gray-50 p-6">
-    <div className="text-center">
-      <h1 className="text-4xl font-bold text-gray-900 mb-2">403</h1>
-      <p className="text-gray-600 mb-6">You don't have permission to access this page.</p>
-      <a href="/home" className="text-blue-600 font-medium hover:underline">Go to Dashboard</a>
+  <div className="flex min-h-screen items-center justify-center bg-[#f5f6f8] p-6">
+    <div className="w-full max-w-sm text-center">
+      <p className="text-sm font-medium text-gray-500">Error 403</p>
+      <h1 className="mt-2 text-2xl font-semibold text-gray-900">You don't have access to this page</h1>
+      <p className="mt-2 text-sm text-gray-500">Ask an administrator to update your role if you think this is a mistake.</p>
+      <a
+        href="/home"
+        className="mt-6 inline-flex h-9 items-center justify-center rounded-lg bg-[#111827] px-4 text-sm font-medium text-white hover:bg-[#1f2937]"
+      >
+        Go to Dashboard
+      </a>
     </div>
   </div>
 );
@@ -369,6 +377,45 @@ import { eventBus } from "./utils/eventBus";
 
 const NOTIFICATION_SOUND = "/noti.mp3";
 
+const FONT_STACK = '"Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+
+// Brand look for MUI + Ant Design (visual only)
+const muiTheme = createTheme({
+  palette: {
+    primary: { main: "#111827", dark: "#0b0f19", light: "#334155", contrastText: "#ffffff" },
+    secondary: { main: "#475467", contrastText: "#ffffff" },
+  },
+  shape: { borderRadius: 8 },
+  typography: { fontFamily: FONT_STACK, button: { textTransform: "none", fontWeight: 600 } },
+  components: {
+    MuiOutlinedInput: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "#fff",
+          "&.Mui-focused .MuiOutlinedInput-notchedOutline": { borderColor: "#98a2b3", borderWidth: 1 },
+        },
+        notchedOutline: { borderColor: "#d0d5dd" },
+      },
+    },
+  },
+});
+
+const antdTheme = {
+  token: {
+    colorPrimary: "#111827",
+    colorLink: "#175cd3",
+    colorLinkHover: "#1849a9",
+    borderRadius: 8,
+    fontFamily: FONT_STACK,
+    controlOutline: "rgba(17,24,39,0.08)",
+  },
+};
+
+// Static antd helpers (Modal.confirm, message) render outside the tree — give them the theme too
+ConfigProvider.config({
+  holderRender: (children) => <ConfigProvider theme={antdTheme}>{children}</ConfigProvider>,
+});
+
 const App = () => {
   const audioRef = useRef(null);
 
@@ -398,11 +445,28 @@ const App = () => {
     };
   }, []);
   return (
-    <>
-      <audio ref={audioRef} src={NOTIFICATION_SOUND} preload="auto" />
-      <RouterProvider router={router} />
-      <Toaster position="top-right" reverseOrder={false} />
-    </>
+    <MuiThemeProvider theme={muiTheme}>
+      <ConfigProvider theme={antdTheme}>
+        <audio ref={audioRef} src={NOTIFICATION_SOUND} preload="auto" />
+        <RouterProvider router={router} />
+        <Toaster
+          position="top-right"
+          reverseOrder={false}
+          toastOptions={{
+            style: {
+              background: "#fff",
+              color: "#101828",
+              border: "1px solid #e4e7ec",
+              borderRadius: "10px",
+              fontSize: "0.875rem",
+              fontWeight: 500,
+              padding: "10px 14px",
+              boxShadow: "0 12px 24px -6px rgba(16,24,40,0.12), 0 4px 8px -4px rgba(16,24,40,0.05)",
+            },
+          }}
+        />
+      </ConfigProvider>
+    </MuiThemeProvider>
   );
 };
 

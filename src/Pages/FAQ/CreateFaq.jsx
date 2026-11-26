@@ -32,43 +32,47 @@ export default function CreateFAQ() {
   };
 
   return (
-    <div className="max-w-9xl mx-auto bg-white shadow-md p-6 rounded-xl">
-      <h2 className="text-xl font-bold mb-4">Create FAQ</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="page-shell">
+    <div className="card p-5 sm:p-8">
+      <div className="mb-6 border-b border-slate-200/70 pb-5">
+        <p className="section-label">FAQ</p>
+        <h2 className="page-title">Create FAQ</h2>
+      </div>
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Question */}
         <div>
-          <label className="block text-gray-700 mb-1">Question</label>
+          <label className="field-label">Question</label>
           <input
             type="text"
             name="question"
             value={formData.question}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-200"
+            className="field"
             required
           />
         </div>
 
         {/* Answer */}
         <div>
-          <label className="block text-gray-700 mb-1">Answer</label>
+          <label className="field-label">Answer</label>
           <textarea
             name="answer"
             value={formData.answer}
             onChange={handleChange}
             rows="4"
-            className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-200"
+            className="field"
             required
           />
         </div>
 
         {/* Type */}
         <div>
-          <label className="block text-gray-700 mb-1">Type</label>
+          <label className="field-label">Type</label>
           <select
             name="type"
             value={formData.type}
             onChange={handleChange}
-            className="w-full border rounded-lg px-3 py-2 focus:ring focus:ring-blue-200"
+            className="field"
             required
           >
             <option value="">Select Type</option>
@@ -82,11 +86,11 @@ export default function CreateFAQ() {
         </div>
 
         {/* Submit */}
-        <div className="flex justify-end items-center gap-4 mt-6">
+        <div className="mt-8 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row-reverse sm:justify-start">
 
           <button
             type="submit"
-            className="bg-primary text-white font-bold hover:scale-105 active:scale-95 transition-transform duration-500 py-3 px-6 rounded-2xl"
+            className="btn-primary w-full sm:w-auto"
           >
             Create FAQ
           </button>
@@ -94,7 +98,7 @@ export default function CreateFAQ() {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className="bg-gray-500 text-white py-3 px-6 rounded-2xl hover:bg-gray-600 transition-colors"
+            className="btn-secondary w-full sm:w-auto"
           >
             Back
           </button>
@@ -103,7 +107,7 @@ export default function CreateFAQ() {
         {/* <div className="flex justify-end items-center gap-4 mt-6">
         <button
           type="submit"
-          className="bg-primary text-white font-bold hover:scale-105 active:scale-95 transition-transform duration-500 py-3  px-6 mt-6 rounded-2xl"
+          className="bg-primary text-white font-bold active:scale-95 transition-transform duration-500 py-3  px-6 mt-6 rounded-2xl"
         >
           Create FAQ
         </button>
@@ -118,6 +122,7 @@ export default function CreateFAQ() {
 
         </div> */}
       </form>
+    </div>
     </div>
   );
 }

@@ -272,20 +272,24 @@ const AboutUs = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-5">
+    <div className="page-shell">
       <Breaker />
 
-      <div className="max-w-7xl mx-auto bg-white rounded-lg shadow-lg p-6">
-        <h1 className="text-2xl font-bold mb-6">About Us</h1>
+      <div className="card card-pad">
+        <div className="flex flex-col gap-4 border-b border-slate-200/70 pb-5 mb-6 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="section-label">Content</p>
+            <h1 className="page-title">About Us</h1>
+          </div>
 
         {/* Tabs */}
-        <div className="flex gap-4 mb-6">
+        <div className="inline-flex w-full rounded-xl bg-slate-100 p-1 sm:w-auto">
           <button
             onClick={() => handleTypeChange("user")}
-            className={`px-4 py-2 rounded ${
+            className={`flex-1 sm:flex-none rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
               activeType === "user"
-                ? "bg-primary text-white"
-                : "bg-gray-200"
+                ? "bg-slate-900 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
             User
@@ -293,19 +297,20 @@ const AboutUs = () => {
 
           <button
             onClick={() => handleTypeChange("driver")}
-            className={`px-4 py-2 rounded ${
+            className={`flex-1 sm:flex-none rounded-lg px-5 py-2 text-sm font-semibold transition-colors ${
               activeType === "driver"
-                ? "bg-primary text-white"
-                : "bg-gray-200"
+                ? "bg-slate-900 text-white shadow-sm"
+                : "text-slate-600 hover:text-slate-900"
             }`}
           >
             Driver
           </button>
         </div>
+        </div>
 
         {/* Content */}
         {loading ? (
-          <div className="text-center">
+          <div className="flex justify-center py-14">
             <Loader />
           </div>
         ) : (
@@ -316,12 +321,14 @@ const AboutUs = () => {
               className="min-h-[300px] border rounded"
             />
 
+            <div className="mt-6 flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               onClick={handleUpdate}
-              className="mt-4 px-6 py-2 bg-primary text-white rounded"
+              className="btn-primary w-full sm:w-auto"
             >
               Update
             </button>
+            </div>
           </>
         )}
       </div>

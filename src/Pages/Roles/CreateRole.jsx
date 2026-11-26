@@ -133,17 +133,19 @@ const CreateRole = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
-        <Breaker />
-      </div>
-      <div className="ml-5 mt-10 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
+    <div className="page-shell">
+      <Breaker />
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-5">
+          <p className="section-label">Access</p>
+          <h1 className="page-title">Create Role</h1>
+        </div>
         <form onSubmit={handleSubmit}>
           {/* Role Name */}
-          <label className="ml-2 opacity-85 font-normal">Role Name:</label>
+          <label className="field-label">Role Name:</label>
 
           <input
-            className="w-full h-10 mt-1 mb-1 border rounded-xl pl-4 border-gray-500"
+            className="field"
             type="text"
             name="name"
             placeholder="Role Name"
@@ -151,16 +153,16 @@ const CreateRole = () => {
             onChange={handleChange}
           />
           {apiError.name && (
-            <p className="text-red-500 text-sm ml-2 mb-2">{apiError.name}</p>
+            <p className="field-error">{apiError.name}</p>
           )}
 
           {/* Permissions */}
-          <label className="ml-2 opacity-85 font-normal mt-4 block">
+          <label className="field-label mt-6">
             Permissions:
           </label>
           {formData.permissions.map((perm, index) => (
-            <div key={index} className="border p-4 mt-2 rounded-lg">
-              <div className="flex items-center justify-between">
+            <div key={index} className="mt-3 rounded-xl border border-slate-200/70 bg-white/60 p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 {/* <input
                   className="w-3/4 h-10 mt-1 mb-1 border rounded-xl pl-4 border-gray-500"
                   type="text"
@@ -173,7 +175,7 @@ const CreateRole = () => {
                 <Select
                   showSearch
                   placeholder="Select Section"
-                  className="w-3/4 h-10"
+                  className="w-full sm:w-80 h-10"
                   value={perm.sectionName || undefined}
                   onChange={(value) =>
                     handlePermissionChange(index, "sectionName", value)
@@ -192,19 +194,19 @@ const CreateRole = () => {
                   <button
                     type="button"
                     onClick={() => removePermissionField(index)}
-                    className="text-red-500 hover:text-red-700"
+                    className="btn-ghost !h-9 self-start text-rose-600 hover:!bg-rose-50 hover:!text-rose-700 sm:self-auto"
                   >
                     Remove
                   </button>
                 )}
               </div>
               {apiError[`sectionName_${index}`] && (
-                <p className="text-red-500 text-sm ml-2 mb-2">
+                <p className="field-error">
                   {apiError[`sectionName_${index}`]}
                 </p>
               )}
-              <div className="flex gap-4 mt-2">
-                <label>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isCreate}
@@ -212,7 +214,7 @@ const CreateRole = () => {
                   />{" "}
                   Create
                 </label>
-                <label>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isRead}
@@ -220,7 +222,7 @@ const CreateRole = () => {
                   />{" "}
                   Read
                 </label>
-                <label>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isUpdate}
@@ -228,7 +230,7 @@ const CreateRole = () => {
                   />{" "}
                   Update
                 </label>
-                <label>
+                <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white/80 px-3 py-1.5 text-sm font-medium text-slate-700 transition-colors hover:border-slate-300 hover:bg-white">
                   <input
                     type="checkbox"
                     checked={perm.isDelete}
@@ -244,17 +246,17 @@ const CreateRole = () => {
           <button
             type="button"
             onClick={addPermissionField}
-            className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600"
+            className="btn-secondary mt-4 w-full sm:w-auto"
           >
             Add Permission
           </button>
 
           {/* Submit */}
-          <div className="flex justify-end">
+          <div className="mt-8 flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="px-5 bg-primary text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-6 rounded-2xl"
+              className="btn-primary w-full sm:w-auto"
             >
               {loading ? "Creating..." : "Create Role"}
             </button>

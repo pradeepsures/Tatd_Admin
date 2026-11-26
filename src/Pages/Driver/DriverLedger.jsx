@@ -89,33 +89,33 @@ export default function DriverLedger() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-6xl mx-auto space-y-6">
-        
+    <div className="page-shell">
+      <div className="mx-auto w-full max-w-6xl space-y-5">
+
         {/* Header */}
-        <div className="flex items-center justify-between bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center gap-4">
+        <div className="card card-pad flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <button
               onClick={() => navigate(-1)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              className="btn-icon shrink-0 border border-slate-200 bg-white/80"
             >
-              <ArrowLeftIcon className="h-6 w-6 text-gray-600" />
+              <ArrowLeftIcon className="h-5 w-5" />
             </button>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">
+            <div className="min-w-0">
+              <h1 className="page-title">
                 Driver Ledger
               </h1>
               {driver && (
-                <p className="text-gray-500">
+                <p className="page-subtitle break-words">
                   {driver.name} {driver.lastName} • {driver.phone}
                 </p>
               )}
             </div>
           </div>
-          <div className="flex items-center gap-6">
-            <div className="text-right">
-              <p className="text-sm text-gray-500 font-medium">Wallet Balance</p>
-              <p className={`text-2xl font-bold ${driver?.walletBalance < 0 ? 'text-red-600' : 'text-green-600'}`}>
+          <div className="flex flex-col gap-4 border-t border-slate-200/70 pt-4 sm:flex-row sm:items-center sm:gap-6 sm:border-t-0 sm:pt-0">
+            <div className="sm:text-right">
+              <p className="detail-label">Wallet Balance</p>
+              <p className={`mt-1 text-2xl font-semibold tracking-tight ${driver?.walletBalance < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                 ₹{driver?.walletBalance || 0}
               </p>
             </div>
@@ -123,7 +123,7 @@ export default function DriverLedger() {
               variant="contained"
               color="primary"
               onClick={() => setOpen(true)}
-              sx={{ borderRadius: "8px", textTransform: "none", fontWeight: 600, padding: "8px 24px" }}
+              sx={{ borderRadius: "12px", textTransform: "none", fontWeight: 600, padding: "8px 24px", height: 40, backgroundImage: "#111827", boxShadow: "0 6px 18px -6px rgba(11,15,25,0.55)", "&:hover": { boxShadow: "0 0 0 1px rgba(16,24,40,0.08), 0 10px 26px -8px rgba(11,15,25,0.6)" } }}
             >
               Settle Balance
             </Button>
@@ -131,10 +131,10 @@ export default function DriverLedger() {
         </div>
 
         {/* Transactions Table */}
-        <TableContainer component={Paper} className="shadow-sm rounded-xl overflow-hidden border border-gray-100">
-          <Table>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }}>
             <TableHead>
-              <TableRow className="bg-gray-50">
+              <TableRow>
                 <StyledTableCell>DATE</StyledTableCell>
                 <StyledTableCell>TYPE</StyledTableCell>
                 <StyledTableCell>AMOUNT</StyledTableCell>
@@ -145,38 +145,38 @@ export default function DriverLedger() {
             <TableBody>
               {transactions.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" className="py-8 text-gray-500">
+                  <TableCell colSpan={5} align="center" className="!py-14 !text-slate-400">
                     No transactions found
                   </TableCell>
                 </TableRow>
               ) : (
                 transactions.map((t) => (
-                  <TableRow key={t._id} className="hover:bg-gray-50 transition-colors">
-                    <TableCell className="text-gray-600">
+                  <TableRow key={t._id}>
+                    <TableCell className="whitespace-nowrap !text-slate-600">
                       {moment(t.createdAt).format("DD MMM YYYY, hh:mm A")}
                     </TableCell>
                     <TableCell>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${
-                        t.type === 'credit' ? 'bg-green-100 text-green-700' :
-                        t.type === 'debit' ? 'bg-red-100 text-red-700' :
-                        'bg-blue-100 text-blue-700'
+                      <span className={`capitalize ${
+                        t.type === 'credit' ? 'badge-success' :
+                        t.type === 'debit' ? 'badge-danger' :
+                        'badge-info'
                       }`}>
                         {t.type}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className={`font-medium ${
-                        t.type === 'credit' ? 'text-green-600' :
-                        t.type === 'debit' ? 'text-red-600' :
+                      <span className={`whitespace-nowrap font-semibold ${
+                        t.type === 'credit' ? 'text-emerald-600' :
+                        t.type === 'debit' ? 'text-rose-600' :
                         'text-blue-600'
                       }`}>
                         {t.type === 'credit' ? '+' : t.type === 'debit' ? '-' : ''}₹{t.amount}
                       </span>
                     </TableCell>
-                    <TableCell className="font-semibold text-gray-700">
+                    <TableCell className="whitespace-nowrap !font-semibold !text-slate-800">
                       ₹{t.balanceAfter}
                     </TableCell>
-                    <TableCell className="text-gray-600 max-w-xs truncate" title={t.description}>
+                    <TableCell className="max-w-xs truncate !text-slate-600" title={t.description}>
                       {t.description || "-"}
                     </TableCell>
                   </TableRow>
@@ -190,9 +190,9 @@ export default function DriverLedger() {
 
       {/* Settle Modal */}
       <Dialog open={open} onClose={() => setOpen(false)} maxWidth="sm" fullWidth>
-        <DialogTitle className="font-bold border-b">Settle Driver Wallet</DialogTitle>
-        <DialogContent className="space-y-6 pt-6">
-          <FormControl fullWidth className="mt-4">
+        <DialogTitle className="border-b border-slate-200/70" sx={{ fontWeight: 800, color: "#0f172a" }}>Settle Driver Wallet</DialogTitle>
+        <DialogContent className="space-y-5" sx={{ pt: "20px !important" }}>
+          <FormControl fullWidth className="mt-2">
             <InputLabel>Action</InputLabel>
             <Select
               value={actionType}
@@ -225,9 +225,9 @@ export default function DriverLedger() {
             placeholder="e.g. Received cash in hand"
           />
         </DialogContent>
-        <DialogActions className="p-4 border-t">
-          <Button onClick={() => setOpen(false)} color="inherit">Cancel</Button>
-          <Button onClick={handleSettle} variant="contained" color="primary">Confirm</Button>
+        <DialogActions className="border-t border-slate-200/70" sx={{ p: 2, gap: 1 }}>
+          <Button onClick={() => setOpen(false)} color="inherit" sx={{ borderRadius: "12px", textTransform: "none", fontWeight: 600 }}>Cancel</Button>
+          <Button onClick={handleSettle} variant="contained" color="primary" sx={{ borderRadius: "12px", textTransform: "none", fontWeight: 600, px: 3, backgroundImage: "#111827" }}>Confirm</Button>
         </DialogActions>
       </Dialog>
     </div>

@@ -11,6 +11,27 @@ import { createPricingApi } from "../../Services/PricingApi";
 import { getAllRegions } from "../../Services/RegionApi";
 import { getAllSegment } from "../../Services/SegmentApi";
 
+// Purely visual styles for react-select so it matches the glass field look
+const selectStyles = {
+  control: (base, state) => ({
+    ...base,
+    minHeight: 44,
+    borderRadius: 12,
+    borderColor: state.isFocused ? "#d0d5dd" : "#e2e8f0",
+    backgroundColor: state.isDisabled ? "rgba(241,245,249,0.8)" : "rgba(255,255,255,0.75)",
+    boxShadow: state.isFocused ? "0 0 0 3px rgba(16,24,40,0.08)" : "none",
+    fontSize: 14,
+    "&:hover": { borderColor: state.isFocused ? "#d0d5dd" : "#cbd5e1" },
+  }),
+  menu: (base) => ({ ...base, borderRadius: 12, overflow: "hidden", zIndex: 30 }),
+  option: (base, state) => ({
+    ...base,
+    fontSize: 14,
+    backgroundColor: state.isSelected ? "#111827" : state.isFocused ? "rgba(16,24,40,0.08)" : "transparent",
+    color: state.isSelected ? "#fff" : "#1f2937",
+  }),
+  placeholder: (base) => ({ ...base, color: "#94a3b8" }),
+};
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // ── Zod Schema (Updated to match your Mongoose schema) ─────────────────────
@@ -240,21 +261,25 @@ const PricingCreate = () => {
   };
 
   return (
-    <div className="w-full mx-auto p-8 bg-white shadow-xl rounded-2xl">
+    <div className="page-shell">
       <Breaker />
-      <h1 className="text-3xl font-bold mb-10 mt-5 text-gray-800">Create New Pricing</h1>
+      <div className="card p-5 sm:p-8">
+      <div className="mb-8 border-b border-slate-200/70 pb-5">
+        <p className="section-label">Pricing</p>
+        <h1 className="page-title mt-1">Create New Pricing</h1>
+      </div>
 
-      {/* <form onSubmit={handleSubmit(onSubmit)} className="space-y-12"> */}
+      {/* <form onSubmit={handleSubmit(onSubmit)} className="space-y-10"> */}
       <form
         onSubmit={handleSubmit(onSubmit, (errors) => {
           console.log("FORM ERRORS:", errors);
         }
-        )} className="space-y-12" >
+        )} className="space-y-10" >
         {/* 1. Basic Info */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Region */}
           <div>
-            <label className="block text-sm font-medium mb-2">Region *</label>
+            <label className="field-label">Region *</label>
 
             <Controller
               name="region"
@@ -270,12 +295,13 @@ const PricingCreate = () => {
                     .find((opt) => opt.value === field.value) || null}
                   onChange={(selected) => field.onChange(selected?.value)}
                   placeholder="Search & Select Region"
+                  styles={selectStyles}
                 />
               )}
             />
 
             {errors.region && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="field-error">
                 {errors.region.message}
               </p>
             )}
@@ -283,7 +309,7 @@ const PricingCreate = () => {
 
           {/* Segment */}
           <div>
-            <label className="block text-sm font-medium mb-2">Segment *</label>
+            <label className="field-label">Segment *</label>
 
             <Controller
               name="segment"
@@ -299,12 +325,13 @@ const PricingCreate = () => {
                     .find((opt) => opt.value === field.value) || null}
                   onChange={(selected) => field.onChange(selected?.value)}
                   placeholder="Search & Select Segment"
+                  styles={selectStyles}
                 />
               )}
             />
 
             {errors.segment && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="field-error">
                 {errors.segment.message}
               </p>
             )}
@@ -312,10 +339,10 @@ const PricingCreate = () => {
 
           {/* Booking Type */}
           <div>
-            <label className="block text-sm font-medium mb-2">Booking Type *</label>
+            <label className="field-label">Booking Type *</label>
             <select
               {...register("bookingType")}
-              className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500"
+              className="field"
             >
               <option value="one_way">One Way</option>
               <option value="round_trip">Round Trip</option>
@@ -326,26 +353,26 @@ const PricingCreate = () => {
         </div>
 
         {/* 2. Day & Night Pricing */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-5">
+        <div className="grid grid-cols-1 gap-8">
           {["day"].map((timeSlot) => (
             <div key={timeSlot}>
-              <h2 className="text-xl font-semibold mb-4">
+              <h2 className="card-title mb-4">
                 {timeSlot === "day" ? "Day Pricing" : "Night Pricing"}
               </h2>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {["baseFare", "perKmRate", "perMinRate", "minFare", "cancellationFee"].map((field) => (
                   <div key={field}>
-                    <label className="block text-sm capitalize mb-1">
+                    <label className="field-label capitalize">
                       {field.replace(/([A-Z])/g, " $1")}
                     </label>
                     <input
                       type="number"
                       step="0.01"
                       {...register(`${timeSlot}.${field}`, { valueAsNumber: true })}
-                      className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500"
+                      className="field"
                     />
                     {errors[timeSlot]?.[field] && (
-                      <p className="text-red-500 text-sm mt-1">{errors[timeSlot][field].message}</p>
+                      <p className="field-error">{errors[timeSlot][field].message}</p>
                     )}
                   </div>
                 ))}
@@ -355,16 +382,16 @@ const PricingCreate = () => {
         </div>
 
         {/* ✅Night Fare Full Width */}
-        <div className="mt-4">
-          <label className="block text-sm mb-1">Night Fare</label>
+        <div>
+          <label className="field-label capitalize">Night Fare</label>
           <input
             type="number"
             step="0.01"
             {...register("nightFare", { valueAsNumber: true })}
-            className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500"
+            className="field"
           />
           {errors.nightFare && (
-            <p className="text-red-500 text-sm mt-1">
+            <p className="field-error">
               {errors.nightFare.message}
             </p>
           )}
@@ -376,7 +403,7 @@ const PricingCreate = () => {
           <h2 className="text-xl font-semibold mb-2 mt-5">Surge Settings</h2>
           <select
             {...register("surgeActive")}
-            className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500"
+            className="field"
           >
             <option value="none">None</option>
             <option value="time_based">Time Based</option>
@@ -425,19 +452,19 @@ const PricingCreate = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm mb-1">Label</label>
+                    <label className="field-label capitalize">Label</label>
                     <input
                       {...register(`surgeWindows.${index}.label`)}
-                      className="w-full border rounded-lg p-1.5"
+                      className="field"
                       placeholder="Morning Rush"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm mb-1">Type</label>
+                    <label className="field-label capitalize">Type</label>
                     <select
                       {...register(`surgeWindows.${index}.type`)}
-                      className="w-full border rounded-lg p-1.5"
+                      className="field"
                     >
                       <option value="time_based">Time Based</option>
                       <option value="manual">Manual</option>
@@ -445,12 +472,12 @@ const PricingCreate = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm mb-1">Multiplier</label>
+                    <label className="field-label capitalize">Multiplier</label>
                     <input
                       type="number"
                       step="0.1"
                       {...register(`surgeWindows.${index}.multiplier`, { valueAsNumber: true })}
-                      className="w-full border rounded-lg p-1.5"
+                      className="field"
                     />
                   </div>
 
@@ -458,35 +485,35 @@ const PricingCreate = () => {
                   {watch(`surgeWindows.${index}.type`) === "time_based" && (
                     <>
                       <div>
-                        <label className="block text-sm mb-1">From Hour</label>
+                        <label className="field-label capitalize">From Hour</label>
                         <input
                           type="number"
                           {...register(`surgeWindows.${index}.fromHour`, { valueAsNumber: true })}
-                          className="w-full border rounded-lg p-1.5"
+                          className="field"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm mb-1">From Min</label>
+                        <label className="field-label capitalize">From Min</label>
                         <input
                           type="number"
                           {...register(`surgeWindows.${index}.fromMin`, { valueAsNumber: true })}
-                          className="w-full border rounded-lg p-1.5"
+                          className="field"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm mb-1">To Hour</label>
+                        <label className="field-label capitalize">To Hour</label>
                         <input
                           type="number"
                           {...register(`surgeWindows.${index}.toHour`, { valueAsNumber: true })}
-                          className="w-full border rounded-lg p-1.5"
+                          className="field"
                         />
                       </div>
                       <div>
-                        <label className="block text-sm mb-1">To Min</label>
+                        <label className="field-label capitalize">To Min</label>
                         <input
                           type="number"
                           {...register(`surgeWindows.${index}.toMin`, { valueAsNumber: true })}
-                          className="w-full border rounded-lg p-1.5"
+                          className="field"
                         />
                       </div>
 
@@ -517,8 +544,8 @@ const PricingCreate = () => {
         {/* 5. Hourly Package */}
         {bookingType === "hourly" && (
           <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-semibold">Hourly Packages</h2>
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="card-title">Hourly Packages</h2>
 
               <button
                 type="button"
@@ -532,24 +559,24 @@ const PricingCreate = () => {
                     extraPerMin: 1.5,
                   })
                 }
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                className="btn-secondary w-full sm:w-auto"
               >
                 + Add Package
               </button>
             </div>
 
             {hourlyFields.map((item, index) => (
-              <div key={item.id} className="border p-6 mb-4 rounded-xl relative">
+              <div key={item.id} className="relative mb-4 rounded-2xl border border-slate-200/80 bg-white/60 p-5 sm:p-6">
 
                 <button
                   type="button"
                   onClick={() => removeHourly(index)}
-                  className="absolute top-3 right-3 text-red-500"
+                  className="btn-icon absolute right-3 top-3 !text-rose-500 hover:!bg-rose-50"
                 >
                   ✕
                 </button>
 
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 gap-4 pr-8 sm:grid-cols-2 md:grid-cols-3">
                   {[
                     "hours",
                     "includedKms",
@@ -559,7 +586,7 @@ const PricingCreate = () => {
                     "extraPerMin",
                   ].map((field) => (
                     <div key={field}>
-                      <label className="block text-sm mb-1">
+                      <label className="field-label capitalize">
                         {field.replace(/([A-Z])/g, " $1")}
                       </label>
 
@@ -569,7 +596,7 @@ const PricingCreate = () => {
                         {...register(`hourlyPackage.${index}.${field}`, {
                           valueAsNumber: true,
                         })}
-                        className="w-full border rounded-lg p-1.5"
+                        className="field"
                       />
                     </div>
                   ))}
@@ -583,31 +610,31 @@ const PricingCreate = () => {
         {/* 6. Driver Fare (Intercity) */}
         {bookingType === "intercity" && (
           <div>
-            <h2 className="text-xl font-semibold mb-4">Driver Fare (Intercity)</h2>
-            <div className="grid grid-cols-2 gap-4 border p-6 rounded-xl bg-gray-50">
+            <h2 className="card-title mb-4">Driver Fare (Intercity)</h2>
+            <div className="grid grid-cols-1 gap-5 rounded-2xl border border-slate-200/80 bg-white/60 p-5 sm:grid-cols-2 sm:p-6">
               {[
                 "perKmRate", "flatPerTrip", "minGuarantee", "allowancePerDay",
                 "allowancePerNight", "overTimePerHour", "holidayAllowance",
               ].map((field) => (
                 <div key={field}>
-                  <label className="block text-sm capitalize mb-1">
+                  <label className="field-label capitalize">
                     {field.replace(/([A-Z])/g, " $1")}
                   </label>
                   <input
                     type="number"
                     step="0.01"
                     {...register(`driverFare.${field}`, { valueAsNumber: true })}
-                    className="w-full border rounded-lg p-1.5"
+                    className="field"
                   />
                 </div>
               ))}
 
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <Controller
                   name="driverFare.tollIncluded"
                   control={control}
                   render={({ field }) => (
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className="flex cursor-pointer items-center gap-2.5 text-sm font-medium text-slate-700">
                       <input
                         type="checkbox"
                         checked={field.value || false}
@@ -623,19 +650,19 @@ const PricingCreate = () => {
         )}
 
         {/* 7. GST & Status (at the bottom) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t">
+        <div className="grid grid-cols-1 gap-6 border-t border-slate-200/70 pt-8 md:grid-cols-3">
           <div>
-            <label className="block text-sm font-medium mb-1">GST Percent (%)</label>
+            <label className="field-label">GST Percent (%)</label>
             <input
               type="number"
               {...register("gstPercent", { valueAsNumber: true })}
-              className="w-full border rounded-lg p-1.5"
+              className="field"
             />
           </div>
 
-          <div className="flex items-center gap-3 pt-6">
-            <input type="checkbox" {...register("isActive")} id="isActive" />
-            <label htmlFor="isActive" className="font-medium cursor-pointer">
+          <div className="flex items-center gap-3 md:pt-7">
+            <input type="checkbox" {...register("isActive")} id="isActive" className="h-4 w-4 cursor-pointer accent-amber-500" />
+            <label htmlFor="isActive" className="cursor-pointer text-sm font-semibold text-slate-700">
               Is Active
             </label>
           </div>
@@ -643,11 +670,11 @@ const PricingCreate = () => {
 
         {/* button */}
 
-        <div className="flex justify-end gap-4 mt-8">
+        <div className="flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row-reverse sm:justify-start">
           <button
             type="submit"
             disabled={loading}
-            className=" bg-primary text-white py-2 px-6 rounded-2xl hover:scale-105 active:scale-95 transition-transform duration-300"
+            className="btn-primary w-full sm:w-auto"
           >
             {loading ? "Creating Pricing..." : "Create Pricing"}
           </button>
@@ -655,7 +682,7 @@ const PricingCreate = () => {
           <button
             type="button"
             onClick={handleClear}
-            className=" bg-gray-500 text-white py-2 px-6 rounded-2xl hover:bg-gray-600 transition-colors"
+            className="btn-secondary w-full sm:w-auto"
           >
             Clear
           </button>
@@ -663,7 +690,7 @@ const PricingCreate = () => {
           <button
             type="button"
             onClick={() => navigate(-1)}
-            className=" bg-gray-300 text-gray-700 py-2 px-6 rounded-2xl hover:bg-gray-400 transition-colors"
+            className="btn-ghost w-full sm:w-auto"
           >
             Back
           </button>
@@ -671,6 +698,7 @@ const PricingCreate = () => {
         </div>
 
       </form>
+      </div>
     </div>
   );
 };

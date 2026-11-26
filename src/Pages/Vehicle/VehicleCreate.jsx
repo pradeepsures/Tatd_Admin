@@ -235,26 +235,33 @@ const CreateVehicle = () => {
   // No loader component, just simple spinning text
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-20">
-        <div className="animate-spin w-6 h-6 border-2 border-t-transparent border-purple-600 rounded-full mr-2" />
+      <div className="flex h-40 items-center justify-center gap-3 text-sm font-medium text-slate-500">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-gray-800 border-t-transparent" />
         <span>Please wait...</span>
       </div>
     );
   }
 
   return (
-    <div className="m-3">
+    <div className="page-shell">
       <Breaker />
 
-      <div className="ml-5 mt-8 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
-        <form onSubmit={handleSubmit}>
+      <div className="card mx-auto w-full max-w-5xl p-5 sm:p-8">
+        <div className="mb-7 flex items-center gap-3 border-b border-slate-200/70 pb-5">
+          <div>
+            <p className="section-label">New record</p>
+            <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Create Vehicle</h2>
+          </div>
+        </div>
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 md:grid-cols-2">
           {/* DRIVER */}
-          <label className="ml-2 mt-4 font-normal block">Driver *</label>
+          <div>
+          <label className="field-label">Driver *</label>
           <Select
             showSearch
             placeholder="Select chauffer"
             value={formData.driver || undefined}
-            className="w-full h-10 mb-3 border rounded-xl"
+            className="w-full [&_.ant-select-selector]:!h-10 [&_.ant-select-selector]:!items-center [&_.ant-select-selector]:!rounded-xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-white/75"
             onChange={(val) => setFormData((prev) => ({ ...prev, driver: val }))}
             filterOption={(input, option) =>
               option?.children?.toLowerCase().includes(input.toLowerCase())
@@ -266,15 +273,17 @@ const CreateVehicle = () => {
               </Option>
             ))}
           </Select>
-          {apiError.driver && <p className="text-red-500 text-sm ml-2">{apiError.driver}</p>}
+          {apiError.driver && <p className="field-error">{apiError.driver}</p>}
+          </div>
 
           {/* SEGMENT */}
-          <label className="ml-2 mt-5 font-normal block">Segment *</label>
+          <div>
+          <label className="field-label">Segment *</label>
           <Select
             showSearch
             placeholder="Select segment"
             value={formData.segment || undefined}
-            className="w-full h-10 mb-3 border rounded-xl"
+            className="w-full [&_.ant-select-selector]:!h-10 [&_.ant-select-selector]:!items-center [&_.ant-select-selector]:!rounded-xl [&_.ant-select-selector]:!border-slate-200 [&_.ant-select-selector]:!bg-white/75"
             onChange={(val) => {
               const seg = segments.find((s) => s._id === val);
               setFormData((prev) => ({
@@ -293,7 +302,8 @@ const CreateVehicle = () => {
               </Option>
             ))}
           </Select>
-          {apiError.segment && <p className="text-red-500 text-sm ml-2">{apiError.segment}</p>}
+          {apiError.segment && <p className="field-error">{apiError.segment}</p>}
+          </div>
 
           {/* BASIC FIELDS */}
           {/* {[" Vehicle Brand", "Vehicle model", "fuel Type", " Manufacturer Year", "Vehicle Number", "color", "BootSpace (Lr)", "Capacity (Seater)", "Certificate Number"].map(
@@ -325,7 +335,7 @@ const CreateVehicle = () => {
             "Certificate Number"
           ].map((name) => (
             <div key={name}>
-              <label className="ml-2 mt-5 font-normal block capitalize">{name}</label>
+              <label className="field-label capitalize">{name}</label>
 
               {/* ✅ FUEL TYPE DROPDOWN */}
               {name === "fuel Type" ? (
@@ -333,7 +343,7 @@ const CreateVehicle = () => {
                   name={name}
                   value={formData[name] || ""}
                   onChange={handleChange}
-                  className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+                  className="field"
                 >
                   <option value="">Select Fuel Type</option>
                   <option value="petrol">Petrol</option>
@@ -345,13 +355,13 @@ const CreateVehicle = () => {
                   name={name}
                   value={formData[name] || ""}
                   onChange={handleChange}
-                  className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+                  className="field"
                   placeholder={`Enter ${name}`}
                 />
               )}
 
               {apiError[name] && (
-                <p className="text-red-500 text-sm ml-2">{apiError[name]}</p>
+                <p className="field-error">{apiError[name]}</p>
               )}
             </div>
           ))}
@@ -359,21 +369,21 @@ const CreateVehicle = () => {
           {/* DATE FIELDS */}
           {["Certificate Expiry", "Insurance Expiry", "Pollution Expiry", "RC Expiry"].map((name) => (
             <div key={name}>
-              <label className="ml-2 mt-5 font-normal block">{name}</label>
+              <label className="field-label">{name}</label>
               <input
                 type="date"
                 name={name}
                 value={formData[name] || ""}
                 onChange={handleChange}
-                className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
+                className="field"
               />
-              {apiError[name] && <p className="text-red-500 text-sm ml-2">{apiError[name]}</p>}
+              {apiError[name] && <p className="field-error">{apiError[name]}</p>}
             </div>
           ))}
 
           {/* STATUS - ACTIVE */}
-          <div className="mt-8">
-            <label className="ml-2 font-normal block">Active</label>
+          <div>
+            <label className="field-label">Active</label>
             <Switch
               checked={formData.isActive}
               onChange={(checked) => setFormData((prev) => ({ ...prev, isActive: checked }))}
@@ -384,17 +394,18 @@ const CreateVehicle = () => {
           </div>
 
           {/* CERTIFICATE PHOTO */}
-          <label className="ml-2 mt-5 font-normal block">Certificate Photo</label>
+          <div>
+          <label className="field-label">Certificate Photo</label>
           {previews.certificatePhoto && (
             <img
               src={previews.certificatePhoto}
               alt="Certificate"
-              className="h-16 w-24 object-cover rounded border border-gray-300 ml-2 mt-2"
+              className="mb-3 h-20 w-28 rounded-xl object-cover ring-1 ring-black/5"
             />
           )}
           <label
             htmlFor="certificate-upload"
-            className="ml-2 mt-2 flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
+            className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
           >
             🖼️ Upload Certificate Photo
           </label>
@@ -406,19 +417,21 @@ const CreateVehicle = () => {
             accept="image/*"
             onChange={handleFileChange}
           />
+          </div>
 
           {/* RC FRONT PHOTO */}
-          <label className="ml-2 mt-5 font-normal block">RC Front Photo</label>
+          <div>
+          <label className="field-label">RC Front Photo</label>
           {previews.rcFrontPhoto && (
             <img
               src={previews.rcFrontPhoto}
               alt="RC Front"
-              className="h-16 w-24 object-cover rounded border border-gray-300 ml-2 mt-2"
+              className="mb-3 h-20 w-28 rounded-xl object-cover ring-1 ring-black/5"
             />
           )}
           <label
             htmlFor="rc-front-upload"
-            className="ml-2 mt-2 flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
+            className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
           >
             🖼️ Upload RC Front Photo
           </label>
@@ -430,19 +443,21 @@ const CreateVehicle = () => {
             accept="image/*"
             onChange={handleFileChange}
           />
+          </div>
 
           {/* RC BACK PHOTO */}
-          <label className="ml-2 mt-5 font-normal block">RC Back Photo</label>
+          <div>
+          <label className="field-label">RC Back Photo</label>
           {previews.rcBackPhoto && (
             <img
               src={previews.rcBackPhoto}
               alt="RC Back"
-              className="h-16 w-24 object-cover rounded border border-gray-300 ml-2 mt-2"
+              className="mb-3 h-20 w-28 rounded-xl object-cover ring-1 ring-black/5"
             />
           )}
           <label
             htmlFor="rc-back-upload"
-            className="ml-2 mt-2 flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
+            className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
           >
             🖼️ Upload RC Back Photo
           </label>
@@ -454,22 +469,24 @@ const CreateVehicle = () => {
             accept="image/*"
             onChange={handleFileChange}
           />
+          </div>
 
           {/* CAR IMAGES */}
-          <label className="ml-2 mt-5 font-normal block">Vehicle Images</label>
-          <div className="flex gap-2 flex-wrap ml-2 mt-2">
+          <div className="md:col-span-2">
+          <label className="field-label">Vehicle Images</label>
+          <div className="mb-3 flex flex-wrap gap-2 empty:hidden">
             {previews.carImage.map((img, i) => (
               <img
                 key={i}
                 src={img}
                 alt={`Car ${i}`}
-                className="h-16 w-24 object-cover rounded border border-gray-300"
+                className="h-20 w-28 rounded-xl object-cover ring-1 ring-black/5"
               />
             ))}
           </div>
           <label
             htmlFor="car-images-upload"
-            className="ml-2 mt-2 flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
+            className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
           >
             🖼️ Upload Car Images
           </label>
@@ -482,22 +499,24 @@ const CreateVehicle = () => {
             accept="image/*"
             onChange={handleFileChange}
           />
+          </div>
 
           {/* DOCUMENT IMAGES */}
-          <label className="ml-2 mt-5 font-normal block">Miscellaneous Documents</label>
-          <div className="flex gap-2 flex-wrap ml-2 mt-2">
+          <div className="md:col-span-2">
+          <label className="field-label">Miscellaneous Documents</label>
+          <div className="mb-3 flex flex-wrap gap-2 empty:hidden">
             {previews.documentImage.map((img, i) => (
               <img
                 key={i}
                 src={img}
                 alt={`Document ${i}`}
-                className="h-16 w-24 object-cover rounded border border-gray-300"
+                className="h-20 w-28 rounded-xl object-cover ring-1 ring-black/5"
               />
             ))}
           </div>
           <label
             htmlFor="document-images-upload"
-            className="ml-2 mt-2 flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
+            className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
           >
             🖼️ Upload Document Images
           </label>
@@ -510,24 +529,25 @@ const CreateVehicle = () => {
             accept="image/*"
             onChange={handleFileChange}
           />
+          </div>
 
           {/* SUBMIT BUTTON */}
           {/* <button
             type="submit"
             disabled={loading}
-            className="w-full bg-primary text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-8 rounded-xl"
+            className="w-full bg-primary text-white active:scale-95 transition-transform duration-500 py-3 mt-8 rounded-xl"
           >
             {loading ? "Creating Vehicle..." : "Create Vehicle"}
           </button> */}
 
           {/* ACTION BUTTONS */}
-          <div className="flex justify-end gap-4 mt-8">
+          <div className="flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end md:col-span-2">
 
             {/* cleaer button */}
             <button
               type="button"
               onClick={handleClear}
-              className=" bg-gray-500 text-white py-2 px-6 rounded-2xl"
+              className="btn-ghost px-6"
             >
               Clear
             </button>
@@ -536,7 +556,7 @@ const CreateVehicle = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className=" bg-gray-700 text-white py-2 px-6 rounded-2xl"
+              className="btn-secondary px-6"
             >
               Back
             </button>
@@ -544,7 +564,7 @@ const CreateVehicle = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary text-white py-2 px-6 rounded-2xl"
+              className="btn-primary px-6 sm:min-w-[150px]"
             >
               {loading ? "Creating Vehicle..." : "Create Vehicle"}
             </button>

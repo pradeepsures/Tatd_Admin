@@ -19,7 +19,7 @@ import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 import { Modal, Form, Input, Button, Select } from "antd";
 import toast from "react-hot-toast";
@@ -43,21 +43,35 @@ import { getAllStates } from "../../Services/StatesApi";
 // ───────────────────────────────
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
+    fontSize: "0.86rem",
+    color: "#1f2937",
     padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
-  "&:nth-of-type(odd)": { backgroundColor: "#f9fafb" },
+  "&:nth-of-type(odd)": {
+    backgroundColor: "rgba(248,250,252,0.45)",
+  },
+  "&:hover": {
+    backgroundColor: "rgba(16,24,40,0.08)",
+    transition: "background-color 0.2s ease",
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
 }));
 
 export default function CitiesList() {
@@ -235,12 +249,28 @@ export default function CitiesList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker />
 
       {/* HEADER */}
-      <div className="flex justify-between mb-6 mt-6">
-        <div className="flex gap-2 flex-wrap">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Cities</h1>
+        </div>
+        <div className="page-actions">
+          <button
+            onClick={() => setCreateModal(true)}
+            className="btn-primary"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Create
+          </button>
+        </div>
+      </div>
+
+      {/* FILTERS */}
+      <div className="card card-pad">
+        <div className="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-center">
           {/* <input
             className="border px-3 py-2 rounded"
             placeholder="Search city"
@@ -248,17 +278,21 @@ export default function CitiesList() {
             onChange={(e) => setTempSearch(e.target.value)}
           /> */}
 
-          <input
-            className="px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            placeholder="Search city"
-            value={tempSearch}
-            onChange={(e) => setTempSearch(e.target.value)}
-          />
+          <div className="relative w-full sm:w-auto">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              className="search-field"
+              placeholder="Search city"
+              value={tempSearch}
+              onChange={(e) => setTempSearch(e.target.value)}
+            />
+          </div>
 
           <Select
             allowClear
             placeholder="State"
-            style={{ width: 160, height: 45 }}
+            className="w-full sm:!w-44"
+            style={{ height: 40 }}
             value={stateFilter || undefined}
             onChange={(v) => setStateFilter(v || "")}
           >
@@ -274,7 +308,8 @@ export default function CitiesList() {
           <Select
             allowClear
             placeholder="Status"
-            style={{ width: 140, height: 45 }}
+            className="w-full sm:!w-40"
+            style={{ height: 40 }}
             value={statusFilter || undefined}
             onChange={(v) => setStatusFilter(v || "")}
           >
@@ -282,31 +317,26 @@ export default function CitiesList() {
             <Select.Option value="false">Inactive</Select.Option>
           </Select>
 
-          <button
-            onClick={applyFilters}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium shadow-md hover:from-blue-700 hover:to-blue-900 transition"
-          >
-            Apply
-          </button>
+          <div className="flex gap-2.5">
+            <button
+              onClick={applyFilters}
+              className="btn-primary flex-1 sm:flex-none"
+            >
+              Apply
+            </button>
 
-          <button
-            onClick={clearFilters}
-            className="bg-gray-600 text-white px-6 py-2.5 rounded-lg font-medium shadow-md hover:from-blue-700 hover:to-blue-900 transition"
-          >
-            Clear
-          </button>
+            <button
+              onClick={clearFilters}
+              className="btn-secondary flex-1 sm:flex-none"
+            >
+              Clear
+            </button>
+          </div>
         </div>
-
-        <button
-          onClick={() => setCreateModal(true)}
-          className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium shadow-md hover:from-blue-700 hover:to-blue-900 transition"
-        >
-          + Create
-        </button>
       </div>
 
       {/* TABLE */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -327,24 +357,20 @@ export default function CitiesList() {
                   {(page - 1) * rowsPerPage + i + 1}
                 </StyledTableCell>
 
-                <StyledTableCell>{row.name}</StyledTableCell>
+                <StyledTableCell className="!font-semibold !text-slate-900">{row.name}</StyledTableCell>
 
                 <StyledTableCell>{row.state?.name.name}</StyledTableCell>
 
                 <StyledTableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      row.status
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
+                  <div className="flex items-center gap-3">
+                  <span className={row.status ? "badge-success" : "badge-danger"}>
                     {row.status ? "Active" : "Inactive"}
                   </span>
                   <Switch
                     checked={row.status}
                     onChange={() => handleToggle(row.id)}
                   />
+                  </div>
                 </StyledTableCell>
 
                 {/* TOGGLE SWITCH UI */}
@@ -396,7 +422,7 @@ export default function CitiesList() {
       </TableContainer>
 
       {/* PAGINATION */}
-      <Stack alignItems="center" mt={3}>
+      <Stack alignItems="center" mt={1}>
         <Pagination
           count={totalPages}
           page={page}
@@ -426,9 +452,11 @@ export default function CitiesList() {
             </Select>
           </Form.Item>
 
+          <div className="mt-2 flex justify-end border-t border-slate-200/70 pt-5">
           <Button type="primary" htmlType="submit">
             Create
           </Button>
+          </div>
         </Form>
       </Modal>
 
@@ -454,9 +482,11 @@ export default function CitiesList() {
             </Select>
           </Form.Item>
 
+          <div className="mt-2 flex justify-end border-t border-slate-200/70 pt-5">
           <Button type="primary" htmlType="submit">
             Update
           </Button>
+          </div>
         </Form>
       </Modal>
     </div>

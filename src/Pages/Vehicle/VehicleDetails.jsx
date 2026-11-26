@@ -59,12 +59,12 @@ export default function VehicleDetails() {
   }
   if (error || !vehicle) {
     return (
-      <div className="p-6 text-center text-red-600 min-h-screen bg-gray-50">
-        <h2 className="text-2xl font-bold">Error</h2>
-        <p>{error || "Vehicle not found"}</p>
+      <div className="card mx-auto mt-6 max-w-md p-8 text-center">
+        <h2 className="text-xl font-semibold text-slate-900">Error</h2>
+        <p className="mt-1 text-sm text-rose-600">{error || "Vehicle not found"}</p>
         <button
           onClick={() => navigate(-1)}
-          className="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg"
+          className="btn-primary mt-5"
         >
           Go Back
         </button>
@@ -73,29 +73,30 @@ export default function VehicleDetails() {
   }
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <Breaker />
-      </div>
+    <div className="page-shell">
+      <Breaker />
 
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800">
-          Vehicle Details: {vehicle.carNumber || "—"}
-        </h1>
+      <div className="page-header">
+        <div className="min-w-0">
+          <p className="section-label">Vehicle</p>
+          <h1 className="page-title break-words">
+            Vehicle Details: {vehicle.carNumber || "—"}
+          </h1>
+        </div>
         <button
           onClick={() => navigate(-1)}
-          className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition"
+          className="btn-secondary w-full sm:w-auto"
         >
           Back 
         </button>
       </div>
 
       {/* Main Info Card */}
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+      <div className="card card-pad">
+        <h2 className="card-title mb-5 border-b border-slate-200/70 pb-3">
           Basic Information
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <DetailItem label="Vehicle Number" value={vehicle.carNumber} />
           <DetailItem label="Brand" value={vehicle.brand} />
           <DetailItem label="Model" value={vehicle.model} />
@@ -108,11 +109,11 @@ export default function VehicleDetails() {
             label="Status"
             value={
               <span
-                className={`inline-flex px-4 py-1 rounded-full text-sm font-medium ${
+                className={
                   vehicle.isActive
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                }`}
+                    ? "badge-success"
+                    : "badge-danger"
+                }
               >
                 {vehicle.isActive ? "Active" : "Inactive"}
               </span>
@@ -123,12 +124,12 @@ export default function VehicleDetails() {
       </div>
 
       {/* Driver & Segment */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+        <div className="card card-pad">
+          <h2 className="card-title mb-5 border-b border-slate-200/70 pb-3">
             Chauffeur Information
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <DetailItem label="Name" value={vehicle.driver?.name} />
             <DetailItem label="Phone" value={vehicle.driver?.phone} />
             <DetailItem label="Email" value={vehicle.driver?.email} />
@@ -136,21 +137,21 @@ export default function VehicleDetails() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+        <div className="card card-pad">
+          <h2 className="card-title mb-5 border-b border-slate-200/70 pb-3">
             Segment Information
           </h2>
-          <div className="space-y-3">
+          <div className="space-y-4">
             <DetailItem label="Name" value={vehicle.segment?.name} />
             <DetailItem label="Description" value={vehicle.segment?.description} />
             <DetailItem label="Max Capacity" value={`${vehicle.segment?.maxCapacity} Seats`} />
             {vehicle.segment?.image && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-1">Segment Image</p>
+                <p className="detail-label mb-1.5">Segment Image</p>
                 <img
                   src={vehicle.segment.image}
                   alt="Segment"
-                  className="h-32 w-full object-cover rounded-md border"
+                  className="h-32 w-full rounded-xl object-cover ring-1 ring-black/5"
                   onError={(e) => (e.target.src = "/assets/placeholder.png")}
                 />
               </div>
@@ -160,12 +161,12 @@ export default function VehicleDetails() {
       </div>
 
       {/* Images Section */}
-      <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-        <h2 className="text-xl font-semibold text-gray-800 mb-6 border-b pb-2">
+      <div className="card card-pad">
+        <h2 className="card-title mb-5 border-b border-slate-200/70 pb-3">
           Vehicle Images & Documents
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {vehicle.carImage?.length > 0 && (
             <ImageCard title="Vehicle Images" images={vehicle.carImage} />
           )}
@@ -188,16 +189,16 @@ export default function VehicleDetails() {
           !vehicle.certificatePhoto &&
           !vehicle.rcFrontPhoto &&
           !vehicle.rcBackPhoto) && (
-          <p className="text-gray-500 text-center py-8">No images available</p>
+          <p className="py-14 text-center text-slate-400">No images available</p>
         )}
       </div>
 
       {/* Documents & Expiry Dates */}
-      <div className="bg-white rounded-xl shadow-lg p-6">
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+      <div className="card card-pad">
+        <h2 className="card-title mb-5 border-b border-slate-200/70 pb-3">
           Documents & Expiry Information
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <DetailItem label="Certificate Number" value={vehicle.certificateNumber} />
           <DetailItem label="Certificate Expiry" value={formatDate(vehicle.certificateExpiry)} />
           <DetailItem label="Insurance Expiry" value={formatDate(vehicle.insuranceExpiry)} />
@@ -212,25 +213,25 @@ export default function VehicleDetails() {
 // Reusable components
 const DetailItem = ({ label, value, small = false }) => (
   <div>
-    <p className="text-sm font-medium text-gray-600">{label}</p>
-    <p className={`${small ? "text-sm" : "text-base"} font-medium text-gray-900 mt-1`}>
+    <p className="detail-label">{label}</p>
+    <p className={`detail-value ${small ? "!text-xs font-mono" : ""}`}>
       {value || "—"}
     </p>
   </div>
 );
 
 const ImageCard = ({ title, images }) => (
-  <div className="border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
-    <div className="bg-gray-100 px-4 py-2 font-medium text-gray-700 text-center">
+  <div className="overflow-hidden rounded-xl border border-slate-200/70 bg-white/60">
+    <div className="border-b border-slate-200/70 bg-slate-50/80 px-4 py-2.5 text-center text-xs font-bold uppercase tracking-wider text-slate-500">
       {title}
     </div>
     <div className="p-3 grid grid-cols-1 gap-3">
       {images.map((img, idx) => (
-        <div key={idx} className="overflow-hidden rounded-md shadow-sm">
+        <div key={idx} className="overflow-hidden rounded-xl ring-1 ring-black/5">
           <img
             src={img}
             alt={`${title} ${idx + 1}`}
-            className="w-full h-40 object-cover hover:scale-105 transition-transform duration-300"
+            className="h-40 w-full object-cover transition-transform duration-300 hover:scale-[1.03]"
             onError={(e) => {
               e.target.src = "/assets/placeholder.png";
               e.target.alt = "Image not available";

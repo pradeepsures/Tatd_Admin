@@ -1,41 +1,72 @@
-import React from 'react'
+import React, { useMemo } from 'react'
+import { useLocation } from "react-router-dom";
 import Profilelogo from "./Profilelogo"
 import NotificationBell from "./NotificationBell"
-import { HiMenuAlt3 } from "react-icons/hi";
+import { HiMenuAlt2 } from "react-icons/hi";
 import { useAuth } from "../auth/AuthContext";
+import { NAV_SECTIONS } from "../config/routesConfig";
+
+// Find a friendly title for the current route from the sidebar config
+const useRouteTitle = () => {
+  const { pathname, search } = useLocation();
+  return useMemo(() => {
+    const full = pathname + search;
+    let best = null;
+    const consider = (name, link, section) => {
+      if (!link) return;
+      const hit = full === link || pathname === link || (link !== "/home" && (pathname.startsWith(`${link}/`) || full.startsWith(`${link}?`)));
+      if (hit && (!best || link.length > best.link.length)) best = { name, link, section };
+    };
+    NAV_SECTIONS.forEach((section) =>
+      section.items.forEach((item) => {
+        consider(item.name, item.link, section.label);
+        item.children?.forEach((c) => consider(c.name, c.link, section.label));
+      })
+    );
+    if (best) return best;
+    const last = pathname.split("/").filter(Boolean).pop() || "home";
+    return { name: last.replace(/[-_]/g, " ").replace(/([a-z])([A-Z])/g, "$1 $2"), section: null };
+  }, [pathname, search]);
+};
 
 const Navbar = ({ onMenuClick }) => {
   const { auth } = useAuth();
   const displayName = auth?.user?.userName || auth?.user?.email?.split("@")[0] || "Admin";
+  const route = useRouteTitle();
+  const today = new Date().toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 w-full items-center justify-between bg-white border-b border-gray-200 px-4 sm:px-6">
+    <header className="glass-dark relative z-30 flex h-14 w-full shrink-0 items-center justify-between rounded-2xl px-3 text-white sm:h-[60px] sm:px-5">
       <div className="flex min-w-0 items-center gap-3">
         <button
           type="button"
           onClick={onMenuClick}
-          className="inline-flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 lg:hidden"
+          className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg text-gray-300 hover:bg-white/10 hover:text-white lg:hidden"
           aria-label="Open menu"
         >
-          <HiMenuAlt3 size={22} />
+          <HiMenuAlt2 size={20} />
         </button>
-        <div>
-          <h1 className="text-base font-semibold text-gray-800">Dvagoo Admin</h1>
-          <p className="hidden sm:block text-xs text-gray-500">
-            {displayName}
-            {auth?.user?.role?.name && (
-              <span className="ml-2 text-blue-600">· {auth.user.role.name}</span>
-            )}
-          </p>
+        <div className="min-w-0 leading-tight">
+          {route.section && (
+            <p className="hidden truncate text-xs text-gray-400 sm:block">{route.section}</p>
+          )}
+          <p className="truncate text-[15px] font-semibold capitalize text-white sm:text-base">{route.name}</p>
         </div>
       </div>
 
-      <div className='flex shrink-0 items-center gap-4'>
+      <div className='flex shrink-0 items-center gap-1.5 sm:gap-3'>
+        <span className="hidden rounded-lg border border-white/10 bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-gray-300 md:inline-block">
+          {today}
+        </span>
         <NotificationBell />
-        <div className="h-8 w-[1px] bg-gray-200 hidden sm:block"></div>
-        <div className='scale-90 sm:scale-100'>
-          <Profilelogo />
+        <div className="hidden h-7 w-px bg-white/10 sm:block"></div>
+        <div className="hidden min-w-0 text-right leading-tight sm:block">
+          <p className="max-w-[160px] truncate text-sm font-medium text-white">{displayName}</p>
+          {auth?.user?.role?.name && (
+            <p className="max-w-[160px] truncate text-xs text-[#d9ae4a]">{auth.user.role.name}</p>
+          )}
         </div>
+        <Profilelogo />
       </div>
     </header>
   );

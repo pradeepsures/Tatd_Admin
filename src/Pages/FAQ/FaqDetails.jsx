@@ -43,54 +43,54 @@ export default function FaqDetails() {
     }
   };
 
-  if (loading || authLoading) return <Spin size="large" />;
+  if (loading || authLoading) return <div className="flex justify-center py-14"><Spin size="large" /></div>;
 
   if (!faq) return null;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker/>
       <Card
         title="FAQ Details"
         bordered={false}
-        className="shadow-xl rounded-xl"
+        className="card !rounded-[18px] !bg-white/70"
       >
-        <div className="space-y-6">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-700">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:col-span-2 lg:col-span-3">
+            <h2 className="detail-label">
               Question
             </h2>
-            <p className="text-gray-900 mt-1">{faq.question}</p>
+            <p className="detail-value">{faq.question}</p>
           </div>
 
-          <div>
-            <h2 className="text-lg font-semibold text-gray-700">
+          <div className="rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:col-span-2 lg:col-span-3">
+            <h2 className="detail-label">
               Answer
             </h2>
-            <p className="text-gray-900 mt-1">{faq.answer}</p>
+            <p className="mt-1 text-sm leading-relaxed text-slate-700 whitespace-pre-line break-words">{faq.answer}</p>
           </div>
 
-          <div>
-            <h2 className="text-lg font-semibold text-gray-700">
+          <div className="rounded-xl border border-slate-200/70 bg-white/60 p-4">
+            <h2 className="detail-label">
               Type
             </h2>
-            <Tag color="purple" className="capitalize">
+            <Tag color="gold" className="!mt-1 capitalize">
               {faq.type}
             </Tag>
           </div>
 
-          <div>
-            <h2 className="text-lg font-semibold text-gray-700">
+          <div className="rounded-xl border border-slate-200/70 bg-white/60 p-4">
+            <h2 className="detail-label">
               Priority
             </h2>
-            <p>{faq.priority}</p>
+            <p className="detail-value">{faq.priority}</p>
           </div>
 
-          <div>
-            <h2 className="text-lg font-semibold text-gray-700">
+          <div className="rounded-xl border border-slate-200/70 bg-white/60 p-4">
+            <h2 className="detail-label">
               Created Date
             </h2>
-            <p>
+            <p className="detail-value">
               {new Date(faq.createdAt).toLocaleString("en-IN", {
                 day: "2-digit",
                 month: "long",

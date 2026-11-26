@@ -14,7 +14,7 @@ import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import { EyeIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import Breaker from '../../compoents/Breaker'; // Fixed typo: compoents -> compoents
 import AOS from 'aos';
 import 'aos/dist/aos.css';
@@ -206,35 +206,18 @@ export default function skillList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <Breaker />
-      </div>
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search role by name..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-80 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700 placeholder-gray-400"
-          />
-          <button
-            onClick={() => {
-              setSearchQuery(search);
-              setPage(1);
-            }}
-            className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium"
-          >
-            Search
-          </button>
-
+    <div className="page-shell">
+      <Breaker />
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Roles</h1>
+          <p className="page-subtitle">{totalRecord} record{totalRecord === 1 ? "" : "s"} found</p>
         </div>
-        <div className="flex gap-4">
+        <div className="page-actions">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => exportFunc(data)}
-            className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-green-700 transition-colors"
+            className="btn-secondary"
           >
             {isExporting ? (
               <span className="flex items-center gap-2">
@@ -250,7 +233,7 @@ export default function skillList() {
               whileTap={{ scale: 0.95 }}
               onClick={handleAddClick}
               data-aos="fade-left"
-              className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:shadow-lg transition-shadow"
+              className="btn-primary"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
@@ -280,7 +263,31 @@ export default function skillList() {
         </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+      <div className="card card-pad">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-80">
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search role by name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-field w-full"
+          />
+          </div>
+          <button
+            onClick={() => {
+              setSearchQuery(search);
+              setPage(1);
+            }}
+            className="btn-primary w-full sm:w-auto"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table sx={{ minWidth: 700 }} aria-label="speciality table">
           <TableHead>
             <TableRow>
@@ -293,7 +300,7 @@ export default function skillList() {
           <TableBody>
             {data.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={4} align="center" className="py-8 text-gray-500 text-lg">
+                <StyledTableCell colSpan={4} align="center" className="!py-14 !text-slate-400">
                   No specialities found
                 </StyledTableCell>
               </StyledTableRow>
@@ -301,7 +308,7 @@ export default function skillList() {
               data.map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <StyledTableCell>{(page - 1) * rowsPerPage + index + 1}</StyledTableCell>
-                  <StyledTableCell className="font-medium text-gray-800">{row.name || 'N/A'}</StyledTableCell>
+                  <StyledTableCell className="!font-semibold !text-slate-800">{row.name|| 'N/A'}</StyledTableCell>
                   {/* <StyledTableCell>
                     <span
                       className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
@@ -345,7 +352,7 @@ export default function skillList() {
                             handleMenuClose();
                           }}
                         >
-                          <PencilIcon className="h-5 w-5 text-green-600" />
+                          <PencilIcon className="h-5 w-5 text-green-600 mr-2" />
                           Edit
                         </MenuItem>
                       )}
@@ -358,7 +365,7 @@ export default function skillList() {
                       </MenuItem> */}
                       {hasPermission("Role", "delete") && (
                         <MenuItem onClick={() => deleteHandler(row.id)}>
-                          <TrashIcon className="h-5 w-5 text-red-600" />
+                          <TrashIcon className="h-5 w-5 text-red-600 mr-2" />
                           Delete
                         </MenuItem>
                       )}
@@ -372,7 +379,7 @@ export default function skillList() {
       </TableContainer>
 
       {totalRecord > rowsPerPage && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={4}>
           <Pagination
             count={totalPages}
             page={page}

@@ -14,7 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import Breaker from "../../compoents/Breaker";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -33,27 +33,30 @@ import { getImageUrl } from "../../utils/imageUtils";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right,#1E3A8A, #023E8A, #3B82F6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
-    letterSpacing: "0.05em",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
-    color: "#374151",
+    fontSize: "0.86rem",
+    color: "#1f2937",
     padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "rgba(248,250,252,0.45)",
   },
   "&:hover": {
-    backgroundColor: "#f1f5f9",
+    backgroundColor: "rgba(16,24,40,0.08)",
     transition: "background-color 0.2s ease",
   },
   "&:last-child td, &:last-child th": {
@@ -237,29 +240,19 @@ export default function SegmentList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6">
-        <Breaker />
-      </div>
+    <div className="page-shell">
+      <Breaker />
 
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search segments by name..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-80 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 placeholder-gray-400"
-            aria-label="Search segments"
-          />
-          {/* No separate Search button → filters live */}
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Segments</h1>
         </div>
 
-        <div className="flex gap-4">
+        <div className="page-actions">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={exportFunc}
-            className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-green-700 transition-colors"
+            className="btn-secondary"
             disabled={isExporting}
           >
             {isExporting ? (
@@ -276,21 +269,39 @@ export default function SegmentList() {
               whileTap={{ scale: 0.95 }}
               onClick={handleAddClick}
               data-aos="fade-left"
-              className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:shadow-lg transition-shadow"
+              className="btn-primary"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
                   <LoderBtn /> Adding...
                 </span>
               ) : (
-                "Add Segment"
+                <>
+                  <PlusIcon className="h-4 w-4" />
+                  Add Segment
+                </>
               )}
             </motion.button>
           )}
         </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+      <div className="card card-pad">
+        <div className="relative w-full sm:w-auto">
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search segments by name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-field sm:w-96"
+            aria-label="Search segments"
+          />
+          {/* No separate Search button → filters live */}
+        </div>
+      </div>
+
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table sx={{ minWidth: 700 }} aria-label="segment table">
           <TableHead>
             <TableRow>
@@ -309,7 +320,7 @@ export default function SegmentList() {
                 <StyledTableCell
                   colSpan={6}
                   align="center"
-                  className="py-12 text-gray-500 text-lg"
+                  className="!py-14 !text-slate-400"
                 >
                   {search.trim()
                     ? "No matching segments found"
@@ -326,28 +337,28 @@ export default function SegmentList() {
                   <StyledTableCell>
                     {row.image ? (
                       <img
-                        className="h-12 w-16 rounded-md object-cover border-2 border-gray-200 shadow-sm cursor-pointer hover:opacity-90 transition-opacity"
+                        className="h-12 w-16 cursor-pointer rounded-xl object-cover shadow-sm ring-1 ring-black/5 transition-opacity hover:opacity-90"
                         src={getImageUrl(row.image)}
                         alt={row.name || "Segment"}
                         onClick={() => navigate(`segmentview/${row.id}`)}
                         onError={(e) => (e.target.src = "/assets/placeholder.png")}
                       />
                     ) : (
-                      <div className="h-12 w-16 rounded-md bg-gray-100 flex items-center justify-center text-gray-500 text-sm">
+                      <div className="flex h-12 w-16 items-center justify-center rounded-xl bg-slate-100 text-xs font-medium text-slate-400 ring-1 ring-black/5">
                         N/A
                       </div>
                     )}
                   </StyledTableCell>
 
-                  <StyledTableCell className="font-medium text-gray-800">
+                  <StyledTableCell className="!font-semibold !text-slate-900">
                     {row.name || "—"}
                   </StyledTableCell>
 
-                  <StyledTableCell className="text-gray-600 max-w-xs truncate">
+                  <StyledTableCell className="max-w-xs truncate !text-slate-500">
                     {row.description || "—"}
                   </StyledTableCell>
 
-                  <StyledTableCell className="text-gray-700 font-medium">
+                  <StyledTableCell className="!font-medium !text-slate-700">
                     {row.maxCapacity ?? "—"}
                   </StyledTableCell>
 
@@ -357,7 +368,7 @@ export default function SegmentList() {
                       hasPermission("Segment", "delete")) && (
                       <IconButton
                         onClick={(e) => handleMenuOpen(e, row.id)}
-                        className="text-gray-500 hover:text-gray-700"
+                        className="!text-slate-500 hover:!text-slate-900"
                       >
                         <MoreVertIcon />
                       </IconButton>
@@ -414,7 +425,7 @@ export default function SegmentList() {
       </TableContainer>
 
       {totalPages > 1 && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={2}>
           <Pagination
             count={totalPages}
             page={page}

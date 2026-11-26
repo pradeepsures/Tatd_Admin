@@ -22,8 +22,7 @@ import { GenericApi } from "../../Services/GenericApi";
 import { getImageUrl } from "../../utils/imageUtils";
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": { backgroundColor: "#f9fafb" },
-  "&:hover": { backgroundColor: "#f1f5f9", transition: "background-color 0.2s ease" },
+  "&:hover": { backgroundColor: "#f9fafb", transition: "background-color 0.12s ease" },
   "&:last-child td, &:last-child th": { border: 0 },
 }));
 
@@ -155,15 +154,18 @@ export default function DynamicList({ config }) {
   if (loading && data.length === 0) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6"><Breaker /></div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
-        <div className="flex gap-4">
+    <div className="page-shell">
+      <Breaker />
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">{title}</h1>
+          <p className="page-subtitle">{totalRecord} record{totalRecord === 1 ? "" : "s"} found</p>
+        </div>
+        <div className="page-actions">
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={exportFunc}
-            className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-green-700 transition-colors"
+            className="btn-secondary"
           >
             {isExporting ? <span className="flex items-center gap-2"><LoderBtn />Exporting...</span> : "Export Excel"}
           </motion.button>
@@ -171,7 +173,7 @@ export default function DynamicList({ config }) {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate(`${basePath}/create`)}
-              className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-blue-700 transition-colors"
+              className="btn-primary"
             >
               Add {title}
             </motion.button>
@@ -179,7 +181,7 @@ export default function DynamicList({ config }) {
         </div>
       </div>
 
-      <TableContainer component={Paper} className="rounded-xl shadow-lg overflow-hidden">
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table sx={{ minWidth: 700 }}>
           <TableHead>
             <TableRow>
@@ -193,7 +195,7 @@ export default function DynamicList({ config }) {
           <TableBody>
             {data.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={columns.length + 2} align="center" className="py-8 text-gray-500 text-lg">
+                <StyledTableCell colSpan={columns.length + 2} align="center" className="!py-12 !text-gray-500">
                   No {title.toLowerCase()} found
                 </StyledTableCell>
               </StyledTableRow>
@@ -204,9 +206,9 @@ export default function DynamicList({ config }) {
                   {columns.map((col, i) => (
                     <StyledTableCell key={i}>
                       {col.type === "image" ? (
-                        <img src={getImageUrl(row[col.key])} alt={col.label} className="h-10 w-10 rounded-full object-cover shadow-sm" onError={(e) => e.target.src = "/assets/placeholder.png"} />
+                        <img src={getImageUrl(row[col.key])} alt={col.label} className="h-9 w-9 rounded-md object-cover ring-1 ring-gray-200" onError={(e) => e.target.src = "/assets/placeholder.png"} />
                       ) : col.type === "boolean" ? (
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${Boolean(getNestedValue(row, col.key)) ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}>
+                        <span className={Boolean(getNestedValue(row, col.key)) ? "badge-success" : "badge-danger"}>
                           {Boolean(getNestedValue(row, col.key)) ? "Yes" : "No"}
                         </span>
                       ) : (
@@ -244,7 +246,7 @@ export default function DynamicList({ config }) {
       </TableContainer>
 
       {totalRecord > rowsPerPage && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={4}>
           <Pagination count={totalPages} page={page} onChange={(e, val) => setPage(val)} color="primary" className="rounded-lg p-2" />
         </Stack>
       )}

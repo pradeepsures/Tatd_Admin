@@ -24,6 +24,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   PencilIcon,
   TrashIcon,
+  PlusIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
 import {
@@ -57,23 +59,34 @@ import {
 // ─────────────────────────────
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
   },
-
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
+    fontSize: "0.86rem",
+    color: "#1f2937",
     padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "rgba(248,250,252,0.45)",
+  },
+  "&:hover": {
+    backgroundColor: "rgba(16,24,40,0.08)",
+    transition: "background-color 0.2s ease",
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
   },
 }));
 
@@ -295,27 +308,49 @@ export default function VehiclePreferenceCategoryList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker />
 
       {/* HEADER */}
-      <div className="flex justify-between mb-6 mt-6">
-        <div className="flex gap-2 flex-wrap">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Vehicle Preference Categories</h1>
+        </div>
+
+        {/* CREATE */}
+        <div className="page-actions">
+          <button
+            onClick={() => setCreateModal(true)}
+            className="btn-primary"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Create
+          </button>
+        </div>
+      </div>
+
+      {/* FILTERS */}
+      <div className="card card-pad">
+        <div className="flex flex-col flex-wrap gap-3 sm:flex-row sm:items-center">
           {/* SEARCH */}
-          <input
-            className="px-4 py-2.5 rounded-lg border border-gray-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            placeholder="Search category"
-            value={tempSearch}
-            onChange={(e) =>
-              setTempSearch(e.target.value)
-            }
-          />
+          <div className="relative w-full sm:w-auto">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              className="search-field"
+              placeholder="Search category"
+              value={tempSearch}
+              onChange={(e) =>
+                setTempSearch(e.target.value)
+              }
+            />
+          </div>
 
           {/* VEHICLE PREFERENCE */}
           <Select
             allowClear
             placeholder="Vehicle Preference"
-            style={{ width: 220, height: 45 }}
+            className="w-full sm:!w-56"
+            style={{ height: 40 }}
             value={vehiclePreferenceFilter || undefined}
             onChange={(v) =>
               setVehiclePreferenceFilter(v || "")
@@ -335,7 +370,8 @@ export default function VehiclePreferenceCategoryList() {
           <Select
             allowClear
             placeholder="Status"
-            style={{ width: 140, height: 45 }}
+            className="w-full sm:!w-40"
+            style={{ height: 40 }}
             value={statusFilter || undefined}
             onChange={(v) =>
               setStatusFilter(v || "")
@@ -350,34 +386,28 @@ export default function VehiclePreferenceCategoryList() {
             </Select.Option>
           </Select>
 
-          {/* APPLY */}
-          <button
-            onClick={applyFilters}
-            className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium shadow-md hover:from-blue-700 hover:to-blue-900 transition"
-          >
-            Apply
-          </button>
+          <div className="flex gap-2.5">
+            {/* APPLY */}
+            <button
+              onClick={applyFilters}
+              className="btn-primary flex-1 sm:flex-none"
+            >
+              Apply
+            </button>
 
-          {/* CLEAR */}
-          <button
-            onClick={clearFilters}
-            className="bg-gray-600 text-white px-6 py-2.5 rounded-lg font-medium shadow-md"
-          >
-            Clear
-          </button>
+            {/* CLEAR */}
+            <button
+              onClick={clearFilters}
+              className="btn-secondary flex-1 sm:flex-none"
+            >
+              Clear
+            </button>
+          </div>
         </div>
-
-        {/* CREATE */}
-        <button
-          onClick={() => setCreateModal(true)}
-          className="bg-gradient-to-r from-green-600 to-green-800 text-white px-6 py-2.5 rounded-lg font-medium shadow-md"
-        >
-          + Create
-        </button>
       </div>
 
       {/* TABLE */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -410,7 +440,7 @@ export default function VehiclePreferenceCategoryList() {
                   {(page - 1) * rowsPerPage + i + 1}
                 </StyledTableCell>
 
-                <StyledTableCell>
+                <StyledTableCell className="!font-semibold !text-slate-900">
                   {row.name}
                 </StyledTableCell>
 
@@ -419,13 +449,8 @@ export default function VehiclePreferenceCategoryList() {
                 </StyledTableCell>
 
                 <StyledTableCell>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      row.status
-                        ? "bg-green-100 text-green-700"
-                        : "bg-red-100 text-red-700"
-                    }`}
-                  >
+                  <div className="flex items-center gap-3">
+                  <span className={row.status ? "badge-success" : "badge-danger"}>
                     {row.status
                       ? "Active"
                       : "Inactive"}
@@ -437,6 +462,7 @@ export default function VehiclePreferenceCategoryList() {
                       handleToggle(row._id)
                     }
                   />
+                  </div>
                 </StyledTableCell>
 
                 <StyledTableCell>
@@ -486,7 +512,7 @@ export default function VehiclePreferenceCategoryList() {
       </TableContainer>
 
       {/* PAGINATION */}
-      <Stack alignItems="center" mt={3}>
+      <Stack alignItems="center" mt={1}>
         <Pagination
           count={totalPages}
           page={page}
@@ -542,7 +568,7 @@ export default function VehiclePreferenceCategoryList() {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full h-11 rounded-lg"
+            className="mt-2 h-11 w-full !rounded-xl"
           >
             Create
           </Button>
@@ -596,7 +622,7 @@ export default function VehiclePreferenceCategoryList() {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full h-11 rounded-lg"
+            className="mt-2 h-11 w-full !rounded-xl"
           >
             Update
           </Button>

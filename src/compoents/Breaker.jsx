@@ -1,29 +1,5 @@
-import React from 'react';
-import { HomeOutlined } from '@ant-design/icons';
-import { Breadcrumb } from 'antd';
-import { useLocation, Link } from 'react-router-dom';
+// The navbar already shows "Section / Page", so the in-page breadcrumb is hidden
+// to avoid showing the same path twice. Kept as a component so pages don't change.
+const Breaker = () => null;
 
-const App = () => {
-  const location = useLocation();
-  const pathSnippets = location.pathname.split('/').filter((i) => i);
-
-  const breadcrumbItems = [ 
-    {
-      title: (
-        <Link to="/">
-          <HomeOutlined />
-        </Link>
-      ),
-    },
-    ...pathSnippets.map((_, index) => {
-      const url = `/${pathSnippets.slice(0, index + 1).join('/')}`;
-      return {
-        title: <Link to={url}  className="text-sm font-bold">{pathSnippets[index]}</Link>,
-      };
-    }),
-  ];
-
-  return <Breadcrumb items={breadcrumbItems} />;
-};
-
-export default App;
+export default Breaker;

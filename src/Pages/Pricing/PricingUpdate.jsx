@@ -11,6 +11,27 @@ import { updatePricingApi, getPricingApi } from "../../Services/PricingApi";
 import { getAllRegions } from "../../Services/RegionApi";
 import { getAllSegment } from "../../Services/SegmentApi";
 
+// Purely visual styles for react-select so it matches the glass field look
+const selectStyles = {
+  control: (base, state) => ({
+    ...base,
+    minHeight: 44,
+    borderRadius: 12,
+    borderColor: state.isFocused ? "#d0d5dd" : "#e2e8f0",
+    backgroundColor: state.isDisabled ? "rgba(241,245,249,0.8)" : "rgba(255,255,255,0.75)",
+    boxShadow: state.isFocused ? "0 0 0 3px rgba(16,24,40,0.08)" : "none",
+    fontSize: 14,
+    "&:hover": { borderColor: state.isFocused ? "#d0d5dd" : "#cbd5e1" },
+  }),
+  menu: (base) => ({ ...base, borderRadius: 12, overflow: "hidden", zIndex: 30 }),
+  option: (base, state) => ({
+    ...base,
+    fontSize: 14,
+    backgroundColor: state.isSelected ? "#111827" : state.isFocused ? "rgba(16,24,40,0.08)" : "transparent",
+    color: state.isSelected ? "#fff" : "#1f2937",
+  }),
+  placeholder: (base) => ({ ...base, color: "#94a3b8" }),
+};
 const BASE_URL = import.meta.env.VITE_BASE_URL;
 
 // ── Zod Schema (Same as Create) ─────────────────────
@@ -237,22 +258,26 @@ const PricingUpdate = () => {
     };
 
     if (loading) {
-        return <div className="text-center py-20">Loading pricing data...</div>;
+        return <div className="py-20 text-center text-sm font-medium text-slate-400">Loading pricing data...</div>;
     }
 
     return (
-        <div className="w-full mx-auto p-8 bg-white shadow-xl rounded-2xl">
+        <div className="page-shell">
             <Breaker />
-            <h1 className="text-3xl font-bold mb-10 mt-5 text-gray-800">Update Pricing Rule</h1>
+            <div className="card p-5 sm:p-8">
+            <div className="mb-8 border-b border-slate-200/70 pb-5">
+                <p className="section-label">Pricing</p>
+                <h1 className="page-title mt-1">Update Pricing Rule</h1>
+            </div>
 
             <form
                 onSubmit={handleSubmit(onSubmit, (errors) => console.log("FORM ERRORS:", errors))}
-                className="space-y-12"
+                className="space-y-10"
             >
                 {/* 1. Basic Info - Region, Segment, Booking Type (disabled for safety) */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <label className="block text-sm font-medium mb-2">Region *</label>
+                        <label className="field-label">Region *</label>
                         <Controller
                             name="region"
                             control={control}
@@ -262,15 +287,16 @@ const PricingUpdate = () => {
                                     value={regions.map((r) => ({ label: r.name, value: r._id })).find((opt) => opt.value === field.value) || null}
                                     onChange={(selected) => field.onChange(selected?.value)}
                                     placeholder="Search & Select Region"
+                  styles={selectStyles}
                                     isDisabled // Optional: prevent changing region
                                 />
                             )}
                         />
-                        {errors.region && <p className="text-red-500 text-sm mt-1">{errors.region.message}</p>}
+                        {errors.region && <p className="field-error">{errors.region.message}</p>}
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium mb-2">Segment *</label>
+                        <label className="field-label">Segment *</label>
                         <Controller
                             name="segment"
                             control={control}
@@ -280,19 +306,20 @@ const PricingUpdate = () => {
                                     value={segments.map((s) => ({ label: s.name, value: s._id })).find((opt) => opt.value === field.value) || null}
                                     onChange={(selected) => field.onChange(selected?.value)}
                                     placeholder="Search & Select Segment"
+                  styles={selectStyles}
                                     isDisabled // Optional: prevent changing segment
                                 />
                             )}
                         />
-                        {errors.segment && <p className="text-red-500 text-sm mt-1">{errors.segment.message}</p>}
+                        {errors.segment && <p className="field-error">{errors.segment.message}</p>}
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium mb-2">Booking Type *</label>
+                        <label className="field-label">Booking Type *</label>
                         <select
                             {...register("bookingType")}
                             disabled // Backend prevents change
-                            className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500 bg-gray-100"
+                            className="field disabled:cursor-not-allowed disabled:!bg-slate-100 disabled:text-slate-500"
                         >
                             <option value="one_way">One Way</option>
                             <option value="round_trip">Round Trip</option>
@@ -303,26 +330,26 @@ const PricingUpdate = () => {
                 </div>
 
                 {/* 2. Day & Night Pricing - Same as Create */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-5">
+                <div className="grid grid-cols-1 gap-8">
                     {["day"].map((timeSlot) => (
                         <div key={timeSlot}>
-                            <h2 className="text-xl font-semibold mb-4">
+                            <h2 className="card-title mb-4">
                                 {timeSlot === "day" ? "Day" : "Night Pricing"}
                             </h2>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                                 {["baseFare", "perKmRate", "perMinRate", "minFare", "cancellationFee"].map((field) => (
                                     <div key={field}>
-                                        <label className="block text-sm capitalize mb-1">
+                                        <label className="field-label capitalize">
                                             {field.replace(/([A-Z])/g, " $1")}
                                         </label>
                                         <input
                                             type="number"
                                             step="0.01"
                                             {...register(`${timeSlot}.${field}`, { valueAsNumber: true })}
-                                            className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500"
+                                            className="field"
                                         />
                                         {errors[timeSlot]?.[field] && (
-                                            <p className="text-red-500 text-sm mt-1">{errors[timeSlot][field].message}</p>
+                                            <p className="field-error">{errors[timeSlot][field].message}</p>
                                         )}
                                     </div>
                                 ))}
@@ -332,15 +359,15 @@ const PricingUpdate = () => {
                 </div>
 
                 <div className="md:col-span-2">
-                    <label className="block text-sm mb-1">Night Fare</label>
+                    <label className="field-label capitalize">Night Fare</label>
                     <input
                         type="number"
                         step="0.01"
                         {...register("nightFare", { valueAsNumber: true })}
-                        className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500"
+                        className="field"
                     />
                     {errors.nightFare && (
-                        <p className="text-red-500 text-sm mt-1">
+                        <p className="field-error">
                             {errors.nightFare.message}
                         </p>
                     )}
@@ -351,7 +378,7 @@ const PricingUpdate = () => {
                     <h2 className="text-xl font-semibold mb-2 mt-5">Surge Settings</h2>
                     <select
                         {...register("surgeActive")}
-                        className="w-full border rounded-lg p-1.5 focus:outline-none focus:border-blue-500"
+                        className="field"
                     >
                         <option value="none">None</option>
                         <option value="time_based">Time Based</option>
@@ -401,27 +428,27 @@ const PricingUpdate = () => {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                   
                                     <div>
-                                        <label className="block text-sm mb-1">Label</label>
-                                        <input {...register(`surgeWindows.${index}.label`)} className="w-full border rounded-lg p-1.5" placeholder="Morning Rush" />
+                                        <label className="field-label capitalize">Label</label>
+                                        <input {...register(`surgeWindows.${index}.label`)} className="field" placeholder="Morning Rush" />
                                     </div>
                                     <div>
-                                        <label className="block text-sm mb-1">Type</label>
-                                        <select {...register(`surgeWindows.${index}.type`)} className="w-full border rounded-lg p-3">
+                                        <label className="field-label capitalize">Type</label>
+                                        <select {...register(`surgeWindows.${index}.type`)} className="field">
                                             <option value="time_based">Time Based</option>
                                             <option value="manual">Manual</option>
                                         </select>
                                     </div>
                                     <div>
-                                        <label className="block text-sm mb-1">Multiplier</label>
-                                        <input type="number" step="0.1" {...register(`surgeWindows.${index}.multiplier`, { valueAsNumber: true })} className="w-full border rounded-lg p-1.5" />
+                                        <label className="field-label capitalize">Multiplier</label>
+                                        <input type="number" step="0.1" {...register(`surgeWindows.${index}.multiplier`, { valueAsNumber: true })} className="field" />
                                     </div>
 
                                     {watch(`surgeWindows.${index}.type`) === "time_based" && (
                                         <>
-                                            <div><label className="block text-sm mb-1">From Hour</label><input type="number" {...register(`surgeWindows.${index}.fromHour`, { valueAsNumber: true })} className="w-full border rounded-lg p-1.5" /></div>
-                                            <div><label className="block text-sm mb-1">From Min</label><input type="number" {...register(`surgeWindows.${index}.fromMin`, { valueAsNumber: true })} className="w-full border rounded-lg p-1.5" /></div>
-                                            <div><label className="block text-sm mb-1">To Hour</label><input type="number" {...register(`surgeWindows.${index}.toHour`, { valueAsNumber: true })} className="w-full border rounded-lg p-1.5" /></div>
-                                            <div><label className="block text-sm mb-1">To Min</label><input type="number" {...register(`surgeWindows.${index}.toMin`, { valueAsNumber: true })} className="w-full border rounded-lg p-1.5" /></div>
+                                            <div><label className="field-label capitalize">From Hour</label><input type="number" {...register(`surgeWindows.${index}.fromHour`, { valueAsNumber: true })} className="field" /></div>
+                                            <div><label className="field-label capitalize">From Min</label><input type="number" {...register(`surgeWindows.${index}.fromMin`, { valueAsNumber: true })} className="field" /></div>
+                                            <div><label className="field-label capitalize">To Hour</label><input type="number" {...register(`surgeWindows.${index}.toHour`, { valueAsNumber: true })} className="field" /></div>
+                                            <div><label className="field-label capitalize">To Min</label><input type="number" {...register(`surgeWindows.${index}.toMin`, { valueAsNumber: true })} className="field" /></div>
                                         </>
                                     )}
 
@@ -448,29 +475,29 @@ const PricingUpdate = () => {
                 {/* 5. Hourly Package */}
                 {bookingType === "hourly" && (
                     <div>
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-semibold">Hourly Packages</h2>
+                        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                            <h2 className="card-title">Hourly Packages</h2>
                             <button
                                 type="button"
                                 onClick={() => appendHourly({ hours: 2, includedKms: 20, dayFare: 400, nightFare: 500, extraPerKm: 12, extraPerMin: 1.5 })}
-                                className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                                className="btn-secondary w-full sm:w-auto"
                             >
                                 + Add Package
                             </button>
                         </div>
 
                         {hourlyFields.map((item, index) => (
-                            <div key={item.id} className="border p-6 mb-4 rounded-xl relative">
-                                <button type="button" onClick={() => removeHourly(index)} className="absolute top-3 right-3 text-red-500">✕</button>
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            <div key={item.id} className="relative mb-4 rounded-2xl border border-slate-200/80 bg-white/60 p-5 sm:p-6">
+                                <button type="button" onClick={() => removeHourly(index)} className="btn-icon absolute right-3 top-3 !text-rose-500 hover:!bg-rose-50">✕</button>
+                                <div className="grid grid-cols-1 gap-4 pr-8 sm:grid-cols-2 md:grid-cols-3">
                                     {["hours", "includedKms", "dayFare", "nightFare", "extraPerKm", "extraPerMin"].map((field) => (
                                         <div key={field}>
-                                            <label className="block text-sm mb-1">{field.replace(/([A-Z])/g, " $1")}</label>
+                                            <label className="field-label capitalize">{field.replace(/([A-Z])/g, " $1")}</label>
                                             <input
                                                 type="number"
                                                 step="0.01"
                                                 {...register(`hourlyPackage.${index}.${field}`, { valueAsNumber: true })}
-                                                className="w-full border rounded-lg p-1.5"
+                                                className="field"
                                             />
                                         </div>
                                     ))}
@@ -483,26 +510,26 @@ const PricingUpdate = () => {
                 {/* 6. Driver Fare (Intercity) */}
                 {bookingType === "intercity" && (
                     <div>
-                        <h2 className="text-xl font-semibold mb-4">Driver Fare (Intercity)</h2>
-                        <div className="grid grid-cols-2 gap-4 border p-6 rounded-xl bg-gray-50">
+                        <h2 className="card-title mb-4">Driver Fare (Intercity)</h2>
+                        <div className="grid grid-cols-1 gap-5 rounded-2xl border border-slate-200/80 bg-white/60 p-5 sm:grid-cols-2 sm:p-6">
                             {["perKmRate", "flatPerTrip", "minGuarantee", "allowancePerDay", "allowancePerNight", "overTimePerHour", "holidayAllowance"].map((field) => (
                                 <div key={field}>
-                                    <label className="block text-sm capitalize mb-1">{field.replace(/([A-Z])/g, " $1")}</label>
+                                    <label className="field-label capitalize">{field.replace(/([A-Z])/g, " $1")}</label>
                                     <input
                                         type="number"
                                         step="0.01"
                                         {...register(`driverFare.${field}`, { valueAsNumber: true })}
-                                        className="w-full border rounded-lg p-1.5"
+                                        className="field"
                                     />
                                 </div>
                             ))}
 
-                            <div className="col-span-2">
+                            <div className="sm:col-span-2">
                                 <Controller
                                     name="driverFare.tollIncluded"
                                     control={control}
                                     render={({ field }) => (
-                                        <label className="flex items-center gap-2 cursor-pointer">
+                                        <label className="flex cursor-pointer items-center gap-2.5 text-sm font-medium text-slate-700">
                                             <input type="checkbox" checked={field.value || false} onChange={field.onChange} />
                                             Toll Included in Driver Fare
                                         </label>
@@ -514,36 +541,37 @@ const PricingUpdate = () => {
                 )}
 
                 {/* 7. GST & Status */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t">
+                <div className="grid grid-cols-1 gap-6 border-t border-slate-200/70 pt-8 md:grid-cols-3">
                     <div>
-                        <label className="block text-sm font-medium mb-1">GST Percent (%)</label>
-                        <input type="number" {...register("gstPercent", { valueAsNumber: true })} className="w-full border rounded-lg p-1.5" />
+                        <label className="field-label">GST Percent (%)</label>
+                        <input type="number" {...register("gstPercent", { valueAsNumber: true })} className="field" />
                     </div>
 
-                    <div className="flex items-center gap-3 pt-6">
-                        <input type="checkbox" {...register("isActive")} id="isActive" />
-                        <label htmlFor="isActive" className="font-medium cursor-pointer">Is Active</label>
+                    <div className="flex items-center gap-3 md:pt-7">
+                        <input type="checkbox" {...register("isActive")} id="isActive" className="h-4 w-4 cursor-pointer accent-amber-500" />
+                        <label htmlFor="isActive" className="cursor-pointer text-sm font-semibold text-slate-700">Is Active</label>
                     </div>
                 </div>
                 {/* button */}
-                <div className="flex justify-end items-center gap-4 mt-8">
+                <div className="flex flex-col gap-3 border-t border-slate-200/70 pt-6 sm:flex-row-reverse sm:justify-start">
                     <button
                         type="submit"
                         disabled={submitLoading}
-                        className="bg-primary text-white py-3 px-6 rounded-2xl hover:bg-primary-dark transition-colors"
+                        className="btn-primary w-full sm:w-auto"
                     >
                         {submitLoading ? "Updating..." : "Update Pricing"}
                     </button>
                     <button
                         type="button"
                         onClick={() => navigate(-1)}
-                        className="bg-gray-500 text-white py-3 px-6 rounded-2xl hover:bg-gray-600 transition-colors"
+                        className="btn-secondary w-full sm:w-auto"
                     >
                         Back
                     </button>
                 </div>
 
             </form>
+            </div>
         </div>
     );
 };

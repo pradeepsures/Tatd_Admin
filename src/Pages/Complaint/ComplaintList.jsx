@@ -135,8 +135,24 @@ export default function ComplaintList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker />
+
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Complaints</h1>
+          <p className="page-subtitle">{totalRecord} record{totalRecord === 1 ? "" : "s"} found</p>
+        </div>
+        <div className="page-actions">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={exportExcel}
+            className="btn-secondary"
+          >
+            {isExporting ? <LoderBtn /> : "Export Excel"}
+          </motion.button>
+        </div>
+      </div>
 
       {/* FILTER PANEL */}
       <ComplaintFilter
@@ -177,20 +193,8 @@ export default function ComplaintList() {
         }}
       /> */}
 
-      {/* TOP BAR */}
-      <div className="flex justify-between mb-6">
-        <div className="flex gap-3"></div>
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={exportExcel}
-          className="bg-green-600 text-white px-5 py-2 rounded-lg"
-        >
-          {isExporting ? <LoderBtn /> : "Export Excel"}
-        </motion.button>
-      </div>
-
       {/* TABLE */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -207,7 +211,7 @@ export default function ComplaintList() {
           <TableBody>
             {data.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} align="center">
+                <TableCell colSpan={7} align="center" className="!py-14 !text-slate-400">
                   No Complaints Found
                 </TableCell>
               </TableRow>
@@ -218,19 +222,19 @@ export default function ComplaintList() {
                   <TableCell>
                     <img
                       src={row?.reporter?.profilePic || "/no-image.png"}
-                      className="w-12 h-12 rounded-full border"
+                      className="h-11 w-11 rounded-full object-cover ring-1 ring-black/5"
                     />
                   </TableCell>
                   <TableCell>
                     <div className="flex flex-col">
-                      <span className="font-semibold">{row?.reporter?.name}</span>
-                      <span className="text-sm text-gray-500">{row?.reporter?.email}</span>
+                      <span className="font-semibold text-slate-800">{row?.reporter?.name}</span>
+                      <span className="text-xs text-slate-500">{row?.reporter?.email}</span>
                     </div>
                   </TableCell>
-                  <TableCell>{row.issueCategory}</TableCell>
-                  <TableCell>{row.ticketId}</TableCell>
+                  <TableCell className="capitalize">{row.issueCategory}</TableCell>
+                  <TableCell className="whitespace-nowrap !font-semibold !text-slate-900">{row.ticketId}</TableCell>
                   <TableCell>
-                    <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm">
+                    <span className={`whitespace-nowrap capitalize ${row.ticketStatus === "resolved" ? "badge-success" : row.ticketStatus === "closed" ? "badge-neutral" : row.ticketStatus === "in_progress" ? "badge-info" : "badge-warning"}`}>
                       {row.ticketStatus}
                     </span>
                   </TableCell>
@@ -260,7 +264,7 @@ export default function ComplaintList() {
 
       {/* PAGINATION */}
       {totalRecord > rowsPerPage && (
-        <Stack alignItems="center" mt={4}>
+        <Stack alignItems="center" mt={2}>
           <Pagination count={totalPages} page={page} onChange={handlePageChange} />
         </Stack>
       )}

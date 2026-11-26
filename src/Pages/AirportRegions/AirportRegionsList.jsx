@@ -2,9 +2,9 @@ import React from "react";
 
 const AirportRegionList = () => {
   return (
-    <div className="p-4">
-      <h2 className="text-xl font-semibold">Airport Regions List (placeholder)</h2>
-      <p>Replace with the real `AirportRegionsList` component.</p>
+    <div className="card card-pad">
+      <h2 className="page-title">Airport Regions List (placeholder)</h2>
+      <p className="page-subtitle">Replace with the real `AirportRegionsList` component.</p>
     </div>
   );
 };

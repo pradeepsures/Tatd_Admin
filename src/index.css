@@ -1,5 +1,41 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Dvagoo Admin — design system
+   Calm, flat surfaces. Ink for actions, gold only as a small brand mark.
+   ========================================================================== */
+
+:root {
+  --bg: #f5f6f8;
+  --surface: #ffffff;
+  --surface-muted: #f9fafb;
+  --border: #e4e7ec;
+  --border-strong: #d0d5dd;
+
+  --text: #101828;
+  --text-2: #344054;
+  --text-3: #667085;
+  --text-4: #98a2b3;
+
+  --ink: #111827;
+  --ink-hover: #1f2937;
+  --gold: #c99a2e;
+
+  --radius-card: 14px;
+  --radius-field: 9px;
+  --card-bg: rgba(255, 255, 255, 0.84);
+  --card-border: rgba(255, 255, 255, 0.95);
+  --card-shadow: 0 1px 2px rgba(16, 24, 40, 0.05), 0 12px 32px -14px rgba(16, 24, 40, 0.22);
+  --wallpaper: url("https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=2000&q=70");
+
+  --shadow-xs: 0 1px 2px rgba(16, 24, 40, 0.05);
+  --shadow-sm: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  --shadow-lg: 0 12px 24px -6px rgba(16, 24, 40, 0.12), 0 4px 8px -4px rgba(16, 24, 40, 0.05);
+  --focus-ring: 0 0 0 3px rgba(17, 24, 39, 0.08);
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
 html,
 body,
 #root {
@@ -9,19 +45,355 @@ body,
 
 body {
   overflow: hidden;
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 * {
   box-sizing: border-box;
 }
 
+::selection {
+  background: rgba(17, 24, 39, 0.12);
+}
+
+/* Thin, quiet scrollbars */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cfd4dc transparent;
+}
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-thumb {
+  background: #cfd4dc;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar-scroll {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.sidebar-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Soft tinted app canvas (no blobs, just two faint washes) */
+.app-canvas {
+  background:
+    radial-gradient(1100px 480px at 85% -8%, rgba(99, 102, 241, 0.07), transparent 65%),
+    radial-gradient(900px 420px at -5% -10%, rgba(201, 154, 46, 0.07), transparent 60%),
+    linear-gradient(180deg, #f4f5f8 0%, #f1f3f6 100%);
+  background-attachment: fixed;
+}
+
+/* Full-screen wallpaper behind the glass panels (blurred night-drive photo
+   toned to the brand's ink + gold). Purely decorative, no pointer events. */
+.app-wallpaper {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: #0b0d12;
+}
+.app-wallpaper::before {
+  content: "";
+  position: absolute;
+  inset: -60px;
+  background: var(--wallpaper) center / cover no-repeat;
+  filter: blur(26px) saturate(125%);
+  opacity: 0.7;
+}
+.app-wallpaper::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(110deg, rgba(8, 10, 15, 0.94) 0%, rgba(8, 10, 15, 0.72) 38%, rgba(30, 22, 8, 0.45) 100%);
+}
+
+/* The light content sheet that floats over the wallpaper */
+.glass-sheet {
+  background: rgba(243, 244, 247, 0.88);
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55), 0 30px 80px -30px rgba(0, 0, 0, 0.6);
+}
+/* Dark glass for sidebar / navbar over the wallpaper */
+.glass-dark {
+  background: rgba(14, 16, 22, 0.55);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Kept for markup that still references them */
+.glass {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.glass-strong {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-lg);
+}
+.text-gold-gradient {
+  color: var(--gold);
+}
+
+/* ==========================================================================
+   Theme layer for page content (scoped to the main area)
+   Normalises the older per-page Tailwind styles into one look.
+   ========================================================================== */
+
+.app-main .min-h-screen.bg-gray-50,
+.app-main .min-h-screen.bg-gray-100,
+.app-main .min-h-screen.bg-white,
+.app-main .min-h-screen[class*="bg-[#F8FAFC]"],
+.app-main .min-h-screen[class*="bg-[#f8fafc]"] {
+  background: transparent !important;
+}
+/* Pages sit below the navbar, so a full 100vh just causes a second scrollbar */
+.app-main .min-h-screen {
+  min-height: calc(100dvh - 8rem);
+}
+
+/* Plain white page cards read as frosted panels on the tinted canvas */
+.app-main .bg-white.rounded-lg,
+.app-main .bg-white.rounded-xl,
+.app-main .bg-white.rounded-2xl {
+  background-color: var(--card-bg) !important;
+}
+/* Big decorative shadows → one quiet card shadow + hairline border */
+.app-main .bg-white.shadow-md,
+.app-main .bg-white.shadow-lg,
+.app-main .bg-white.shadow-xl,
+.app-main .bg-white.shadow-2xl {
+  box-shadow: var(--card-shadow) !important;
+  border: 1px solid var(--card-border);
+}
+.app-main .bg-white.rounded-2xl,
+.app-main .bg-white.rounded-3xl {
+  border-radius: var(--radius-card);
+}
+
+.app-main h1,
+.app-main h2,
+.app-main h3 {
+  letter-spacing: -0.011em;
+}
+
+/* Hand-styled form fields (anything the page gave a border to) */
+.app-main input[class*="border"]:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+.app-main select[class*="border"],
+.app-main textarea[class*="border"],
+.app-main .react-datepicker__input-container input {
+  background-color: var(--surface);
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-field) !important;
+  color: var(--text);
+  font-size: 0.875rem;
+  box-shadow: var(--shadow-xs);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.app-main input[class*="border"]:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):focus,
+.app-main select[class*="border"]:focus,
+.app-main textarea[class*="border"]:focus,
+.app-main .react-datepicker__input-container input:focus {
+  outline: none !important;
+  border-color: #98a2b3 !important;
+  box-shadow: var(--focus-ring) !important;
+}
+.app-main input:disabled,
+.app-main select:disabled,
+.app-main textarea:disabled {
+  background-color: var(--surface-muted) !important;
+  color: var(--text-3);
+  cursor: not-allowed;
+}
+.app-main input::placeholder,
+.app-main textarea::placeholder {
+  color: var(--text-4);
+}
+.app-main input[type="checkbox"],
+.app-main input[type="radio"] {
+  accent-color: var(--ink);
+}
+
+/* Older purple / navy / blue gradient buttons → one solid ink button */
+.app-main [class*="from-[#5F0099]"],
+.app-main [class*="from-[#9F00FF]"],
+.app-main [class*="from-[#03045E]"],
+.app-main [class*="from-[#1E3A8A]"],
+.app-main [class*="from-[#1a2a6c]"],
+.app-main [class*="from-[#172d6b]"],
+.app-main [class*="from-[#000428]"],
+.app-main [class*="from-[#0F2027]"],
+.app-main button[class*="from-indigo-9"],
+.app-main button[class*="from-blue-6"],
+.app-main button[class*="from-blue-7"],
+.app-main button[class*="from-indigo-7"],
+.app-main button.bg-primary,
+.app-main a.bg-primary,
+.app-main button.bg-blue-600,
+.app-main a.bg-blue-600,
+.app-main button.bg-blue-700,
+.app-main button.bg-blue-500 {
+  background-image: none !important;
+  background-color: var(--ink) !important;
+  color: #fff !important;
+  box-shadow: var(--shadow-xs);
+  transition: background-color 0.15s ease;
+}
+.app-main [class*="from-[#5F0099]"]:hover,
+.app-main [class*="from-[#03045E]"]:hover,
+.app-main [class*="from-[#1E3A8A]"]:hover,
+.app-main button[class*="from-indigo-9"]:hover,
+.app-main button[class*="from-blue-6"]:hover,
+.app-main button[class*="from-blue-7"]:hover,
+.app-main button.bg-primary:hover,
+.app-main button.bg-blue-600:hover,
+.app-main a.bg-blue-600:hover,
+.app-main button.bg-blue-700:hover,
+.app-main button.bg-blue-500:hover {
+  background-color: var(--ink-hover) !important;
+}
+.app-main button[class*="from-green-6"] {
+  background-image: none !important;
+  background-color: #059669 !important;
+}
+.app-main button[class*="from-red-6"],
+.app-main button[class*="from-rose-5"] {
+  background-image: none !important;
+  background-color: #e11d48 !important;
+}
+/* Scale-on-hover on submit buttons feels jumpy */
+.app-main button.hover\:scale-105:hover,
+.app-main button.active\:scale-95:active {
+  transform: none !important;
+}
+.app-main button:focus-visible,
+.app-main a:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Older status pills: calmer tints */
+.app-main .rounded-full.bg-green-100 {
+  background-color: #ecfdf3 !important;
+  color: #067647;
+}
+.app-main .rounded-full.bg-red-100 {
+  background-color: #fef3f2 !important;
+  color: #b42318;
+}
+.app-main .rounded-full.bg-blue-100 {
+  background-color: #eff8ff !important;
+  color: #175cd3;
+}
+
+/* ---------- MUI tables ------------------------------------------------- */
 .MuiTableContainer-root {
   max-width: 100%;
   overflow-x: auto !important;
 }
-
 .MuiTable-root {
   min-width: 720px;
+}
+
+.app-main .MuiTableContainer-root {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-card) !important;
+  box-shadow: var(--card-shadow) !important;
+}
+.app-main .MuiTableCell-root.MuiTableCell-head {
+  background: #171b25 !important;
+  background-image: linear-gradient(180deg, #1d2230 0%, #141822 100%) !important;
+  color: rgba(255, 255, 255, 0.78) !important;
+  font-family: var(--font-sans) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+  border-bottom: 1px solid rgba(201, 154, 46, 0.45) !important;
+  white-space: nowrap;
+  padding: 13px 16px !important;
+}
+.app-main .MuiTableCell-root.MuiTableCell-body {
+  font-family: var(--font-sans) !important;
+  font-size: 0.875rem !important;
+  color: var(--text-2);
+  border-bottom: 1px solid #eaecf0 !important;
+  padding: 12px 16px !important;
+}
+.app-main .MuiTableBody-root .MuiTableRow-root,
+.app-main .MuiTableBody-root .MuiTableRow-root:nth-of-type(odd) {
+  background-color: transparent !important;
+  transition: background-color 0.12s ease;
+}
+.app-main .MuiTableBody-root .MuiTableRow-root:nth-of-type(even) {
+  background-color: rgba(244, 245, 248, 0.55) !important;
+}
+.app-main .MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: rgba(201, 154, 46, 0.07) !important;
+}
+.app-main .MuiTableBody-root .MuiTableRow-root:last-child td {
+  border-bottom: 0 !important;
+}
+
+.app-main .MuiPagination-root .MuiPaginationItem-root {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  border-radius: 8px;
+}
+.app-main .MuiPagination-root .MuiPaginationItem-root.Mui-selected {
+  background: var(--ink) !important;
+  color: #fff;
+  box-shadow: inset 0 -2px 0 var(--gold);
+}
+
+/* MUI popovers / menus / dialogs (portals) */
+.MuiMenu-paper,
+.MuiPopover-paper {
+  border: 1px solid var(--border);
+  border-radius: 10px !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+.MuiMenu-list .MuiMenuItem-root {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  border-radius: 6px;
+  margin: 1px 4px;
+  gap: 4px;
+}
+.MuiDialog-paper {
+  border-radius: 14px !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+.MuiBackdrop-root:not(.MuiBackdrop-invisible) {
+  background-color: rgba(16, 24, 40, 0.45) !important;
 }
 
 input,
@@ -37,89 +409,255 @@ textarea,
     padding: 10px 12px !important;
     white-space: nowrap;
   }
-
   .MuiPagination-ul {
     justify-content: center;
   }
 }
 
-/* Fully hide scrollbar, but keep scrolling */
-.sidebar-scroll {
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
-  }
-  .sidebar-scroll::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Edge */
-  }
-  .carousel .control-arrow {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 50%;
-  }
-  
-  .carousel .control-arrow:hover {
-    background: rgba(0, 0, 0, 0.6);
-  }
-  
-  .carousel .control-next.control-arrow:before,
-  .carousel .control-prev.control-arrow:before {
-    color: white;
-    font-size: 24px;
-  }
-
-    /* Gradient background */
-    .bg-primary {
-  @apply bg-gradient-to-r from-[#1E3A8A] to-[#3B82F6];
+/* ---------- Ant Design touches ----------------------------------------- */
+/* Same height / border / radius as the other form fields */
+.app-main .ant-select-single:not(.ant-select-sm) .ant-select-selector,
+.app-main .ant-select-multiple .ant-select-selector,
+.app-main .ant-picker,
+.app-main .ant-input,
+.app-main .ant-input-affix-wrapper,
+.app-main .ant-input-number {
+  border-color: var(--border-strong) !important;
+  border-radius: var(--radius-field) !important;
+  box-shadow: var(--shadow-xs);
 }
-
-.custom-select .ant-select-selector {
-  height: 42px !important;     /* same as input */
-  border-radius: 6px !important;
-  border: 1px solid hsl(240, 4%, 5%) !important; /* tailwind gray-300 */
-  display: flex;
+.app-main .ant-select-single:not(.ant-select-sm):not(.ant-select-lg) .ant-select-selector {
+  min-height: 40px;
   align-items: center;
 }
-
-.custom-select .ant-select-selection-placeholder {
-  line-height: 42px !important;
+.app-main .ant-select-focused .ant-select-selector,
+.app-main .ant-picker-focused,
+.app-main .ant-input:focus,
+.app-main .ant-input-affix-wrapper-focused {
+  border-color: #98a2b3 !important;
+  box-shadow: var(--focus-ring) !important;
+}
+.ant-modal .ant-modal-content {
+  border-radius: 14px !important;
+}
+.ant-modal-mask {
+  background-color: rgba(16, 24, 40, 0.45) !important;
 }
 
-.custom-select .ant-select-selection-item {
-  line-height: 42px !important;
-}
-
-
-/* ✅ Match input UI */
 .custom-select .ant-select-selector {
   height: 40px !important;
-  border-radius: 12px !important;
-  border: 1px solid #000000 !important; /* same as input */
+  border-radius: var(--radius-field) !important;
+  border: 1px solid var(--border-strong) !important;
+  background: var(--surface) !important;
   display: flex;
   align-items: center;
   padding: 0 12px !important;
+  box-shadow: var(--shadow-xs);
 }
-
-/* text alignment */
-.custom-select .ant-select-selection-item {
-  line-height: 40px !important;
-}
-
-/* placeholder alignment */
+.custom-select .ant-select-selection-item,
 .custom-select .ant-select-selection-placeholder {
   line-height: 40px !important;
 }
-
-/* focus effect like input */
 .custom-select.ant-select-focused .ant-select-selector {
-  border-color: #050505 !important;
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  border-color: #98a2b3 !important;
+  box-shadow: var(--focus-ring) !important;
 }
 
-/* hover */
-.custom-select .ant-select-selector:hover {
-  border-color: #000000 !important;
+.ant-spin-dot-item {
+  background-color: var(--ink) !important;
 }
 
-  /* .bg-primary {
-    @apply bg-gradient-to-r from-[#03045E] to- via-[#023E8A] ;
-  } */
+/* ---------- react-datepicker ------------------------------------------- */
+.react-datepicker {
+  font-family: var(--font-sans) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 10px !important;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.react-datepicker__header {
+  background: var(--surface-muted) !important;
+  border-bottom: 1px solid var(--border) !important;
+}
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day--in-range,
+.react-datepicker__day--in-selecting-range {
+  background: var(--ink) !important;
+  color: #fff !important;
+  border-radius: 6px !important;
+}
 
+/* ---------- react-rte editor ------------------------------------------- */
+.app-main [class*="RichTextEditor__root"] {
+  border: 1px solid var(--border-strong) !important;
+  border-radius: var(--radius-field) !important;
+  overflow: hidden;
+  font-family: var(--font-sans);
+}
+.app-main [class*="RichTextEditor__root"]:focus-within {
+  border-color: #98a2b3 !important;
+  box-shadow: var(--focus-ring);
+}
+.app-main [class*="EditorToolbar__root"] {
+  background: var(--surface-muted);
+  border-bottom: 1px solid var(--border) !important;
+  margin: 0 !important;
+  padding: 8px 10px 2px !important;
+}
+
+/* ---------- Carousel --------------------------------------------------- */
+.carousel .control-arrow {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+}
+.carousel .control-arrow:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+.carousel .control-next.control-arrow:before,
+.carousel .control-prev.control-arrow:before {
+  color: white;
+  font-size: 24px;
+}
+
+/* Legacy helper */
+.bg-primary {
+  background-color: var(--ink);
+}
+
+/* ==========================================================================
+   Reusable component classes for pages
+   (components layer, so Tailwind utilities can still override them)
+   ========================================================================== */
+@layer components {
+  .page-shell {
+    @apply w-full space-y-5;
+  }
+  /* fixed overlays (modals) inside a page must not pick up the stack margin */
+  .page-shell > .fixed {
+    margin: 0 !important;
+  }
+  .page-header {
+    @apply flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between;
+  }
+  .page-title {
+    @apply text-[22px] font-semibold tracking-tight text-gray-900;
+  }
+  .page-subtitle {
+    @apply mt-0.5 text-sm text-gray-500;
+  }
+  .page-actions {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: var(--card-shadow);
+    border-radius: var(--radius-card);
+  }
+  .card-pad {
+    @apply p-4 sm:p-5;
+  }
+  .card-title {
+    @apply text-[15px] font-semibold text-gray-900;
+  }
+  .section-label {
+    @apply text-xs font-medium text-gray-500;
+  }
+
+  .btn,
+  .btn-primary,
+  .btn-gold,
+  .btn-secondary,
+  .btn-success,
+  .btn-danger,
+  .btn-ghost {
+    @apply inline-flex h-9 items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-3.5 text-sm font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary,
+  .btn-gold {
+    background-color: var(--ink);
+    color: #fff;
+    box-shadow: var(--shadow-xs);
+  }
+  .btn-primary:hover:not(:disabled),
+  .btn-gold:hover:not(:disabled) {
+    background-color: var(--ink-hover);
+  }
+  .btn-secondary {
+    @apply border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 hover:text-gray-900;
+    box-shadow: var(--shadow-xs);
+  }
+  .btn-success {
+    @apply bg-emerald-600 text-white hover:bg-emerald-700;
+    box-shadow: var(--shadow-xs);
+  }
+  .btn-danger {
+    @apply bg-rose-600 text-white hover:bg-rose-700;
+    box-shadow: var(--shadow-xs);
+  }
+  .btn-ghost {
+    @apply text-gray-600 hover:bg-gray-100 hover:text-gray-900;
+  }
+  .btn-icon {
+    @apply inline-flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-sm font-medium text-gray-700;
+  }
+  .field,
+  .search-field {
+    @apply w-full rounded-lg border border-gray-300 bg-white text-sm text-gray-900 outline-none transition placeholder:text-gray-400;
+    box-shadow: var(--shadow-xs);
+  }
+  .field {
+    @apply h-10 px-3;
+  }
+  textarea.field {
+    @apply h-auto py-2;
+  }
+  .search-field {
+    @apply h-9 pl-9 pr-3 sm:w-72;
+  }
+  .field:focus,
+  .search-field:focus {
+    border-color: #98a2b3;
+    box-shadow: var(--focus-ring);
+  }
+  .field-error {
+    @apply mt-1 text-xs text-rose-600;
+  }
+
+  .badge,
+  .badge-success,
+  .badge-danger,
+  .badge-warning,
+  .badge-info,
+  .badge-neutral {
+    @apply inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium;
+  }
+  .badge-success {
+    @apply bg-emerald-50 text-emerald-700;
+  }
+  .badge-danger {
+    @apply bg-rose-50 text-rose-700;
+  }
+  .badge-warning {
+    @apply bg-amber-50 text-amber-700;
+  }
+  .badge-info {
+    @apply bg-blue-50 text-blue-700;
+  }
+  .badge-neutral {
+    @apply bg-gray-100 text-gray-700;
+  }
+
+  .detail-label {
+    @apply text-xs text-gray-500;
+  }
+  .detail-value {
+    @apply mt-0.5 text-sm font-medium text-gray-900 break-words;
+  }
+}

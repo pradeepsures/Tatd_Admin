@@ -302,493 +302,553 @@ const CreateDriver = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
+    <div className="page-shell">
+      <div>
         <Breaker />
       </div>
 
-      <div className="ml-5 mt-8 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-5">
+          <p className="section-label">Drivers</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Create Driver</h2>
+        </div>
+
         <form onSubmit={handleSubmit}>
-          {/* Personal Info */}
-          <label className="ml-2 mt-4 font-normal block">First Name *</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="name"
-            placeholder="Enter full name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          {apiError.name && (
-            <p className="text-red-500 text-sm ml-2">{apiError.name}</p>
-          )}
-
-          {/* middle name */}
-          <label className="ml-2 mt-5 font-normal block">Middle Name</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="midName"
-            placeholder="Enter middle name (optional)"
-            value={formData.midName}
-            onChange={handleChange}
-          />
-
-          {/* last name */}
-          <label className="ml-2 mt-5 font-normal block">Last Name</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="lastName"
-            placeholder="Enter Last Name (optional)"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">Email</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="email"
-            name="email"
-            placeholder="Enter email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">Phone Number *</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="tel"
-            name="phone"
-            placeholder="Enter phone number"
-            value={formData.phone}
-            maxLength={10}
-            inputMode="numeric"
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, ""); // remove letters
-              setFormData({ ...formData, phone: value });
-            }}
-          />
-
-          {apiError.phone && (
-            <p className="text-red-500 text-sm ml-2">{apiError.phone}</p>
-          )}
-
-          <label className="ml-2 mt-5 font-normal block">Alternate Phone</label>
-          <input
-            className={`w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500 ${
-              apiError.alternatePhone ? "border-red-500" : "border-gray-500"
-            }`}
-            type="tel"
-            name="alternatePhone"
-            placeholder="Alternate phone (optional)"
-            value={formData.alternatePhone}
-            maxLength={10}
-            inputMode="numeric"
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, ""); // remove non-digits
-              setFormData({ ...formData, alternatePhone: value });
-            }}
-          />
-          {apiError.alternatePhone && (
-            <p className="text-red-500 text-sm ml-2">
-              {apiError.alternatePhone}
-            </p>
-          )}
-
-          {/* gender */}
-          <label className="ml-2 mt-5 font-normal block">Gender</label>
-          <Select
-            value={formData.gender}
-            onChange={(val) => setFormData({ ...formData, gender: val })}
-            className="w-full h-10 mb-1 border rounded-xl"
-          >
-            <Option value="male">Male</Option>
-            <Option value="female">Female</Option>
-            <Option value="other">Other</Option>
-          </Select>
-
-          {/* state */}
-          <label className="ml-2 mt-5 font-normal block">State</label>
-          <select
-            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500"
-            name="state"
-            value={formData.state}
-            onChange={(event) => setFormData({ ...formData, state: event.target.value, city: "" })}
-            disabled={statesLoading}
-          >
-            <option value="">{statesLoading ? "Loading states..." : "Select state"}</option>
-            {states.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
-          </select>
-          {apiError.state && <p className="text-red-500 text-sm ml-2">{apiError.state}</p>}
-
-          {/* city */}
-          <label className="ml-2 mt-5 font-normal block">City</label>
-          <select
-            className="w-full h-10 mb-1 border rounded-xl px-3 border-gray-500 disabled:bg-gray-100"
-            name="city"
-            value={formData.city}
-            onChange={(event) => setFormData({ ...formData, city: event.target.value })}
-            disabled={!formData.state || citiesLoading}
-          >
-            <option value="">{citiesLoading ? "Loading cities..." : formData.state ? "Select city" : "Select a state first"}</option>
-            {cities.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
-          </select>
-          {apiError.city && <p className="text-red-500 text-sm ml-2">{apiError.city}</p>}
-
-          {/* pincode */}
-          <label className="ml-2 mt-5 font-normal block">Pincode</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="pincode"
-            placeholder="Enter pincode"
-            value={formData.pincode}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">
-            Permanent Address
-          </label>
-          <input
-            ref={permAddressRef}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="permanentAddress"
-            placeholder="Search Permanent address"
-            value={formData.permanentAddress}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">Current Address</label>
-          <input
-            ref={currAddressRef}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="currentAddress"
-            placeholder="Search Current address"
-            value={formData.currentAddress}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-6 font-normal block">
-            Vehicle Preferences
-          </label>
-
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Select vehicle preferences"
-            value={formData.vehiclePreferences}
-            onChange={(value) =>
-              setFormData({ ...formData, vehiclePreferences: value })
-            }
-            className="w-full"
-          >
-            {vehiclePrefs.map((pref) => (
-              <Option key={pref._id} value={pref._id}>
-                {pref.name}
-              </Option>
-            ))}
-          </Select>
-
-          <label className="ml-2 mt-6 font-normal block">
-            Vehicle Preference Categories
-          </label>
-
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Select categories"
-            value={formData.vehiclePreferenceCategories}
-            onChange={(value) =>
-              setFormData({
-                ...formData,
-                vehiclePreferenceCategories: value,
-              })
-            }
-            className="w-full"
-          >
-            {vehicleCategories.map((cat) => (
-              <Option key={cat._id} value={cat._id}>
-                {cat.name}
-              </Option>
-            ))}
-          </Select>
-
-          {/* License */}
-          <label className="ml-2 mt-5 font-normal block">
-            License Number *
-          </label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="licenseNumber"
-            placeholder="Enter license number"
-            value={formData.licenseNumber}
-            onChange={handleChange}
-          />
-          {apiError.licenseNumber && (
-            <p className="text-red-500 text-sm ml-2">
-              {apiError.licenseNumber}
-            </p>
-          )}
-
-          <label className="ml-2 mt-5 font-normal block">License Expiry</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="date"
-            name="licenseExpiry"
-            value={formData.licenseExpiry}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">License Photo *</label>
-          {previews.licensePhoto && (
-            <img
-              src={previews.licensePhoto}
-              alt="License Preview"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 md:grid-cols-2">
+          <div>
+            {/* Personal Info */}
+            <label className="field-label">First Name *</label>
+            <input
+              className="field border"
+              type="text"
+              name="name"
+              placeholder="Enter full name"
+              value={formData.name}
+              onChange={handleChange}
             />
-          )}
-          <label
-            htmlFor="license-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload License Photo
-          </label>
-          <input
-            id="license-upload"
-            className="hidden"
-            type="file"
-            name="licensePhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {apiError.licensePhoto && (
-            <p className="text-red-500 text-sm ml-2">{apiError.licensePhoto}</p>
-          )}
+            {apiError.name && (
+              <p className="field-error">{apiError.name}</p>
+            )}
+          </div>
 
-          {/* Aadhaar */}
-          <label className="ml-2 mt-5 font-normal block">
-            Aadhaar Number *
-          </label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="adhaarNumber"
-            placeholder="Enter Aadhaar number"
-            maxLength={12}
-            inputMode="numeric"
-            value={formData.adhaarNumber}
-            onChange={handleChange}
-          />
-          {apiError.adhaarNumber && (
-            <p className="text-red-500 text-sm ml-2">{apiError.adhaarNumber}</p>
-          )}
-
-          <label className="ml-2 mt-5 font-normal block">
-            Aadhaar Front Photo *
-          </label>
-          {previews.adhaarFrontPhoto && (
-            <img
-              src={previews.adhaarFrontPhoto}
-              alt="Aadhaar Front"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div>
+            {/* middle name */}
+            <label className="field-label">Middle Name</label>
+            <input
+              className="field border"
+              type="text"
+              name="midName"
+              placeholder="Enter middle name (optional)"
+              value={formData.midName}
+              onChange={handleChange}
             />
-          )}
-          <label
-            htmlFor="adhaar-front-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload Aadhaar Front
-          </label>
-          <input
-            id="adhaar-front-upload"
-            className="hidden"
-            type="file"
-            name="adhaarFrontPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {apiError.adhaarFrontPhoto && (
-            <p className="text-red-500 text-sm ml-2">
-              {apiError.adhaarFrontPhoto}
-            </p>
-          )}
+          </div>
 
-          <label className="ml-2 mt-5 font-normal block">
-            Aadhaar Back Photo *
-          </label>
-          {previews.adhaarBackPhoto && (
-            <img
-              src={previews.adhaarBackPhoto}
-              alt="Aadhaar Back"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div>
+            {/* last name */}
+            <label className="field-label">Last Name</label>
+            <input
+              className="field border"
+              type="text"
+              name="lastName"
+              placeholder="Enter Last Name (optional)"
+              value={formData.lastName}
+              onChange={handleChange}
             />
-          )}
-          <label
-            htmlFor="adhaar-back-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload Aadhaar Back
-          </label>
-          <input
-            id="adhaar-back-upload"
-            className="hidden"
-            type="file"
-            name="adhaarBackPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {apiError.adhaarBackPhoto && (
-            <p className="text-red-500 text-sm ml-2">
-              {apiError.adhaarBackPhoto}
-            </p>
-          )}
+          </div>
 
-          {/* PAN */}
-          <label className="ml-2 mt-5 font-normal block">PAN Number *</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="panNumber"
-            placeholder="Enter PAN number"
-            value={formData.panNumber}
-            onChange={handleChange}
-          />
-          {apiError.panNumber && (
-            <p className="text-red-500 text-sm ml-2">{apiError.panNumber}</p>
-          )}
-
-          <label className="ml-2 mt-5 font-normal block">
-            PAN Front Photo *
-          </label>
-          {previews.panFrontPhoto && (
-            <img
-              src={previews.panFrontPhoto}
-              alt="PAN Front"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div>
+            <label className="field-label">Email</label>
+            <input
+              className="field border"
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleChange}
             />
-          )}
-          <label
-            htmlFor="pan-front-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload PAN Front
-          </label>
-          <input
-            id="pan-front-upload"
-            className="hidden"
-            type="file"
-            name="panFrontPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {apiError.panFrontPhoto && (
-            <p className="text-red-500 text-sm ml-2">
-              {apiError.panFrontPhoto}
-            </p>
-          )}
+          </div>
 
-          <label className="ml-2 mt-5 font-normal block">
-            PAN Back Photo *
-          </label>
-          {previews.panBackPhoto && (
-            <img
-              src={previews.panBackPhoto}
-              alt="PAN Back"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div>
+            <label className="field-label">Phone Number *</label>
+            <input
+              className="field border"
+              type="tel"
+              name="phone"
+              placeholder="Enter phone number"
+              value={formData.phone}
+              maxLength={10}
+              inputMode="numeric"
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ""); // remove letters
+                setFormData({ ...formData, phone: value });
+              }}
             />
-          )}
-          <label
-            htmlFor="pan-back-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload PAN Back
-          </label>
-          <input
-            id="pan-back-upload"
-            className="hidden"
-            type="file"
-            name="panBackPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {apiError.panBackPhoto && (
-            <p className="text-red-500 text-sm ml-2">{apiError.panBackPhoto}</p>
-          )}
 
-          {/* Police Verification */}
-          <label className="ml-2 mt-5 font-normal block">
-            Police Verification Expiry
-          </label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="date"
-            name="policeVerificationExpiry"
-            value={formData.policeVerificationExpiry}
-            onChange={handleChange}
-          />
+            {apiError.phone && (
+              <p className="field-error">{apiError.phone}</p>
+            )}
+          </div>
 
-          <label className="ml-2 mt-5 font-normal block">
-            Police Verification Photo
-          </label>
-          {previews.policeVerificationPhoto && (
-            <img
-              src={previews.policeVerificationPhoto}
-              alt="Police Verification"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div>
+            <label className="field-label">Alternate Phone</label>
+            <input
+              className={`field border ${
+                apiError.alternatePhone ? "!border-rose-500" : "border-slate-200"
+              }`}
+              type="tel"
+              name="alternatePhone"
+              placeholder="Alternate phone (optional)"
+              value={formData.alternatePhone}
+              maxLength={10}
+              inputMode="numeric"
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, ""); // remove non-digits
+                setFormData({ ...formData, alternatePhone: value });
+              }}
             />
-          )}
-          <label
-            htmlFor="police-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload Police Verification Photo
-          </label>
-          <input
-            id="police-upload"
-            className="hidden"
-            type="file"
-            name="policeVerificationPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
+            {apiError.alternatePhone && (
+              <p className="field-error">
+                {apiError.alternatePhone}
+              </p>
+            )}
+          </div>
 
-          {/* Profile Picture */}
-          <label className="ml-2 mt-5 font-normal block">
-            Profile Picture *
-          </label>
-          {previews.profilePic && (
-            <img
-              src={previews.profilePic}
-              alt="Profile Preview"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div>
+            {/* gender */}
+            <label className="field-label">Gender</label>
+            <Select
+              value={formData.gender}
+              onChange={(val) => setFormData({ ...formData, gender: val })}
+              className="w-full !h-10 [&_.ant-select-selector]:!rounded-lg"
+            >
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
+              <Option value="other">Other</Option>
+            </Select>
+          </div>
+
+          <div>
+            {/* state */}
+            <label className="field-label">State</label>
+            <select
+              className="field border"
+              name="state"
+              value={formData.state}
+              onChange={(event) => setFormData({ ...formData, state: event.target.value, city: "" })}
+              disabled={statesLoading}
+            >
+              <option value="">{statesLoading ? "Loading states..." : "Select state"}</option>
+              {states.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
+            </select>
+            {apiError.state && <p className="field-error">{apiError.state}</p>}
+          </div>
+
+          <div>
+            {/* city */}
+            <label className="field-label">City</label>
+            <select
+              className="field border disabled:cursor-not-allowed disabled:bg-slate-100"
+              name="city"
+              value={formData.city}
+              onChange={(event) => setFormData({ ...formData, city: event.target.value })}
+              disabled={!formData.state || citiesLoading}
+            >
+              <option value="">{citiesLoading ? "Loading cities..." : formData.state ? "Select city" : "Select a state first"}</option>
+              {cities.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
+            </select>
+            {apiError.city && <p className="field-error">{apiError.city}</p>}
+          </div>
+
+          <div>
+            {/* pincode */}
+            <label className="field-label">Pincode</label>
+            <input
+              className="field border"
+              type="text"
+              name="pincode"
+              placeholder="Enter pincode"
+              value={formData.pincode}
+              onChange={handleChange}
             />
-          )}
-          <label
-            htmlFor="profile-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload Profile Picture
-          </label>
-          <input
-            id="profile-upload"
-            className="hidden"
-            type="file"
-            name="profilePic"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {apiError.profilePic && (
-            <p className="text-red-500 text-sm ml-2">{apiError.profilePic}</p>
-          )}
+          </div>
+
+          <div>
+            <label className="field-label">
+              Permanent Address
+            </label>
+            <input
+              ref={permAddressRef}
+              className="field border"
+              type="text"
+              name="permanentAddress"
+              placeholder="Search Permanent address"
+              value={formData.permanentAddress}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">Current Address</label>
+            <input
+              ref={currAddressRef}
+              className="field border"
+              type="text"
+              name="currentAddress"
+              placeholder="Search Current address"
+              value={formData.currentAddress}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">
+              Vehicle Preferences
+            </label>
+
+            <Select
+              mode="multiple"
+              allowClear
+              placeholder="Select vehicle preferences"
+              value={formData.vehiclePreferences}
+              onChange={(value) =>
+                setFormData({ ...formData, vehiclePreferences: value })
+              }
+              className="w-full [&_.ant-select-selector]:!min-h-11 [&_.ant-select-selector]:!rounded-xl"
+            >
+              {vehiclePrefs.map((pref) => (
+                <Option key={pref._id} value={pref._id}>
+                  {pref.name}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          <div>
+            <label className="field-label">
+              Vehicle Preference Categories
+            </label>
+
+            <Select
+              mode="multiple"
+              allowClear
+              placeholder="Select categories"
+              value={formData.vehiclePreferenceCategories}
+              onChange={(value) =>
+                setFormData({
+                  ...formData,
+                  vehiclePreferenceCategories: value,
+                })
+              }
+              className="w-full [&_.ant-select-selector]:!min-h-11 [&_.ant-select-selector]:!rounded-xl"
+            >
+              {vehicleCategories.map((cat) => (
+                <Option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          <div>
+            {/* License */}
+            <label className="field-label">
+              License Number *
+            </label>
+            <input
+              className="field border"
+              type="text"
+              name="licenseNumber"
+              placeholder="Enter license number"
+              value={formData.licenseNumber}
+              onChange={handleChange}
+            />
+            {apiError.licenseNumber && (
+              <p className="field-error">
+                {apiError.licenseNumber}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="field-label">License Expiry</label>
+            <input
+              className="field border"
+              type="date"
+              name="licenseExpiry"
+              value={formData.licenseExpiry}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">License Photo *</label>
+            {previews.licensePhoto && (
+              <img
+                src={previews.licensePhoto}
+                alt="License Preview"
+                className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+            <label
+              htmlFor="license-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ Upload License Photo
+            </label>
+            <input
+              id="license-upload"
+              className="hidden"
+              type="file"
+              name="licensePhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {apiError.licensePhoto && (
+              <p className="field-error">{apiError.licensePhoto}</p>
+            )}
+          </div>
+
+          <div>
+            {/* Aadhaar */}
+            <label className="field-label">
+              Aadhaar Number *
+            </label>
+            <input
+              className="field border"
+              type="text"
+              name="adhaarNumber"
+              placeholder="Enter Aadhaar number"
+              maxLength={12}
+              inputMode="numeric"
+              value={formData.adhaarNumber}
+              onChange={handleChange}
+            />
+            {apiError.adhaarNumber && (
+              <p className="field-error">{apiError.adhaarNumber}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="field-label">
+              Aadhaar Front Photo *
+            </label>
+            {previews.adhaarFrontPhoto && (
+              <img
+                src={previews.adhaarFrontPhoto}
+                alt="Aadhaar Front"
+                className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+            <label
+              htmlFor="adhaar-front-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ Upload Aadhaar Front
+            </label>
+            <input
+              id="adhaar-front-upload"
+              className="hidden"
+              type="file"
+              name="adhaarFrontPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {apiError.adhaarFrontPhoto && (
+              <p className="field-error">
+                {apiError.adhaarFrontPhoto}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="field-label">
+              Aadhaar Back Photo *
+            </label>
+            {previews.adhaarBackPhoto && (
+              <img
+                src={previews.adhaarBackPhoto}
+                alt="Aadhaar Back"
+                className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+            <label
+              htmlFor="adhaar-back-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ Upload Aadhaar Back
+            </label>
+            <input
+              id="adhaar-back-upload"
+              className="hidden"
+              type="file"
+              name="adhaarBackPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {apiError.adhaarBackPhoto && (
+              <p className="field-error">
+                {apiError.adhaarBackPhoto}
+              </p>
+            )}
+          </div>
+
+          <div>
+            {/* PAN */}
+            <label className="field-label">PAN Number *</label>
+            <input
+              className="field border"
+              type="text"
+              name="panNumber"
+              placeholder="Enter PAN number"
+              value={formData.panNumber}
+              onChange={handleChange}
+            />
+            {apiError.panNumber && (
+              <p className="field-error">{apiError.panNumber}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="field-label">
+              PAN Front Photo *
+            </label>
+            {previews.panFrontPhoto && (
+              <img
+                src={previews.panFrontPhoto}
+                alt="PAN Front"
+                className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+            <label
+              htmlFor="pan-front-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ Upload PAN Front
+            </label>
+            <input
+              id="pan-front-upload"
+              className="hidden"
+              type="file"
+              name="panFrontPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {apiError.panFrontPhoto && (
+              <p className="field-error">
+                {apiError.panFrontPhoto}
+              </p>
+            )}
+          </div>
+
+          <div>
+            <label className="field-label">
+              PAN Back Photo *
+            </label>
+            {previews.panBackPhoto && (
+              <img
+                src={previews.panBackPhoto}
+                alt="PAN Back"
+                className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+            <label
+              htmlFor="pan-back-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ Upload PAN Back
+            </label>
+            <input
+              id="pan-back-upload"
+              className="hidden"
+              type="file"
+              name="panBackPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {apiError.panBackPhoto && (
+              <p className="field-error">{apiError.panBackPhoto}</p>
+            )}
+          </div>
+
+          <div>
+            {/* Police Verification */}
+            <label className="field-label">
+              Police Verification Expiry
+            </label>
+            <input
+              className="field border"
+              type="date"
+              name="policeVerificationExpiry"
+              value={formData.policeVerificationExpiry}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">
+              Police Verification Photo
+            </label>
+            {previews.policeVerificationPhoto && (
+              <img
+                src={previews.policeVerificationPhoto}
+                alt="Police Verification"
+                className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+            <label
+              htmlFor="police-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ Upload Police Verification Photo
+            </label>
+            <input
+              id="police-upload"
+              className="hidden"
+              type="file"
+              name="policeVerificationPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          <div>
+            {/* Profile Picture */}
+            <label className="field-label">
+              Profile Picture *
+            </label>
+            {previews.profilePic && (
+              <img
+                src={previews.profilePic}
+                alt="Profile Preview"
+                className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+            <label
+              htmlFor="profile-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ Upload Profile Picture
+            </label>
+            <input
+              id="profile-upload"
+              className="hidden"
+              type="file"
+              name="profilePic"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {apiError.profilePic && (
+              <p className="field-error">{apiError.profilePic}</p>
+            )}
+          </div>
+
+          </div>
 
           {/* Status Toggles - Small & Professional */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-slate-900/[0.03] p-4 ring-1 ring-inset ring-slate-900/5 sm:grid-cols-3">
             <div>
-              <label className="ml-2 font-normal block">Is Verified</label>
+              <label className="field-label">Is Verified</label>
               <Switch
                 checked={formData.isVerified}
                 onChange={(checked) =>
@@ -799,14 +859,14 @@ const CreateDriver = () => {
                 size="default" // normal/small size
               />
               {apiError.isVerified && (
-                <p className="text-red-500 text-sm ml-2">
+                <p className="field-error">
                   {apiError.isVerified}
                 </p>
               )}
             </div>
 
             <div>
-              <label className="ml-2 font-normal block">Is Online</label>
+              <label className="field-label">Is Online</label>
               <Switch
                 checked={formData.isOnline}
                 onChange={(checked) =>
@@ -817,12 +877,12 @@ const CreateDriver = () => {
                 size="default"
               />
               {apiError.isOnline && (
-                <p className="text-red-500 text-sm ml-2">{apiError.isOnline}</p>
+                <p className="field-error">{apiError.isOnline}</p>
               )}
             </div>
 
             <div>
-              <label className="ml-2 font-normal block">Is Available</label>
+              <label className="field-label">Is Available</label>
               <Switch
                 checked={formData.isAvailable}
                 onChange={(checked) =>
@@ -833,7 +893,7 @@ const CreateDriver = () => {
                 size="default"
               />
               {apiError.isAvailable && (
-                <p className="text-red-500 text-sm ml-2">
+                <p className="field-error">
                   {apiError.isAvailable}
                 </p>
               )}
@@ -842,12 +902,12 @@ const CreateDriver = () => {
 
           {/* Submit */}
 
-          <div className="flex justify-end gap-4 mt-8">
+          <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             {/* CLEAR */}
             <button
               type="button"
               onClick={handleClear}
-              className=" bg-gray-500 text-white py-2 px-6 rounded-2xl"
+              className="btn-secondary w-full sm:w-auto"
             >
               Clear
             </button>
@@ -856,7 +916,7 @@ const CreateDriver = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className=" bg-gray-500 text-white  py-2 px-6 rounded-2xl"
+              className="btn-secondary w-full sm:w-auto"
             >
               Back
             </button>
@@ -865,7 +925,7 @@ const CreateDriver = () => {
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary text-white py-2 px-6 rounded-2xl"
+              className="btn-primary w-full sm:w-auto"
             >
               {loading ? "Creating..." : "Create Driver"}
             </button>

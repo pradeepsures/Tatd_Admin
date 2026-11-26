@@ -159,116 +159,120 @@ useEffect(() => {
 
   if (loadingRoles || loadingData) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-[60vh] items-center justify-center">
         <Loader />
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="mb-4">
-        <Breaker />
-      </div>
+    <div className="page-shell">
+      <Breaker />
 
-      <div className="min-h-screen flex bg-gradient-to-br from-blue-50 to-gray-100 p-4">
-        <div className="w-full max-w-9xl bg-white rounded-2xl shadow-xl p-8">
-
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Update Member
-          </h2>
-
-          <form onSubmit={handleSubmit} className="space-y-6">
-
-            {/* USERNAME */}
-            <div>
-              <label>Username</label>
-              <input
-                name="userName"
-                value={formData.userName}
-                onChange={handleChange}
-                className="w-full px-2 py-1.5 border rounded-lg"
-              />
-              {apiError.userName && (
-                <p className="text-red-500">{apiError.userName}</p>
-              )}
-            </div>
-
-            {/* EMAIL */}
-            <div>
-              <label>Email</label>
-              <input
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full px-2 py-1.5 border rounded-lg"
-              />
-              {apiError.email && (
-                <p className="text-red-500">{apiError.email}</p>
-              )}
-            </div>
-
-            {/* MOBILE */}
-            {/* <div>
-              <label>Mobile</label>
-              <input
-                name="mobile"
-                value={formData.mobile}
-                onChange={handleChange}
-                className="w-full px-2 py-1.5 border rounded-lg"
-              />
-              {apiError.mobile && (
-                <p className="text-red-500">{apiError.mobile}</p>
-              )}
-            </div> */}
-
-            {/* ROLE */}
-            <div>
-              <label>Role</label>
-              <select
-                value={formData.role}
-                onChange={handleRoleChange}
-                className="w-full px-2 py-1.5 border rounded-lg"
-              >
-                <option value="">Select role</option>
-                {roles.map((r) => (
-                  <option key={r._id} value={r._id}>
-                    {r.name}
-                  </option>
-                ))}
-              </select>
-              {apiError.role && (
-                <p className="text-red-500">{apiError.role}</p>
-              )}
-            </div>
-
-            {/* IMAGE */}
-            <div>
-              <label>Profile Image</label>
-
-              <input type="file" onChange={handleFileChange} />
-
-              {imagePreview && (
-                <img
-                  src={imagePreview}
-                  className="w-28 h-28 rounded-full mt-3 border"
-                />
-              )}
-            </div>
-
-            {/* BUTTON */}
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={loading}
-                className="bg-primary text-white py-3 px-5 rounded-2xl"
-              >
-                {loading ? "Updating..." : "Update Member"}
-              </button>
-            </div>
-
-          </form>
+      <div className="card mx-auto w-full max-w-4xl p-5 sm:p-8">
+        <div className="mb-7 flex items-center gap-3 border-b border-slate-200/70 pb-5">
+          <div>
+            <p className="section-label">Update record</p>
+            <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">
+              Update Member
+            </h2>
+          </div>
         </div>
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+          {/* USERNAME */}
+          <div>
+            <label className="field-label">Username</label>
+            <input
+              name="userName"
+              value={formData.userName}
+              onChange={handleChange}
+              className="field"
+            />
+            {apiError.userName && (
+              <p className="field-error">{apiError.userName}</p>
+            )}
+          </div>
+
+          {/* EMAIL */}
+          <div>
+            <label className="field-label">Email</label>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="field"
+            />
+            {apiError.email && (
+              <p className="field-error">{apiError.email}</p>
+            )}
+          </div>
+
+          {/* MOBILE */}
+          {/* <div>
+            <label>Mobile</label>
+            <input
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+              className="w-full px-2 py-1.5 border rounded-lg"
+            />
+            {apiError.mobile && (
+              <p className="text-red-500">{apiError.mobile}</p>
+            )}
+          </div> */}
+
+          {/* ROLE */}
+          <div>
+            <label className="field-label">Role</label>
+            <select
+              value={formData.role}
+              onChange={handleRoleChange}
+              className="field"
+            >
+              <option value="">Select role</option>
+              {roles.map((r) => (
+                <option key={r._id} value={r._id}>
+                  {r.name}
+                </option>
+              ))}
+            </select>
+            {apiError.role && (
+              <p className="field-error">{apiError.role}</p>
+            )}
+          </div>
+
+          {/* IMAGE */}
+          <div>
+            <label className="field-label">Profile Image</label>
+
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="w-full cursor-pointer rounded-xl border border-dashed border-slate-300 bg-white/60 p-2 text-sm text-slate-500 file:mr-4 file:cursor-pointer file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-slate-700"
+            />
+
+            {imagePreview && (
+              <img
+                src={imagePreview}
+                className="mt-3 h-28 w-28 rounded-full object-cover shadow-sm ring-1 ring-black/5"
+              />
+            )}
+          </div>
+
+          {/* BUTTON */}
+          <div className="flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end md:col-span-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full px-6 sm:w-auto sm:min-w-[150px]"
+            >
+              {loading ? "Updating..." : "Update Member"}
+            </button>
+          </div>
+
+        </form>
       </div>
     </div>
   );

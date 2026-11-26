@@ -17,7 +17,7 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import toast from "react-hot-toast";
-import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon, CurrencyRupeeIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, CheckCircleIcon, XCircleIcon, CurrencyRupeeIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 import { Modal } from "antd";
 import xlsx from "json-as-xlsx";
@@ -306,148 +306,30 @@ export default function DriverList() {
 
     return (
 
-        <div className="p-6 bg-gray-50 min-h-screen">
+        <div className="page-shell">
 
-            <div className="flex justify-between items-center mb-4">
+            <Breaker />
 
-                {/* LEFT */}
-                <Breaker />
+            <div className="page-header">
 
-                {showUnverifiedOnly && (
-                    <span className="text-sm font-medium text-orange-700 bg-orange-50 border border-orange-200 px-3 py-1 rounded-lg">
-                        Showing unverified drivers only
-                    </span>
-                )}
-
-                {/* RIGHT */}
-                {stats && (
-                    <div className="bg-gradient-to-r from-[#03045E] to-[#0077B6] text-white shadow-md rounded-lg px-4 py-2 text-sm flex items-center gap-3 flex-wrap">
-
-                        <span>
-                            <span className="opacity-80">Total:</span>{" "}
-                            <span className="font-semibold">{stats.total}</span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">Verified:</span>{" "}
-                            <span className="font-semibold text-green-300">
-                                {stats.verifiedCount}
+                <div>
+                    <h1 className="page-title">Drivers</h1>
+                    <div className="mt-1 flex flex-wrap items-center gap-2">
+                        <p className="text-sm font-medium text-slate-500">{totalRecord} record{totalRecord === 1 ? "" : "s"} found</p>
+                        {showUnverifiedOnly && (
+                            <span className="badge-warning">
+                                Showing unverified drivers only
                             </span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">Unverified:</span>{" "}
-                            <span className="font-semibold text-red-300">
-                                {stats.unverifiedCount}
-                            </span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">Online:</span>{" "}
-                            <span className="font-semibold text-blue-300">
-                                {stats.onlineCount}
-                            </span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">PunchedIn:</span>{" "}
-                            <span className="font-semibold text-blue-300">
-                                {stats.punchedInCount}
-                            </span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">PunchedOut:</span>{" "}
-                            <span className="font-semibold text-blue-300">
-                                {stats.punchedOutCount}
-                            </span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">Available:</span>{" "}
-                            <span className="font-semibold text-blue-300">
-                                {stats.availableCount}
-                            </span>
-                        </span>
-
-
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">On Trip:</span>{" "}
-                            <span className="font-semibold text-yellow-300">
-                                {stats.onTripCount}
-                            </span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">Assigned:</span>{" "}
-                            <span className="font-semibold text-purple-300">
-                                {stats.assignedCount}
-                            </span>
-                        </span>
-
-                        <span className="opacity-50">|</span>
-
-                        <span>
-                            <span className="opacity-80">UnAssigned:</span>{" "}
-                            <span className="font-semibold text-purple-300">
-                                {stats.unAssignedCount}
-                            </span>
-                        </span>
-
+                        )}
                     </div>
-                )}
-
-            </div>
-
-            {/* TOP BAR */}
-
-            <div className="flex justify-between items-center mb-8">
-
-                <div className="flex gap-3">
-
-                    <input
-                        type="text"
-                        placeholder="Search name / email / phone"
-                        value={searchInput}
-                        onChange={(e) => setSearchInput(e.target.value)}
-                        className="w-80 px-4 py-2 border rounded-lg"
-                    />
-
-                    <button
-                        onClick={() => {
-                            setSearchQuery(searchInput);
-                            setPage(1);
-                        }}
-                        className="bg-primary text-white px-4 py-2 rounded-lg"
-                    >
-                        Search
-                    </button>
-
                 </div>
 
-                <div className="flex gap-4">
+                <div className="page-actions">
 
                     <motion.button
                         whileTap={{ scale: 0.95 }}
                         onClick={exportExcel}
-                        className="bg-green-600 text-white px-5 py-2 rounded-lg"
+                        className="btn-secondary"
                     >
                         {isExporting ? <LoderBtn /> : "Export Excel"}
                     </motion.button>
@@ -464,7 +346,7 @@ export default function DriverList() {
                         <motion.button
                             whileTap={{ scale: 0.95 }}
                             onClick={handleAddDriver}
-                            className="bg-primary text-white px-5 py-2 rounded-lg"
+                            className="btn-primary"
                         >
                             {isLoading ? <LoderBtn /> : "Add Driver"}
                         </motion.button>
@@ -474,44 +356,151 @@ export default function DriverList() {
 
             </div>
 
-            <div className="flex flex-wrap items-end gap-3 mb-6 rounded-lg border bg-white p-4">
-                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-                    Verification
-                    <select value={filters.isVerified} onChange={(e) => setFilters({ ...filters, isVerified: e.target.value })} className="min-w-40 rounded-lg border px-3 py-2 font-normal">
+            {/* STATS */}
+            {stats && (
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-10">
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">Total:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">{stats.total}</p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">Verified:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-emerald-600">
+                            {stats.verifiedCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">Unverified:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-rose-600">
+                            {stats.unverifiedCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">Online:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+                            {stats.onlineCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">PunchedIn:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+                            {stats.punchedInCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">PunchedOut:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+                            {stats.punchedOutCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">Available:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+                            {stats.availableCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">On Trip:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-amber-600">
+                            {stats.onTripCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">Assigned:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+                            {stats.assignedCount}
+                        </p>
+                    </div>
+
+                    <div className="card px-4 py-3">
+                        <p className="detail-label">UnAssigned:</p>
+                        <p className="mt-1 text-xl font-semibold tracking-tight text-slate-900">
+                            {stats.unAssignedCount}
+                        </p>
+                    </div>
+
+                </div>
+            )}
+
+            {/* TOOLBAR */}
+
+            <div className="card card-pad space-y-4">
+
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+
+                    <div className="relative w-full sm:w-80">
+                        <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="Search name / email / phone"
+                            value={searchInput}
+                            onChange={(e) => setSearchInput(e.target.value)}
+                            className="search-field sm:w-80"
+                        />
+                    </div>
+
+                    <button
+                        onClick={() => {
+                            setSearchQuery(searchInput);
+                            setPage(1);
+                        }}
+                        className="btn-primary w-full sm:w-auto"
+                    >
+                        Search
+                    </button>
+
+                </div>
+
+                <div className="grid grid-cols-1 items-end gap-3 border-t border-slate-200/70 pt-4 sm:grid-cols-2 lg:grid-cols-4 xl:flex xl:flex-wrap">
+                <label className="flex flex-col text-[13px] font-semibold text-slate-600 xl:w-48">
+                    <span className="mb-1.5">Verification</span>
+                    <select value={filters.isVerified} onChange={(e) => setFilters({ ...filters, isVerified: e.target.value })} className="field font-normal">
                         <option value="">All drivers</option>
                         <option value="true">Verified</option>
                         <option value="false">Not verified</option>
                     </select>
                 </label>
-                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-                    Availability
-                    <select value={filters.isOnline} onChange={(e) => setFilters({ ...filters, isOnline: e.target.value })} className="min-w-40 rounded-lg border px-3 py-2 font-normal">
+                <label className="flex flex-col text-[13px] font-semibold text-slate-600 xl:w-48">
+                    <span className="mb-1.5">Availability</span>
+                    <select value={filters.isOnline} onChange={(e) => setFilters({ ...filters, isOnline: e.target.value })} className="field font-normal">
                         <option value="">Online and offline</option>
                         <option value="true">Online</option>
                         <option value="false">Offline</option>
                     </select>
                 </label>
-                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-                    State
-                    <select value={filters.state} onChange={(e) => setFilters({ ...filters, state: e.target.value, city: "" })} className="min-w-48 rounded-lg border px-3 py-2 font-normal">
+                <label className="flex flex-col text-[13px] font-semibold text-slate-600 xl:w-52">
+                    <span className="mb-1.5">State</span>
+                    <select value={filters.state} onChange={(e) => setFilters({ ...filters, state: e.target.value, city: "" })} className="field font-normal">
                         <option value="">All states</option>
                         {stateOptions.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
                     </select>
                 </label>
-                <label className="flex flex-col gap-1 text-sm font-medium text-gray-700">
-                    City
-                    <select value={filters.city} onChange={(e) => setFilters({ ...filters, city: e.target.value })} disabled={!filters.state || locationsLoading} className="min-w-48 rounded-lg border px-3 py-2 font-normal disabled:cursor-not-allowed disabled:bg-gray-100">
+                <label className="flex flex-col text-[13px] font-semibold text-slate-600 xl:w-52">
+                    <span className="mb-1.5">City</span>
+                    <select value={filters.city} onChange={(e) => setFilters({ ...filters, city: e.target.value })} disabled={!filters.state || locationsLoading} className="field font-normal disabled:cursor-not-allowed disabled:bg-slate-100 disabled:opacity-70">
                         <option value="">{locationsLoading ? "Loading cities..." : filters.state ? "All cities" : "Select a state first"}</option>
                         {cityOptions.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
                     </select>
                 </label>
-                <button onClick={applyFilters} className="rounded-lg bg-primary px-4 py-2 text-white">Apply filters</button>
-                <button onClick={clearFilters} className="rounded-lg border px-4 py-2 text-gray-700">Clear</button>
+                <div className="flex gap-2.5 sm:col-span-2 lg:col-span-4 xl:col-span-1">
+                <button onClick={applyFilters} className="btn-primary h-11 flex-1 xl:flex-none">Apply filters</button>
+                <button onClick={clearFilters} className="btn-secondary h-11 flex-1 xl:flex-none">Clear</button>
+                </div>
+                </div>
             </div>
 
             {/* TABLE */}
 
-            <TableContainer component={Paper} className="rounded-xl shadow">
+            <TableContainer component={Paper}>
 
                 <Table>
                     <TableHead>
@@ -544,7 +533,7 @@ export default function DriverList() {
                         {data.length === 0 ? (
 
                             <TableRow>
-                                <TableCell colSpan={10} align="center">
+                                <TableCell colSpan={10} align="center" className="!py-14 !text-slate-400">
                                     No Drivers Found
                                 </TableCell>
                             </TableRow>
@@ -566,7 +555,7 @@ export default function DriverList() {
                                         <img
                                             src={row?.profilePic || "/no-image.png"}
                                             alt="profile"
-                                            className="w-12 h-12 rounded-full object-cover border"
+                                            className="h-11 w-11 rounded-full object-cover shadow-sm ring-1 ring-black/5"
                                         />
 
                                     </TableCell>
@@ -576,20 +565,20 @@ export default function DriverList() {
 
                                         <div className="flex flex-col">
 
-                                            <span className="font-semibold text-gray-800">
+                                            <span className="font-semibold text-slate-800">
                                                 {/* {row.name} */}
                                                 {[row.name, row.midName, row.lastName].filter(Boolean).join(" ")}
                                             </span>
-                                            <span className="text-sm text-gray-500">
+                                            <span className="text-sm text-slate-500">
                                                 {row.email}
                                             </span>
 
-                                            <span className="text-sm text-gray-500">
+                                            <span className="text-sm text-slate-500">
                                                 {row.phone}
                                             </span>
                                             
                                             {!row.policeVerificationPhoto && (
-                                                <span className="text-[10px] font-bold text-red-600 animate-pulse mt-1 bg-red-50 w-max px-1.5 py-0.5 rounded border border-red-200 flex items-center gap-1">
+                                                <span className="badge-danger mt-1.5 w-max text-[10px]">
                                                     ⚠️ Police Verification Pending
                                                 </span>
                                             )}
@@ -599,38 +588,38 @@ export default function DriverList() {
                                     </TableCell>
 
                                     <TableCell>
-                                        <span className="font-medium text-gray-800">
+                                        <span className="font-medium text-slate-800">
                                             {[row.city, row.state].filter(Boolean).join(", ") || "—"}
                                         </span>
                                     </TableCell>
 
                                     <TableCell className="min-w-64 max-w-80">
-                                        <div className="space-y-1 text-sm text-gray-700">
+                                        <div className="space-y-1 text-sm text-slate-700">
                                             {row.currentAddress && (
                                                 <div className="break-words">
-                                                    <span className="mr-1 text-xs font-semibold uppercase text-gray-400">Current</span>
+                                                    <span className="mr-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Current</span>
                                                     {row.currentAddress}
                                                 </div>
                                             )}
                                             {row.permanentAddress && row.permanentAddress !== row.currentAddress && (
                                                 <div className="break-words">
-                                                    <span className="mr-1 text-xs font-semibold uppercase text-gray-400">Permanent</span>
+                                                    <span className="mr-1 text-[11px] font-bold uppercase tracking-wider text-slate-400">Permanent</span>
                                                     {row.permanentAddress}
                                                 </div>
                                             )}
-                                            {!row.currentAddress && !row.permanentAddress && <span className="text-gray-400">—</span>}
+                                            {!row.currentAddress && !row.permanentAddress && <span className="text-slate-400">—</span>}
                                         </div>
                                     </TableCell>
 
                                     {/* RIDES */}
                                     <TableCell>
                                         <div className="flex items-center gap-2">
-                                            <span className="font-semibold text-gray-700">{row.totalRides || 0} Rides</span>
+                                            <span className="whitespace-nowrap font-semibold text-slate-700">{row.totalRides || 0} Rides</span>
                                             <button
                                                 onClick={() => {
                                                     navigate(`/home/driver/driverBookingView/${row.id}`);
                                                 }}
-                                                className="p-1.5 rounded bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
+                                                className="btn-icon h-8 w-8 bg-slate-900/5"
                                                 title="View Trips"
                                             >
                                                 <EyeIcon className="h-4 w-4" />
@@ -641,10 +630,10 @@ export default function DriverList() {
                                     {/* STATUS */}
                                     <TableCell>
                                         <span
-                                            className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                            className={`whitespace-nowrap ${
                                                 row.isOnline
-                                                    ? "bg-green-100 text-green-700"
-                                                    : "bg-gray-100 text-gray-600"
+                                                    ? "badge-success"
+                                                    : "badge-neutral"
                                             }`}
                                         >
                                             {row.isOnline ? "🟢 Online" : "⚫ Offline"}
@@ -655,9 +644,9 @@ export default function DriverList() {
                                     <TableCell>
 
                                         <span
-                                            className={`px-3 py-1 rounded-full text-sm font-medium ${row.isVerified
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-yellow-100 text-yellow-700"
+                                            className={`${row.isVerified
+                                                ? "badge-success"
+                                                : "badge-warning"
                                                 }`}
                                         >
                                             {row.isVerified ? "Verified" : "Pending"}
@@ -668,12 +657,12 @@ export default function DriverList() {
                                     {/* WALLET */}
                                     <TableCell>
                                         <div className="flex flex-col items-start gap-1">
-                                            <span className={`font-semibold ${row.walletBalance < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                            <span className={`font-semibold ${row.walletBalance < 0 ? 'text-rose-600' : 'text-emerald-600'}`}>
                                                 ₹{Number(row.walletBalance || 0).toFixed(2)}
                                             </span>
                                             <button
                                                 onClick={() => navigate(`/home/driver/ledger/${row.id}`)}
-                                                className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 px-2 py-1 rounded shadow-sm border border-gray-200 transition-colors"
+                                                className="whitespace-nowrap rounded-lg border border-slate-200 bg-white/80 px-2.5 py-1 text-xs font-semibold text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900"
                                             >
                                                 View Ledger
                                             </button>
@@ -777,7 +766,7 @@ export default function DriverList() {
 
             {totalPages > 1 && (
 
-                <Stack spacing={2} alignItems="center" mt={6}>
+                <Stack spacing={2} alignItems="center" mt={2}>
 
                     <Pagination
                         count={totalPages}

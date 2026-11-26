@@ -35,6 +35,16 @@ import { StyledTableCell } from "../../compoents/TableComponents";
 
 const { Option } = Select;
 
+// Presentational only: maps a trip status string to a badge class.
+const tripStatusBadge = (status) => {
+  const s = String(status || "").toLowerCase();
+  if (s === "completed") return "badge-success";
+  if (s === "cancelled" || s === "canceled") return "badge-danger";
+  if (s === "in_progress" || s === "ongoing" || s === "started") return "badge-info";
+  if (s) return "badge-warning";
+  return "badge-neutral";
+};
+
 export default function BookingList({
   pageTitle = "All Trips",
   pageDescription = "View all ride bookings. Assign drivers to unassigned trips.",
@@ -301,85 +311,80 @@ export default function BookingList({
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
 
-      <div className="mb-4">
-        <h1 className="text-xl font-bold text-gray-900">{pageTitle}</h1>
-        <p className="text-sm text-gray-500 mt-1">{pageDescription}</p>
+      <Breaker />
+
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">{pageTitle}</h1>
+          <p className="page-subtitle">{pageDescription}</p>
+        </div>
+
+        <div className="page-actions">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={exportExcel}
+            className="btn-secondary"
+          >
+            {isExporting ? <LoderBtn /> : "Export Excel"}
+          </motion.button>
+        </div>
       </div>
 
-      <div className="flex justify-between items-center mb-4">
+      {/* BOOKING STATS */}
+      {stats && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 xl:grid-cols-7">
 
-        {/* LEFT */}
-        <Breaker />
-
-        {/* RIGHT - BOOKING STATS */}
-        {stats && (
-          <div className="bg-gradient-to-r from-[#03045E] to-[#0077B6] text-white shadow-md rounded-lg px-4 py-2 text-sm flex items-center gap-3 flex-wrap">
-
-            <span>
-              <span className="opacity-80">Total:</span>{" "}
-              <span className="font-semibold">{stats.totalBookings}</span>
-            </span>
-
-            <span className="opacity-50">|</span>
-
-            <span>
-              <span className="opacity-80">Active Trip:</span>{" "}
-              <span className="font-semibold text-yellow-300">
-                {stats.activeTripCount}
-              </span>
-            </span>
-
-            <span className="opacity-50">|</span>
-
-            <span>
-              <span className="opacity-80">Completed:</span>{" "}
-              <span className="font-semibold text-green-300">
-                {stats.completedCount}
-              </span>
-            </span>
-
-            <span className="opacity-50">|</span>
-
-            <span>
-              <span className="opacity-80">Cancelled:</span>{" "}
-              <span className="font-semibold text-red-300">
-                {stats.cancelledCount}
-              </span>
-            </span>
-
-            <span className="opacity-50">|</span>
-
-            <span>
-              <span className="opacity-80">Assigned:</span>{" "}
-              <span className="font-semibold text-purple-300">
-                {stats.assignedCount}
-              </span>
-            </span>
-
-            <span className="opacity-50">|</span>
-
-            <span>
-              <span className="opacity-80">Unassigned:</span>{" "}
-              <span className="font-semibold text-gray-300">
-                {stats.unassignedCount}
-              </span>
-            </span>
-
-            <span className="opacity-50">|</span>
-
-            <span>
-              <span className="opacity-80">Pending Payment:</span>{" "}
-              <span className="font-semibold text-orange-300">
-                {stats.pendingPaymentCount}
-              </span>
-            </span>
-
+          <div className="card px-4 py-3">
+            <div className="section-label">Total:</div>
+            <div className="mt-1 text-lg font-semibold text-slate-900">{stats.totalBookings}</div>
           </div>
-        )}
 
-      </div>
+          <div className="card px-4 py-3">
+            <div className="section-label">Active Trip:</div>
+            <div className="mt-1 text-lg font-semibold text-blue-700">
+              {stats.activeTripCount}
+            </div>
+          </div>
+
+          <div className="card px-4 py-3">
+            <div className="section-label">Completed:</div>
+            <div className="mt-1 text-lg font-semibold text-emerald-700">
+              {stats.completedCount}
+            </div>
+          </div>
+
+          <div className="card px-4 py-3">
+            <div className="section-label">Cancelled:</div>
+            <div className="mt-1 text-lg font-semibold text-rose-700">
+              {stats.cancelledCount}
+            </div>
+          </div>
+
+          <div className="card px-4 py-3">
+            <div className="section-label">Assigned:</div>
+            <div className="mt-1 text-lg font-semibold text-slate-900">
+              {stats.assignedCount}
+            </div>
+          </div>
+
+          <div className="card px-4 py-3">
+            <div className="section-label">Unassigned:</div>
+            <div className="mt-1 text-lg font-semibold text-slate-500">
+              {stats.unassignedCount}
+            </div>
+          </div>
+
+          <div className="card px-4 py-3">
+            <div className="section-label">Pending Payment:</div>
+            <div className="mt-1 text-lg font-semibold text-amber-700">
+              {stats.pendingPaymentCount}
+            </div>
+          </div>
+
+        </div>
+      )}
 
       {/* ✅ FIXED FILTER */}
       <BookingFilter
@@ -388,18 +393,7 @@ export default function BookingList({
         onReset={handleResetFilters}
       />
 
-      <div className="flex justify-between mb-6">
-        <div />
-        <motion.button
-          whileTap={{ scale: 0.95 }}
-          onClick={exportExcel}
-          className="bg-green-600 text-white px-5 py-2 rounded-lg"
-        >
-          {isExporting ? <LoderBtn /> : "Export Excel"}
-        </motion.button>
-      </div>
-
-      <TableContainer component={Paper} className="rounded-xl shadow">
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -417,7 +411,7 @@ export default function BookingList({
           <TableBody>
             {!data.length ? (
               <TableRow>
-                <TableCell colSpan={8} align="center">
+                <TableCell colSpan={8} align="center" className="!py-14 !text-slate-400">
                   No Bookings Found
                 </TableCell>
               </TableRow>
@@ -425,31 +419,35 @@ export default function BookingList({
               data.map((row, index) => (
                 <TableRow key={row._id}>
                   <TableCell>{(page - 1) * rowsPerPage + index + 1}</TableCell>
-                  <TableCell>{row.bookingNumber}</TableCell>
+                  <TableCell className="whitespace-nowrap !font-semibold !text-slate-900">{row.bookingNumber}</TableCell>
 
                   <TableCell>
-                    <div className="font-medium text-gray-800">
+                    <div className="font-semibold text-slate-800">
                       {row.user?.name || "_"}
                     </div>
 
-                    <div className="text-xs text-gray-500 mt-1">
+                    <div className="mt-1 text-xs text-slate-500">
                       PickUp:- {row.pickup?.address || "-"}
                     </div>
 
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-slate-500">
                       Drop:- {row.dropoff?.address || "-"}
                     </div>
 
-                    <div className="text-xs text-blue-600 mt-1">
+                    <div className="mt-1.5 text-xs font-medium text-slate-600">
                       Pickup Date: {row.tripStartAtIST || "-"}
                     </div>
 
-                    <div className="text-xs text-green-600">
+                    <div className="text-xs font-medium text-slate-600">
                       Drop date: {row.tripEndAtIST || "-"}
                     </div>
                   </TableCell>
 
-                  <TableCell>{row.tripStatus || "-"}</TableCell>
+                  <TableCell>
+                    <span className={`${tripStatusBadge(row.tripStatus)} whitespace-nowrap capitalize`}>
+                      {row.tripStatus || "-"}
+                    </span>
+                  </TableCell>
                   <TableCell>{row.segment?.name || "-"}</TableCell>
                   <TableCell>
                     {row.vehicle ? (
@@ -479,7 +477,7 @@ export default function BookingList({
                                 row.segment?._id
                               )
                             }
-                            className="mt-1 text-xs bg-red-500 text-white px-2 py-1 rounded"
+                            className="mt-2 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-2.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
                           >
                             Reassign
                           </button>
@@ -507,12 +505,12 @@ export default function BookingList({
                   </TableCell>
 
                   <TableCell align="center">
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col items-center gap-1.5">
                       {row.assignmentStatus === "unassigned" &&
                         row.tripStatus?.toLowerCase() !== "completed" && (
                           <button
                             onClick={() => handleAssignDriver(row._id, row.segment?._id)}
-                            className="text-xs bg-blue-600 text-white px-3 py-1.5 rounded-lg font-medium hover:bg-blue-700"
+                            className="btn-primary !h-8 !px-3 !text-xs"
                           >
                             Assign Driver
                           </button>
@@ -562,7 +560,7 @@ export default function BookingList({
       </TableContainer>
 
       {totalPages > 1 && (
-        <Stack alignItems="center" mt={5}>
+        <Stack alignItems="center" mt={2}>
           <Pagination count={totalPages} page={page} onChange={handlePageChange} />
         </Stack>
       )}

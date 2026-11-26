@@ -19,7 +19,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, PlusIcon } from "@heroicons/react/24/outline";
 
 import { Modal, Form, Input, Button, TimePicker } from "antd";
 
@@ -42,22 +42,34 @@ import {
 // ───────────────────────────────
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-    color: theme.palette.common.white,
-    fontWeight: 600,
-    fontSize: "0.95rem",
-    padding: "12px 16px",
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
   },
   [`&.${tableCellClasses.body}`]: {
-    fontSize: "0.9rem",
+    fontSize: "0.86rem",
+    color: "#1f2937",
     padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
   "&:nth-of-type(odd)": {
-    backgroundColor: "#f9fafb",
+    backgroundColor: "rgba(248,250,252,0.45)",
+  },
+  "&:hover": {
+    backgroundColor: "rgba(16,24,40,0.08)",
+    transition: "background-color 0.2s ease",
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
   },
 }));
 
@@ -198,25 +210,30 @@ export default function NightTimesList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker />
 
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-6 mt-6">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Night Times
-        </h2>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">
+            Night Times
+          </h1>
+        </div>
 
-        <button
-          onClick={() => setCreateModal(true)}
-          className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium shadow-md hover:from-blue-700 hover:to-blue-900 transition"
-        >
-          + Create
-        </button>
+        <div className="page-actions">
+          <button
+            onClick={() => setCreateModal(true)}
+            className="btn-primary"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Create
+          </button>
+        </div>
       </div>
 
       {/* TABLE */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -237,11 +254,11 @@ export default function NightTimesList() {
                   {(page - 1) * rowsPerPage + i + 1}
                 </StyledTableCell>
 
-                <StyledTableCell>
+                <StyledTableCell className="!font-semibold !text-slate-900">
                   {row.startTime}
                 </StyledTableCell>
 
-                <StyledTableCell>
+                <StyledTableCell className="!font-semibold !text-slate-900">
                   {row.endTime}
                 </StyledTableCell>
 
@@ -291,7 +308,7 @@ export default function NightTimesList() {
       </TableContainer>
 
       {/* PAGINATION */}
-      <Stack alignItems="center" mt={3}>
+      <Stack alignItems="center" mt={1}>
         <Pagination
           count={totalPages}
           page={page}
@@ -349,7 +366,7 @@ export default function NightTimesList() {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full h-11 rounded-lg"
+            className="mt-2 h-11 w-full !rounded-xl"
           >
             Create
           </Button>
@@ -406,7 +423,7 @@ export default function NightTimesList() {
           <Button
             type="primary"
             htmlType="submit"
-            className="w-full h-11 rounded-lg"
+            className="mt-2 h-11 w-full !rounded-xl"
           >
             Update
           </Button>

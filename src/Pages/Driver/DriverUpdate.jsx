@@ -413,541 +413,599 @@ const UpdateDriver = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
+    <div className="page-shell">
+      <div>
         <Breaker />
       </div>
 
-      <div className="ml-5 mt-8 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
-        <h2 className="text-2xl font-bold mb-6 ml-2">Update Driver</h2>
+      <div className="card p-5 sm:p-8">
+        <div className="mb-6 border-b border-slate-200/70 pb-5">
+          <p className="section-label">Drivers</p>
+          <h2 className="mt-1 text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Update Driver</h2>
+        </div>
 
         <form onSubmit={handleSubmit}>
-          {/* Personal Info */}
-          <label className="ml-2 mt-4 font-normal block">Full Name *</label>
-          <input
-            className={`w-full h-10 mb-1 border rounded-xl pl-4 ${apiError.name ? "border-red-500" : "border-gray-500"}`}
-            type="text"
-            name="name"
-            placeholder="Enter full name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-          {apiError.name && (
-            <p className="text-red-500 text-sm ml-2">{apiError.name}</p>
-          )}
-
-          {/* middle name */}
-          <label className="ml-2 mt-5 font-normal block">Middle Name</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="midName"
-            placeholder="Enter middle name (optional)"
-            value={formData.midName}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">Last Name</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="lastName"
-            placeholder="Enter last name (optional)"
-            value={formData.lastName}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">Email *</label>
-          <input
-            className={`w-full h-10 mb-1 border rounded-xl pl-4 ${apiError.email ? "border-red-500" : "border-gray-500"}`}
-            type="email"
-            name="email"
-            placeholder="Enter email"
-            value={formData.email}
-            onChange={handleChange}
-          />
-          {apiError.email && <p className="text-red-500 text-sm ml-2">{apiError.email}</p>}
-
-          <label className="ml-2 mt-5 font-normal block">Phone Number *</label>
-          <input
-            className={`w-full h-10 mb-1 border rounded-xl pl-4 ${apiError.phone ? "border-red-500" : "border-gray-500"}`}
-            type="tel"
-            name="phone"
-            placeholder="Enter phone number"
-            value={formData.phone}
-            maxLength={10}
-            inputMode="numeric"
-            onChange={(e) => {
-              const value = e.target.value.replace(/\D/g, "");
-              setFormData((previous) => ({ ...previous, phone: value }));
-              setApiError((previous) => ({ ...previous, phone: "" }));
-            }}
-          />
-          {apiError.phone && (
-            <p className="text-red-500 text-sm ml-2">{apiError.phone}</p>
-          )}
-
-          <label className="ml-2 mt-5 font-normal block">Alternate Phone</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="tel"
-            name="alternatePhone"
-            placeholder="Alternate phone (optional)"
-            value={formData.alternatePhone}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">Gender</label>
-          <Select
-            value={formData.gender}
-            onChange={(val) => setFormData({ ...formData, gender: val })}
-            className="w-full h-10 mb-1 border rounded-xl"
-            placeholder="Select gender"
-          >
-            <Option value="male">Male</Option>
-            <Option value="female">Female</Option>
-            <Option value="other">Other</Option>
-          </Select>
-
-          {/* state */}
-          <label className="ml-2 mt-5 font-normal block">State <span className="text-red-600">*</span></label>
-          <select
-            className={`w-full h-10 mb-1 border rounded-xl px-3 ${apiError.state ? "border-red-500" : "border-gray-500"}`}
-            name="state"
-            value={formData.state}
-            onChange={(event) => {
-              stateResolved.current = true;
-              cityResolved.current = true;
-              setApiError((previous) => ({ ...previous, state: "", city: "" }));
-              setFormData({ ...formData, state: event.target.value, city: "" });
-            }}
-            disabled={statesLoading}
-          >
-            <option value="">{statesLoading ? "Loading states..." : "Select state"}</option>
-            {states.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
-          </select>
-          {apiError.state && <p className="text-red-500 text-sm ml-2">{apiError.state}</p>}
-
-          {/* city */}
-          <label className="ml-2 mt-5 font-normal block">City <span className="text-red-600">*</span></label>
-          <select
-            className={`w-full h-10 mb-1 border rounded-xl px-3 disabled:bg-gray-100 ${apiError.city ? "border-red-500" : "border-gray-500"}`}
-            name="city"
-            value={formData.city}
-            onChange={(event) => {
-              cityResolved.current = true;
-              setApiError((previous) => ({ ...previous, city: "" }));
-              setFormData({ ...formData, city: event.target.value });
-            }}
-            disabled={!formData.state || citiesLoading}
-          >
-            <option value="">{citiesLoading ? "Loading cities..." : formData.state ? "Select city" : "Select a state first"}</option>
-            {cities.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
-          </select>
-          {apiError.city && <p className="text-red-500 text-sm ml-2">{apiError.city}</p>}
-
-          {/* pincode */}
-          <label className="ml-2 mt-5 font-normal block">Pincode</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="pincode"
-            placeholder="Enter pincode"
-            value={formData.pincode}
-            maxLength={6}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">
-            Vehicle Preferences
-          </label>
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Select vehicle preferences"
-            value={formData.vehiclePreferences}
-            onChange={(value) =>
-              setFormData({ ...formData, vehiclePreferences: value })
-            }
-            className="w-full"
-          >
-            {vehiclePrefs.map((pref) => (
-              <Option key={pref._id} value={pref._id}>
-                {pref.name}
-              </Option>
-            ))}
-          </Select>
-
-          <label className="ml-2 mt-5 font-normal block">
-            Vehicle Preference Categories
-          </label>
-          <Select
-            mode="multiple"
-            allowClear
-            placeholder="Select categories"
-            value={formData.vehiclePreferenceCategories}
-            onChange={(value) =>
-              setFormData({
-                ...formData,
-                vehiclePreferenceCategories: value,
-              })
-            }
-            className="w-full"
-          >
-            {vehicleCategories.map((cat) => (
-              <Option key={cat._id} value={cat._id}>
-                {cat.name}
-              </Option>
-            ))}
-          </Select>
-
-          {/* Addresses */}
-          <label className="ml-2 mt-5 font-normal block">
-            Permanent Address
-          </label>
-          <input
-            ref={permAddressRef}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="permanentAddress"
-            placeholder="Search Permanent address"
-            value={formData.permanentAddress}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">Current Address</label>
-          <input
-            ref={currAddressRef}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="currentAddress"
-            placeholder="Search Current address"
-            value={formData.currentAddress}
-            onChange={handleChange}
-          />
-
-          {/* License */}
-          <label className="ml-2 mt-5 font-normal block">
-            License Number *
-          </label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="licenseNumber"
-            placeholder="Enter license number"
-            value={formData.licenseNumber}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">License Expiry</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="date"
-            name="licenseExpiry"
-            value={formData.licenseExpiry}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">License Photo *</label>
-          <div className="mb-2">
-            {previews.licensePhoto ? (
-              <img
-                src={previews.licensePhoto}
-                alt="New License Preview"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : existingImages.licensePhoto ? (
-              <img
-                src={existingImages.licensePhoto}
-                alt="Current License"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : null}
+          <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 md:grid-cols-2">
+          <div>
+            {/* Personal Info */}
+            <label className="field-label">Full Name *</label>
+            <input
+              className={`field border ${apiError.name ? "!border-rose-500" : "border-slate-200"}`}
+              type="text"
+              name="name"
+              placeholder="Enter full name"
+              value={formData.name}
+              onChange={handleChange}
+            />
+            {apiError.name && (
+              <p className="field-error">{apiError.name}</p>
+            )}
           </div>
-          <label
-            htmlFor="license-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️{" "}
-            {previews.licensePhoto
-              ? "Replace License Photo"
-              : "Upload / Replace License Photo"}
-          </label>
-          <input
-            id="license-upload"
-            className="hidden"
-            type="file"
-            name="licensePhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
 
-          {/* Aadhaar, PAN, Police Verification, Profile Pic - same pattern */}
-
-          <label className="ml-2 mt-5 font-normal block">
-            Aadhaar Number *
-          </label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="adhaarNumber"
-            placeholder="Enter Aadhaar number"
-            value={formData.adhaarNumber}
-            onChange={handleChange}
-          />
-
-          <label className="ml-2 mt-5 font-normal block">
-            Aadhaar Front Photo *
-          </label>
-          <div className="mb-2">
-            {previews.adhaarFrontPhoto ? (
-              <img
-                src={previews.adhaarFrontPhoto}
-                alt="New Aadhaar Front"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : existingImages.adhaarFrontPhoto ? (
-              <img
-                src={existingImages.adhaarFrontPhoto}
-                alt="Current Aadhaar Front"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : null}
+          <div>
+            {/* middle name */}
+            <label className="field-label">Middle Name</label>
+            <input
+              className="field border"
+              type="text"
+              name="midName"
+              placeholder="Enter middle name (optional)"
+              value={formData.midName}
+              onChange={handleChange}
+            />
           </div>
-          <label
-            htmlFor="adhaar-front-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ {previews.adhaarFrontPhoto ? "Replace" : "Upload / Replace"}{" "}
-            Aadhaar Front
-          </label>
-          <input
-            id="adhaar-front-upload"
-            className="hidden"
-            type="file"
-            name="adhaarFrontPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
 
-          {/* Aadhaar Back Photo */}
-          <label className="ml-2 mt-5 font-normal block">
-            Aadhaar Back Photo *
-          </label>
-          <div className="mb-2">
-            {previews.adhaarBackPhoto ? (
-              <img
-                src={previews.adhaarBackPhoto}
-                alt="New Aadhaar Back"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : existingImages.adhaarBackPhoto ? (
-              <img
-                src={existingImages.adhaarBackPhoto}
-                alt="Current Aadhaar Back"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : null}
+          <div>
+            <label className="field-label">Last Name</label>
+            <input
+              className="field border"
+              type="text"
+              name="lastName"
+              placeholder="Enter last name (optional)"
+              value={formData.lastName}
+              onChange={handleChange}
+            />
           </div>
-          <label
-            htmlFor="adhaar-back-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️{" "}
-            {previews.adhaarBackPhoto
-              ? "Replace Aadhaar Back"
-              : "Upload / Replace Aadhaar Back"}
-          </label>
-          <input
-            id="adhaar-back-upload"
-            className="hidden"
-            type="file"
-            name="adhaarBackPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
 
-          {/* PAN Number */}
-          <label className="ml-2 mt-5 font-normal block">PAN Number *</label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            name="panNumber"
-            placeholder="Enter PAN number"
-            value={formData.panNumber}
-            onChange={handleChange}
-          />
-          {apiError.panNumber && (
-            <p className="text-red-500 text-sm ml-2">{apiError.panNumber}</p>
-          )}
-
-          {/* PAN Front Photo */}
-          <label className="ml-2 mt-5 font-normal block">
-            PAN Front Photo *
-          </label>
-          <div className="mb-2">
-            {previews.panFrontPhoto ? (
-              <img
-                src={previews.panFrontPhoto}
-                alt="New PAN Front"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : existingImages.panFrontPhoto ? (
-              <img
-                src={existingImages.panFrontPhoto}
-                alt="Current PAN Front"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : null}
+          <div>
+            <label className="field-label">Email *</label>
+            <input
+              className={`field border ${apiError.email ? "!border-rose-500" : "border-slate-200"}`}
+              type="email"
+              name="email"
+              placeholder="Enter email"
+              value={formData.email}
+              onChange={handleChange}
+            />
+            {apiError.email && <p className="field-error">{apiError.email}</p>}
           </div>
-          <label
-            htmlFor="pan-front-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️{" "}
-            {previews.panFrontPhoto
-              ? "Replace PAN Front"
-              : "Upload / Replace PAN Front"}
-          </label>
-          <input
-            id="pan-front-upload"
-            className="hidden"
-            type="file"
-            name="panFrontPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
 
-          {/* PAN Back Photo */}
-          <label className="ml-2 mt-5 font-normal block">
-            PAN Back Photo *
-          </label>
-          <div className="mb-2">
-            {previews.panBackPhoto ? (
-              <img
-                src={previews.panBackPhoto}
-                alt="New PAN Back"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : existingImages.panBackPhoto ? (
-              <img
-                src={existingImages.panBackPhoto}
-                alt="Current PAN Back"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : null}
+          <div>
+            <label className="field-label">Phone Number *</label>
+            <input
+              className={`field border ${apiError.phone ? "!border-rose-500" : "border-slate-200"}`}
+              type="tel"
+              name="phone"
+              placeholder="Enter phone number"
+              value={formData.phone}
+              maxLength={10}
+              inputMode="numeric"
+              onChange={(e) => {
+                const value = e.target.value.replace(/\D/g, "");
+                setFormData((previous) => ({ ...previous, phone: value }));
+                setApiError((previous) => ({ ...previous, phone: "" }));
+              }}
+            />
+            {apiError.phone && (
+              <p className="field-error">{apiError.phone}</p>
+            )}
           </div>
-          <label
-            htmlFor="pan-back-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️{" "}
-            {previews.panBackPhoto
-              ? "Replace PAN Back"
-              : "Upload / Replace PAN Back"}
-          </label>
-          <input
-            id="pan-back-upload"
-            className="hidden"
-            type="file"
-            name="panBackPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
 
-          {/* Police Verification Expiry */}
-          <label className="ml-2 mt-5 font-normal block">
-            Police Verification Expiry
-          </label>
-          <input
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="date"
-            name="policeVerificationExpiry"
-            value={formData.policeVerificationExpiry}
-            onChange={handleChange}
-          />
-
-          {/* Police Verification Photo */}
-          <label className="ml-2 mt-5 font-normal block">
-            Police Verification Photo
-          </label>
-          <div className="mb-2">
-            {previews.policeVerificationPhoto ? (
-              <img
-                src={previews.policeVerificationPhoto}
-                alt="New Police Verification"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : existingImages.policeVerificationPhoto ? (
-              <img
-                src={existingImages.policeVerificationPhoto}
-                alt="Current Police Verification"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : null}
+          <div>
+            <label className="field-label">Alternate Phone</label>
+            <input
+              className="field border"
+              type="tel"
+              name="alternatePhone"
+              placeholder="Alternate phone (optional)"
+              value={formData.alternatePhone}
+              onChange={handleChange}
+            />
           </div>
-          <label
-            htmlFor="police-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️{" "}
-            {previews.policeVerificationPhoto
-              ? "Replace Police Verification"
-              : "Upload / Replace Police Verification"}
-          </label>
-          <input
-            id="police-upload"
-            className="hidden"
-            type="file"
-            name="policeVerificationPhoto"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
 
-          {/* Profile Picture */}
-          <label className="ml-2 mt-5 font-normal block">
-            Profile Picture *
-          </label>
-          <div className="mb-2">
-            {previews.profilePic ? (
-              <img
-                src={previews.profilePic}
-                alt="New Profile Preview"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : existingImages.profilePic ? (
-              <img
-                src={existingImages.profilePic}
-                alt="Current Profile"
-                className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
-              />
-            ) : null}
+          <div>
+            <label className="field-label">Gender</label>
+            <Select
+              value={formData.gender}
+              onChange={(val) => setFormData({ ...formData, gender: val })}
+              className="w-full !h-10 [&_.ant-select-selector]:!rounded-lg"
+              placeholder="Select gender"
+            >
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
+              <Option value="other">Other</Option>
+            </Select>
           </div>
-          <label
-            htmlFor="profile-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️{" "}
-            {previews.profilePic
-              ? "Replace Profile Picture"
-              : "Upload / Replace Profile Picture"}
-          </label>
-          <input
-            id="profile-upload"
-            className="hidden"
-            type="file"
-            name="profilePic"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {apiError.profilePic && (
-            <p className="text-red-500 text-sm ml-2">{apiError.profilePic}</p>
-          )}
+
+          <div>
+            {/* state */}
+            <label className="field-label">State <span className="text-rose-600">*</span></label>
+            <select
+              className={`field border ${apiError.state ? "!border-rose-500" : "border-slate-200"}`}
+              name="state"
+              value={formData.state}
+              onChange={(event) => {
+                stateResolved.current = true;
+                cityResolved.current = true;
+                setApiError((previous) => ({ ...previous, state: "", city: "" }));
+                setFormData({ ...formData, state: event.target.value, city: "" });
+              }}
+              disabled={statesLoading}
+            >
+              <option value="">{statesLoading ? "Loading states..." : "Select state"}</option>
+              {states.map((state) => <option key={state._id} value={state.name}>{state.name}</option>)}
+            </select>
+            {apiError.state && <p className="field-error">{apiError.state}</p>}
+          </div>
+
+          <div>
+            {/* city */}
+            <label className="field-label">City <span className="text-rose-600">*</span></label>
+            <select
+              className={`field border disabled:cursor-not-allowed disabled:bg-slate-100 ${apiError.city ? "!border-rose-500" : "border-slate-200"}`}
+              name="city"
+              value={formData.city}
+              onChange={(event) => {
+                cityResolved.current = true;
+                setApiError((previous) => ({ ...previous, city: "" }));
+                setFormData({ ...formData, city: event.target.value });
+              }}
+              disabled={!formData.state || citiesLoading}
+            >
+              <option value="">{citiesLoading ? "Loading cities..." : formData.state ? "Select city" : "Select a state first"}</option>
+              {cities.map((city) => <option key={city._id} value={city.name}>{city.name}</option>)}
+            </select>
+            {apiError.city && <p className="field-error">{apiError.city}</p>}
+          </div>
+
+          <div>
+            {/* pincode */}
+            <label className="field-label">Pincode</label>
+            <input
+              className="field border"
+              type="text"
+              name="pincode"
+              placeholder="Enter pincode"
+              value={formData.pincode}
+              maxLength={6}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">
+              Vehicle Preferences
+            </label>
+            <Select
+              mode="multiple"
+              allowClear
+              placeholder="Select vehicle preferences"
+              value={formData.vehiclePreferences}
+              onChange={(value) =>
+                setFormData({ ...formData, vehiclePreferences: value })
+              }
+              className="w-full [&_.ant-select-selector]:!min-h-11 [&_.ant-select-selector]:!rounded-xl"
+            >
+              {vehiclePrefs.map((pref) => (
+                <Option key={pref._id} value={pref._id}>
+                  {pref.name}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          <div>
+            <label className="field-label">
+              Vehicle Preference Categories
+            </label>
+            <Select
+              mode="multiple"
+              allowClear
+              placeholder="Select categories"
+              value={formData.vehiclePreferenceCategories}
+              onChange={(value) =>
+                setFormData({
+                  ...formData,
+                  vehiclePreferenceCategories: value,
+                })
+              }
+              className="w-full [&_.ant-select-selector]:!min-h-11 [&_.ant-select-selector]:!rounded-xl"
+            >
+              {vehicleCategories.map((cat) => (
+                <Option key={cat._id} value={cat._id}>
+                  {cat.name}
+                </Option>
+              ))}
+            </Select>
+          </div>
+
+          <div>
+            {/* Addresses */}
+            <label className="field-label">
+              Permanent Address
+            </label>
+            <input
+              ref={permAddressRef}
+              className="field border"
+              type="text"
+              name="permanentAddress"
+              placeholder="Search Permanent address"
+              value={formData.permanentAddress}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">Current Address</label>
+            <input
+              ref={currAddressRef}
+              className="field border"
+              type="text"
+              name="currentAddress"
+              placeholder="Search Current address"
+              value={formData.currentAddress}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            {/* License */}
+            <label className="field-label">
+              License Number *
+            </label>
+            <input
+              className="field border"
+              type="text"
+              name="licenseNumber"
+              placeholder="Enter license number"
+              value={formData.licenseNumber}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">License Expiry</label>
+            <input
+              className="field border"
+              type="date"
+              name="licenseExpiry"
+              value={formData.licenseExpiry}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">License Photo *</label>
+            <div className="mb-2">
+              {previews.licensePhoto ? (
+                <img
+                  src={previews.licensePhoto}
+                  alt="New License Preview"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : existingImages.licensePhoto ? (
+                <img
+                  src={existingImages.licensePhoto}
+                  alt="Current License"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : null}
+            </div>
+            <label
+              htmlFor="license-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️{" "}
+              {previews.licensePhoto
+                ? "Replace License Photo"
+                : "Upload / Replace License Photo"}
+            </label>
+            <input
+              id="license-upload"
+              className="hidden"
+              type="file"
+              name="licensePhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          <div>
+            {/* Aadhaar, PAN, Police Verification, Profile Pic - same pattern */}
+
+            <label className="field-label">
+              Aadhaar Number *
+            </label>
+            <input
+              className="field border"
+              type="text"
+              name="adhaarNumber"
+              placeholder="Enter Aadhaar number"
+              value={formData.adhaarNumber}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            <label className="field-label">
+              Aadhaar Front Photo *
+            </label>
+            <div className="mb-2">
+              {previews.adhaarFrontPhoto ? (
+                <img
+                  src={previews.adhaarFrontPhoto}
+                  alt="New Aadhaar Front"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : existingImages.adhaarFrontPhoto ? (
+                <img
+                  src={existingImages.adhaarFrontPhoto}
+                  alt="Current Aadhaar Front"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : null}
+            </div>
+            <label
+              htmlFor="adhaar-front-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️ {previews.adhaarFrontPhoto ? "Replace" : "Upload / Replace"}{" "}
+              Aadhaar Front
+            </label>
+            <input
+              id="adhaar-front-upload"
+              className="hidden"
+              type="file"
+              name="adhaarFrontPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          <div>
+            {/* Aadhaar Back Photo */}
+            <label className="field-label">
+              Aadhaar Back Photo *
+            </label>
+            <div className="mb-2">
+              {previews.adhaarBackPhoto ? (
+                <img
+                  src={previews.adhaarBackPhoto}
+                  alt="New Aadhaar Back"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : existingImages.adhaarBackPhoto ? (
+                <img
+                  src={existingImages.adhaarBackPhoto}
+                  alt="Current Aadhaar Back"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : null}
+            </div>
+            <label
+              htmlFor="adhaar-back-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️{" "}
+              {previews.adhaarBackPhoto
+                ? "Replace Aadhaar Back"
+                : "Upload / Replace Aadhaar Back"}
+            </label>
+            <input
+              id="adhaar-back-upload"
+              className="hidden"
+              type="file"
+              name="adhaarBackPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          <div>
+            {/* PAN Number */}
+            <label className="field-label">PAN Number *</label>
+            <input
+              className="field border"
+              type="text"
+              name="panNumber"
+              placeholder="Enter PAN number"
+              value={formData.panNumber}
+              onChange={handleChange}
+            />
+            {apiError.panNumber && (
+              <p className="field-error">{apiError.panNumber}</p>
+            )}
+          </div>
+
+          <div>
+            {/* PAN Front Photo */}
+            <label className="field-label">
+              PAN Front Photo *
+            </label>
+            <div className="mb-2">
+              {previews.panFrontPhoto ? (
+                <img
+                  src={previews.panFrontPhoto}
+                  alt="New PAN Front"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : existingImages.panFrontPhoto ? (
+                <img
+                  src={existingImages.panFrontPhoto}
+                  alt="Current PAN Front"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : null}
+            </div>
+            <label
+              htmlFor="pan-front-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️{" "}
+              {previews.panFrontPhoto
+                ? "Replace PAN Front"
+                : "Upload / Replace PAN Front"}
+            </label>
+            <input
+              id="pan-front-upload"
+              className="hidden"
+              type="file"
+              name="panFrontPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          <div>
+            {/* PAN Back Photo */}
+            <label className="field-label">
+              PAN Back Photo *
+            </label>
+            <div className="mb-2">
+              {previews.panBackPhoto ? (
+                <img
+                  src={previews.panBackPhoto}
+                  alt="New PAN Back"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : existingImages.panBackPhoto ? (
+                <img
+                  src={existingImages.panBackPhoto}
+                  alt="Current PAN Back"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : null}
+            </div>
+            <label
+              htmlFor="pan-back-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️{" "}
+              {previews.panBackPhoto
+                ? "Replace PAN Back"
+                : "Upload / Replace PAN Back"}
+            </label>
+            <input
+              id="pan-back-upload"
+              className="hidden"
+              type="file"
+              name="panBackPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          <div>
+            {/* Police Verification Expiry */}
+            <label className="field-label">
+              Police Verification Expiry
+            </label>
+            <input
+              className="field border"
+              type="date"
+              name="policeVerificationExpiry"
+              value={formData.policeVerificationExpiry}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div>
+            {/* Police Verification Photo */}
+            <label className="field-label">
+              Police Verification Photo
+            </label>
+            <div className="mb-2">
+              {previews.policeVerificationPhoto ? (
+                <img
+                  src={previews.policeVerificationPhoto}
+                  alt="New Police Verification"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : existingImages.policeVerificationPhoto ? (
+                <img
+                  src={existingImages.policeVerificationPhoto}
+                  alt="Current Police Verification"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : null}
+            </div>
+            <label
+              htmlFor="police-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️{" "}
+              {previews.policeVerificationPhoto
+                ? "Replace Police Verification"
+                : "Upload / Replace Police Verification"}
+            </label>
+            <input
+              id="police-upload"
+              className="hidden"
+              type="file"
+              name="policeVerificationPhoto"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+
+          <div>
+            {/* Profile Picture */}
+            <label className="field-label">
+              Profile Picture *
+            </label>
+            <div className="mb-2">
+              {previews.profilePic ? (
+                <img
+                  src={previews.profilePic}
+                  alt="New Profile Preview"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : existingImages.profilePic ? (
+                <img
+                  src={existingImages.profilePic}
+                  alt="Current Profile"
+                  className="mb-2 h-16 w-24 rounded-xl object-cover shadow-sm ring-1 ring-black/5"
+                />
+              ) : null}
+            </div>
+            <label
+              htmlFor="profile-upload"
+              className="flex h-11 cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-center text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white hover:text-slate-900"
+            >
+              🖼️{" "}
+              {previews.profilePic
+                ? "Replace Profile Picture"
+                : "Upload / Replace Profile Picture"}
+            </label>
+            <input
+              id="profile-upload"
+              className="hidden"
+              type="file"
+              name="profilePic"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {apiError.profilePic && (
+              <p className="field-error">{apiError.profilePic}</p>
+            )}
+          </div>
+
+          </div>
 
           {/* Status Toggles */}
-          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-6 grid grid-cols-1 gap-4 rounded-2xl bg-slate-900/[0.03] p-4 ring-1 ring-inset ring-slate-900/5 sm:grid-cols-3">
             <div>
-              <label className="ml-2 font-normal block">Is Verified</label>
+              <label className="field-label">Is Verified</label>
               <Switch
                 checked={formData.isVerified}
                 onChange={(checked) =>
@@ -960,7 +1018,7 @@ const UpdateDriver = () => {
             </div>
 
             <div>
-              <label className="ml-2 font-normal block">Is Online</label>
+              <label className="field-label">Is Online</label>
               <Switch
                 checked={formData.isOnline}
                 onChange={(checked) =>
@@ -973,7 +1031,7 @@ const UpdateDriver = () => {
             </div>
 
             <div>
-              <label className="ml-2 font-normal block">Is Available</label>
+              <label className="field-label">Is Available</label>
               <Switch
                 checked={formData.isAvailable}
                 onChange={(checked) =>
@@ -987,11 +1045,11 @@ const UpdateDriver = () => {
           </div>
 
           {/* Submit */}
-          <div className="flex justify-end items-center gap-4 mt-6">
+          <div className="mt-8 flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end">
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 px-6 rounded-2xl disabled:cursor-not-allowed disabled:opacity-60"
+              className="btn-primary w-full sm:w-auto"
             >
               {loading ? "Updating Driver..." : "Update Driver"}
             </button>
@@ -999,7 +1057,7 @@ const UpdateDriver = () => {
             <button
               type="button"
               onClick={() => navigate(-1)}
-              className="bg-gray-500 text-white py-3 px-6 rounded-2xl hover:bg-gray-600 transition-colors"
+              className="btn-secondary w-full sm:w-auto"
             >
               Back
             </button>

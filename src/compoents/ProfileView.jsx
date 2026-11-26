@@ -81,25 +81,28 @@ const ProfileView = () => {
     <Box
       sx={{
         maxWidth: 600,
+        width: '100%',
         mx: 'auto',
-        mt: 5,
-        p: { xs: 2, sm: 3 },
-        bgcolor: 'background.default'
+        mt: { xs: 1, sm: 2 },
+        p: { xs: 1, sm: 2 },
+        bgcolor: 'transparent'
       }}
     >
       <Card
         sx={{
-          borderRadius: 4,
-          boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
+          borderRadius: '18px',
+          boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 12px 32px -12px rgba(15,23,42,0.18)',
+          border: '1px solid rgba(226,232,240,0.8)',
           overflow: 'visible'
         }}
       >
         {/* HEADER GRADIENT UPDATED */}
         <Box
           sx={{
-            background: 'linear-gradient(to bottom, #1E3A8A, #3B82F6)',
+            background: '#111827',
+            borderBottom: '1px solid rgba(16,24,40,0.08)',
             height: 100,
-            borderRadius: '16px 16px 0 0',
+            borderRadius: '17px 17px 0 0',
             position: 'relative'
           }}
         >
@@ -110,6 +113,7 @@ const ProfileView = () => {
               width: 120,
               height: 120,
               border: '4px solid white',
+              boxShadow: '0 10px 24px -8px rgba(11,15,25,0.45)',
               position: 'absolute',
               bottom: -60,
               left: '50%',
@@ -124,27 +128,27 @@ const ProfileView = () => {
             variant="h5"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold' }}
+            sx={{ fontWeight: 800, color: '#0f172a', letterSpacing: '-0.01em', wordBreak: 'break-word' }}
           >
             {user.userName}
           </Typography>
 
-          <Typography align="center" sx={{ mb: 1 }}>
+          <Typography align="center" sx={{ mb: 2, color: '#64748b', fontSize: '0.95rem', wordBreak: 'break-all' }}>
             {user.email}
           </Typography>
 
           {user.role && (
-            <Box sx={{ mb: 3, textAlign: 'center' }}>
-              <Typography variant="body2">
+            <Box sx={{ mb: 2.5, mx: 'auto', maxWidth: 360, textAlign: 'center', borderRadius: '12px', border: '1px solid rgba(226,232,240,0.9)', bgcolor: 'rgba(248,250,252,0.8)', px: 2, py: 1.5 }}>
+              <Typography variant="body2" sx={{ color: '#334155', fontWeight: 600 }}>
                 Role: {user.role.name}
               </Typography>
-              <Typography variant="body2">
+              <Typography variant="body2" sx={{ color: '#64748b', mt: 0.5 }}>
                 Permissions: {user.role.permission?.length || 0}
               </Typography>
             </Box>
           )}
 
-          <Typography variant="body2" align="center">
+          <Typography variant="body2" align="center" sx={{ color: '#94a3b8' }}>
             Joined on: {new Date(user.createdAt).toLocaleDateString()}
           </Typography>
 
@@ -154,15 +158,17 @@ const ProfileView = () => {
               variant="outlined"
               onClick={() => setShowPasswordForm(true)}
               sx={{
-                borderRadius: 2,
+                borderRadius: '12px',
                 textTransform: 'none',
-                fontSize: '1rem',
+                fontSize: '0.9rem',
+                fontWeight: 600,
                 px: 3,
                 py: 1,
-                borderColor: '#0077B6',
-                color: '#0077B6',
+                borderColor: '#cbd5e1',
+                color: '#0f172a',
                 '&:hover': {
-                  backgroundColor: '#0077B620'
+                  borderColor: '#d0d5dd',
+                  backgroundColor: 'rgba(16,24,40,0.08)'
                 }
               }}
             >
@@ -173,9 +179,9 @@ const ProfileView = () => {
       </Card>
 
       {showPasswordForm && (
-        <Card sx={{ mt: 3, borderRadius: 4, boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
-          <CardContent sx={{ p: 4 }}>
-            <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+        <Card sx={{ mt: 3, borderRadius: '18px', border: '1px solid rgba(226,232,240,0.8)', boxShadow: '0 1px 2px rgba(15,23,42,0.04), 0 12px 32px -12px rgba(15,23,42,0.18)' }}>
+          <CardContent sx={{ p: { xs: 2.5, sm: 4 } }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 800, color: '#0f172a', mb: 2 }}>
               Change Password
             </Typography>
 
@@ -187,7 +193,7 @@ const ProfileView = () => {
               <TextField fullWidth label="New Password" name="password" type="password" value={formData.password} onChange={handleChange} margin="normal" required />
               <TextField fullWidth label="Confirm New Password" name="confirmPassword" type="password" value={formData.confirmPassword} onChange={handleChange} margin="normal" required />
 
-              <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1.5, mt: 3 }}>
                 {/* MAIN BUTTON GRADIENT UPDATED */}
                 <Button
                   type="submit"
@@ -195,14 +201,17 @@ const ProfileView = () => {
                   fullWidth
                   disabled={loading}
                   sx={{
-                    py: 1.5,
-                    borderRadius: 2,
+                    py: 1.25,
+                    borderRadius: '12px',
                     textTransform: 'none',
-                    fontSize: '1.1rem',
-                    background: 'linear-gradient(to bottom, #1E3A8A, #3B82F6)',
+                    fontSize: '0.95rem',
+                    fontWeight: 600,
+                    background: '#111827',
                     color: '#fff',
+                    boxShadow: '0 6px 18px -6px rgba(11,15,25,0.55)',
                     '&:hover': {
-                      background: 'linear-gradient(to bottom, #3B82F6, #1E3A8A)'
+                      background: '#111827',
+                      boxShadow: '0 0 0 1px rgba(16,24,40,0.08), 0 10px 26px -8px rgba(11,15,25,0.6)'
                     }
                   }}
                 >
@@ -214,14 +223,16 @@ const ProfileView = () => {
                   onClick={() => setShowPasswordForm(false)}
                   fullWidth
                   sx={{
-                    py: 1.5,
-                    borderRadius: 2,
+                    py: 1.25,
+                    borderRadius: '12px',
                     textTransform: 'none',
-                    fontSize: '1.1rem',
-                    borderColor: '#03045E',
-                    color: '#03045E',
+                    fontSize: '0.95rem',
+                    fontWeight: 600,
+                    borderColor: '#cbd5e1',
+                    color: '#334155',
                     '&:hover': {
-                      backgroundColor: '#03045E20'
+                      borderColor: '#94a3b8',
+                      backgroundColor: 'rgba(15,23,42,0.04)'
                     }
                   }}
                 >

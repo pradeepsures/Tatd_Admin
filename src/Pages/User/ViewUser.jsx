@@ -40,116 +40,116 @@ const ViewUser = () => {
   const profileSrc = getImageUrl(user.profileImage || user.profilePic);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
+    <div className="page-shell">
       <Breaker />
 
-      <div className="max-w-5xl mx-auto mt-4">
+      <div className="mx-auto w-full max-w-5xl space-y-5">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 text-sm font-medium text-blue-600 hover:text-blue-800"
+          className="btn-ghost -ml-2"
         >
           ← Back to App Users
         </button>
 
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="bg-gradient-to-r from-[#0f172a] to-[#334155] px-6 py-8 flex flex-col sm:flex-row items-center gap-6">
+        <div className="card overflow-hidden">
+          <div className="flex flex-col items-center gap-6 bg-[#111827] px-6 py-8 sm:flex-row">
             <img
               src={profileSrc}
               alt="Profile"
-              className="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg"
+              className="h-24 w-24 rounded-full object-cover shadow-lg ring-4 ring-gray-200"
             />
-            <div className="text-center sm:text-left">
-              <h1 className="text-2xl font-bold text-white">{user.name || "Unknown User"}</h1>
-              <p className="text-gray-300 mt-1">{user.mobile}</p>
-              <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.isVerified ? "bg-green-500/20 text-green-300" : "bg-yellow-500/20 text-yellow-300"}`}>
+            <div className="min-w-0 text-center sm:text-left">
+              <h1 className="break-words text-2xl font-semibold tracking-tight text-white">{user.name || "Unknown User"}</h1>
+              <p className="mt-1 text-slate-300">{user.mobile}</p>
+              <div className="mt-3 flex flex-wrap justify-center gap-2 sm:justify-start">
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${user.isVerified ? "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30" : "bg-amber-500/15 text-amber-300 ring-amber-400/30"}`}>
                   {user.isVerified ? "Verified" : "Unverified"}
                 </span>
-                <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.status !== false ? "bg-blue-500/20 text-blue-300" : "bg-red-500/20 text-red-300"}`}>
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ring-1 ring-inset ${user.status !== false ? "bg-gray-100 text-gray-300 ring-gray-200" : "bg-rose-500/15 text-rose-300 ring-rose-400/30"}`}>
                   {user.status !== false ? "Active" : "Inactive"}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="p-6 grid grid-cols-1 sm:grid-cols-3 gap-4 border-b border-gray-100">
-            <div className="bg-blue-50 rounded-xl p-4 text-center">
-              <p className="text-sm text-gray-500">Total Trips</p>
-              <p className="text-2xl font-bold text-blue-700">{user.totalTrips ?? 0}</p>
+          <div className="grid grid-cols-1 gap-4 border-b border-slate-200/70 p-4 sm:grid-cols-3 sm:p-6">
+            <div className="rounded-xl border border-slate-200/70 bg-white/70 p-4 text-center">
+              <p className="detail-label">Total Trips</p>
+              <p className="mt-1 text-2xl font-semibold text-slate-900">{user.totalTrips ?? 0}</p>
             </div>
-            <div className="bg-green-50 rounded-xl p-4 text-center">
-              <p className="text-sm text-gray-500">Completed Trips</p>
-              <p className="text-2xl font-bold text-green-700">{user.completedTrips ?? 0}</p>
+            <div className="rounded-xl border border-slate-200/70 bg-white/70 p-4 text-center">
+              <p className="detail-label">Completed Trips</p>
+              <p className="mt-1 text-2xl font-semibold text-emerald-700">{user.completedTrips ?? 0}</p>
             </div>
-            <div className="bg-purple-50 rounded-xl p-4 text-center">
-              <p className="text-sm text-gray-500">Total Spent</p>
-              <p className="text-2xl font-bold text-purple-700">₹{user.totalSpent ?? 0}</p>
+            <div className="rounded-xl border border-slate-200/70 bg-white/70 p-4 text-center">
+              <p className="detail-label">Total Spent</p>
+              <p className="mt-1 text-2xl font-semibold text-gray-900">₹{user.totalSpent ?? 0}</p>
             </div>
           </div>
 
           {user.planCounts && (
-            <div className="p-6 border-b border-gray-100">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Plan Counts</h3>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <div className="border-b border-slate-200/70 p-4 sm:p-6">
+              <h3 className="card-title mb-4">Plan Counts</h3>
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
                 {Object.entries(user.planCounts).map(([plan, count]) => (
-                  <div key={plan} className="bg-slate-50 rounded-lg p-4 text-center border border-slate-200">
-                    <p className="text-xs uppercase tracking-wide text-gray-500">{plan}</p>
-                    <p className="text-2xl font-bold text-slate-800 mt-2">{count ?? 0}</p>
+                  <div key={plan} className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4 text-center">
+                    <p className="detail-label">{plan}</p>
+                    <p className="mt-2 text-2xl font-semibold text-slate-800">{count ?? 0}</p>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          <div className="p-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="bg-gray-50 rounded-lg p-4">
-              <span className="text-sm text-gray-500">Email</span>
-              <p className="font-semibold text-gray-900">{user.email || "—"}</p>
+          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:p-6">
+            <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4">
+              <span className="detail-label">Email</span>
+              <p className="detail-value">{user.email || "—"}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <span className="text-sm text-gray-500">Gender</span>
-              <p className="font-semibold text-gray-900 capitalize">{user.gender || "—"}</p>
+            <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4">
+              <span className="detail-label">Gender</span>
+              <p className="detail-value capitalize">{user.gender || "—"}</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <span className="text-sm text-gray-500">Rating</span>
-              <p className="font-semibold text-gray-900">{user.rating ?? "—"} ({user.ratingCount ?? 0} reviews)</p>
+            <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4">
+              <span className="detail-label">Rating</span>
+              <p className="detail-value">{user.rating ?? "—"} ({user.ratingCount ?? 0} reviews)</p>
             </div>
-            <div className="bg-gray-50 rounded-lg p-4">
-              <span className="text-sm text-gray-500">Joined</span>
-              <p className="font-semibold text-gray-900">
+            <div className="rounded-xl border border-slate-200/70 bg-slate-50/70 p-4">
+              <span className="detail-label">Joined</span>
+              <p className="detail-value">
                 {user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-IN") : "—"}
               </p>
             </div>
           </div>
 
           {user.recentBookings?.length > 0 && (
-            <div className="p-6 border-t border-gray-100">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">Recent Trips</h3>
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
+            <div className="border-t border-slate-200/70 p-4 sm:p-6">
+              <h3 className="card-title mb-4">Recent Trips</h3>
+              <div className="overflow-x-auto rounded-xl border border-slate-200/70">
+                <table className="w-full min-w-[600px] text-sm">
                   <thead>
-                    <tr className="text-left text-gray-500 border-b">
-                      <th className="pb-2 pr-4">Booking #</th>
-                      <th className="pb-2 pr-4">Plan</th>
-                      <th className="pb-2 pr-4">Status</th>
-                      <th className="pb-2 pr-4">Payment</th>
-                      <th className="pb-2 pr-4">Amount</th>
-                      <th className="pb-2">Date</th>
+                    <tr className="border-b border-[#c99a2e]/40 bg-[#171b25] text-left text-[11px] font-semibold uppercase tracking-wider text-white/75">
+                      <th className="px-4 py-3">Booking #</th>
+                      <th className="px-4 py-3">Plan</th>
+                      <th className="px-4 py-3">Status</th>
+                      <th className="px-4 py-3">Payment</th>
+                      <th className="px-4 py-3">Amount</th>
+                      <th className="px-4 py-3">Date</th>
                     </tr>
                   </thead>
                   <tbody>
                     {user.recentBookings.map((trip) => (
-                      <tr key={trip._id} className="border-b border-gray-50 hover:bg-gray-50">
-                        <td className="py-3 pr-4">
-                          <Link to={`/home/booking/bookingdetails/${trip._id}`} className="text-blue-600 hover:underline font-medium">
+                      <tr key={trip._id} className="border-b border-slate-100 text-slate-700 last:border-0 hover:bg-slate-50/80">
+                        <td className="px-4 py-3">
+                          <Link to={`/home/booking/bookingdetails/${trip._id}`} className="font-semibold text-slate-900 underline decoration-gray-300 underline-offset-2 hover:decoration-gray-500">
                             {trip.bookingNumber || trip._id.slice(-6)}
                           </Link>
                         </td>
-                        <td className="py-3 pr-4">{trip.planType || "—"}</td>
-                        <td className="py-3 pr-4 capitalize">{trip.overallStatus || trip.tripStatus || "—"}</td>
-                        <td className="py-3 pr-4 capitalize">{trip.payment?.status || trip.paymentStatus || "—"}</td>
-                        <td className="py-3 pr-4">₹{trip.payment?.paidAmount ?? trip.estimatedFare ?? 0}</td>
-                        <td className="py-3">{trip.createdAt ? new Date(trip.createdAt).toLocaleDateString("en-IN") : "—"}</td>
+                        <td className="px-4 py-3">{trip.planType || "—"}</td>
+                        <td className="px-4 py-3 capitalize">{trip.overallStatus || trip.tripStatus || "—"}</td>
+                        <td className="px-4 py-3 capitalize">{trip.payment?.status || trip.paymentStatus || "—"}</td>
+                        <td className="px-4 py-3 font-semibold">₹{trip.payment?.paidAmount ?? trip.estimatedFare ?? 0}</td>
+                        <td className="px-4 py-3">{trip.createdAt ? new Date(trip.createdAt).toLocaleDateString("en-IN") : "—"}</td>
                       </tr>
                     ))}
                   </tbody>

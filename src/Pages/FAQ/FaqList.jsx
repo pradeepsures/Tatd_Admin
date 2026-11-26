@@ -14,7 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { EyeIcon, PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { EyeIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { motion } from "framer-motion";
@@ -188,34 +188,19 @@ export default function FaqList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="page-shell">
       <Breaker/>
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex items-center gap-4">
-          <input
-            type="text"
-            placeholder="Search FAQs..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-80 px-4 py-2.5 border border-gray-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 text-gray-700 placeholder-gray-400"
-            aria-label="Search FAQs"
-          />
-          <button
-            onClick={() => {
-              setSearchQuery(search);
-              setPage(1);
-            }}
-            className="bg-primary text-white  px-5 py-2.5 rounded-lg font-medium"
-          >
-            Search
-          </button>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">FAQs</h1>
+          <p className="page-subtitle">{totalRecord} record{totalRecord === 1 ? "" : "s"} found</p>
         </div>
-        <div className="flex gap-4">
+        <div className="page-actions">
 
           <motion.button
             whileTap={{ scale: 0.95 }}
             onClick={() => exportFunc(data)}
-            className="bg-green-600 text-white px-5 py-2.5 rounded-lg font-medium shadow hover:bg-green-700 transition-colors"
+            className="btn-secondary"
           >
             {isExporting ? (
               <span className="flex items-center gap-2">
@@ -230,7 +215,7 @@ export default function FaqList() {
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate("createfaq")}
-              className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium shadow hover:shadow-lg transition-shadow"
+              className="btn-primary"
             >
               Add FAQ
             </motion.button>
@@ -238,9 +223,34 @@ export default function FaqList() {
         </div>
       </div>
 
+      <div className="card card-pad">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-80">
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Search FAQs..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="search-field w-full"
+            aria-label="Search FAQs"
+          />
+          </div>
+          <button
+            onClick={() => {
+              setSearchQuery(search);
+              setPage(1);
+            }}
+            className="btn-primary w-full sm:w-auto"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+
       <TableContainer
         component={Paper}
-        className="rounded-xl shadow-lg overflow-hidden"
+        className="overflow-hidden"
       >
         <Table sx={{ minWidth: 700 }} aria-label="faq table">
           <TableHead>
@@ -259,7 +269,7 @@ export default function FaqList() {
                 <StyledTableCell
                   colSpan={6}
                   align="center"
-                  className="py-8 text-gray-500 text-lg"
+                  className="!py-14 !text-slate-400"
                 >
                   No FAQs found
                 </StyledTableCell>
@@ -270,10 +280,10 @@ export default function FaqList() {
                   <StyledTableCell>
                     {(page - 1) * rowsPerPage + index + 1}
                   </StyledTableCell>
-                  <StyledTableCell>{row.question}</StyledTableCell>
-                  <StyledTableCell>{row.answer}</StyledTableCell>
-                  <StyledTableCell className="capitalize">
-                    {row.type}
+                  <StyledTableCell className="!font-medium !text-slate-800 max-w-xs">{row.question}</StyledTableCell>
+                  <StyledTableCell className="max-w-md !text-slate-600">{row.answer}</StyledTableCell>
+                  <StyledTableCell>
+                    <span className="badge-neutral capitalize">{row.type}</span>
                   </StyledTableCell>
                   <StyledTableCell className="text-gray-600">
                     {row.createdAt
@@ -347,7 +357,7 @@ export default function FaqList() {
       </TableContainer>
 
       {totalRecord > rowsPerPage && (
-        <Stack spacing={2} alignItems="center" marginTop={6}>
+        <Stack spacing={2} alignItems="center" marginTop={4}>
           <Pagination
             count={totalPages}
             page={page}

@@ -74,19 +74,20 @@ export default function BasicMenu() {
         aria-expanded={open ? "true" : undefined}
         onClick={handleClick}
         sx={{
+          minWidth: 0,
           borderRadius: "50%",
           padding: "2px",
           background: "transparent",
           "&:hover": {
-            background: "rgba(0,0,0,0.05)"
+            background: "rgba(255,255,255,0.1)"
           }
         }}
       >
         <Avatar
           sx={{
-            width: 44,
-            height: 44,
-            border: "2px solid #e5e7eb",
+            width: 34,
+            height: 34,
+            border: "2px solid rgba(201,154,46,0.6)",
           }}
           alt={user?.userName || "Profile"}
           src={profileImage}
@@ -104,37 +105,24 @@ export default function BasicMenu() {
           elevation: 3,
           sx: {
             borderRadius: 2,
-            mt: 1.5,
-            minWidth: 180,
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 4px 10px rgba(0,0,0,0.1))',
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 0,
-              right: 14,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
+            mt: 1,
+            minWidth: 190,
+
           },
         }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem onClick={handleProfileOpen} sx={{ color: "#374151", py: 1.5, fontWeight: 500 }}>
+        <MenuItem onClick={handleProfileOpen} sx={{ color: "#374151", py: 1.2, borderRadius: "10px", fontWeight: 500 }}>
           Profile
         </MenuItem>
 
         {/* ✅ UPDATED */}
-        <MenuItem onClick={handleMyAccount} sx={{ color: "#374151", py: 1.5, fontWeight: 500 }}>
+        <MenuItem onClick={handleMyAccount} sx={{ color: "#374151", py: 1.2, borderRadius: "10px", fontWeight: 500 }}>
           My Account
         </MenuItem>
 
-        <MenuItem onClick={handleLogout} sx={{ color: "#EF4444", py: 1.5, fontWeight: 500 }}>
+        <MenuItem onClick={handleLogout} sx={{ color: "#EF4444", py: 1.2, borderRadius: "10px", fontWeight: 500 }}>
           Logout
         </MenuItem>
       </Menu>
@@ -153,10 +141,11 @@ export default function BasicMenu() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            background: "white",
-            color: "#111827",
-            borderBottom: "1px solid #e5e7eb",
+            background: "transparent",
+            color: "#101828",
+            borderBottom: "1px solid #eaecf0",
             fontWeight: 600,
+            fontSize: "1rem",
           }}
         >
           Admin Profile

@@ -19,7 +19,7 @@ import Pagination from "@mui/material/Pagination";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, TrashIcon, PlusIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 // import { Modal, Form, Input, Button } from "antd";
 import { Modal, Form, Input, Button, Upload, Checkbox } from "antd";
@@ -39,15 +39,35 @@ import {
 // ─────────────────────────────
 const StyledTableCell = styled(TableCell)(() => ({
   [`&.${tableCellClasses.head}`]: {
-    background: "linear-gradient(to right, #1E3A8A, #3B82F6)",
-    color: "#fff",
-    fontWeight: 600,
+    background: "#f9fafb",
+    color: "#667085",
+    fontWeight: 700,
+    fontSize: "0.72rem",
+    padding: "14px 16px",
     textTransform: "uppercase",
+    letterSpacing: "0.08em",
+    borderBottom: "1px solid rgba(16,24,40,0.08)",
+    whiteSpace: "nowrap",
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: "0.86rem",
+    color: "#1f2937",
+    padding: "12px 16px",
+    borderBottom: "1px solid rgba(15,23,42,0.06)",
   },
 }));
 
 const StyledTableRow = styled(TableRow)(() => ({
-  "&:nth-of-type(odd)": { backgroundColor: "#f9fafb" },
+  "&:nth-of-type(odd)": {
+    backgroundColor: "rgba(248,250,252,0.45)",
+  },
+  "&:hover": {
+    backgroundColor: "rgba(16,24,40,0.08)",
+    transition: "background-color 0.2s ease",
+  },
+  "&:last-child td, &:last-child th": {
+    border: 0,
+  },
 }));
 
 export default function VehiclePreferenceList() {
@@ -227,42 +247,57 @@ export default function VehiclePreferenceList() {
   if (loading) return <Loader />;
 
   return (
-    <div className="p-6">
+    <div className="page-shell">
       <Breaker />
 
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Vehicle Preferences</h1>
+        </div>
+        <div className="page-actions">
+          <button
+            onClick={() => setCreateModal(true)}
+            className="btn-primary"
+          >
+            <PlusIcon className="h-4 w-4" />
+            Create
+          </button>
+        </div>
+      </div>
+
       {/* FILTER */}
-      <div className="flex gap-2 mb-4 mt-6">
-        <input
-          className="border p-2 rounded-lg"
-          placeholder="Search..."
-          value={tempSearch}
-          onChange={(e) => setTempSearch(e.target.value)}
-        />
+      <div className="card card-pad">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <div className="relative w-full sm:w-auto">
+            <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              className="search-field sm:w-96"
+              placeholder="Search..."
+              value={tempSearch}
+              onChange={(e) => setTempSearch(e.target.value)}
+            />
+          </div>
 
-        <button
-          onClick={applySearch}
-          className="bg-gradient-to-r from-blue-600 to-blue-800 text-white px-6 py-2.5 rounded-lg font-medium"
-        >
-          Search
-        </button>
+          <div className="flex gap-2.5">
+            <button
+              onClick={applySearch}
+              className="btn-primary flex-1 sm:flex-none"
+            >
+              Search
+            </button>
 
-        <button
-          onClick={clearSearch}
-          className="bg-gray-600 text-white px-5 py-2.5 rounded-lg font-medium shadow"
-        >
-          Clear
-        </button>
-
-        <button
-          onClick={() => setCreateModal(true)}
-          className="bg-green-600 text-white px-3 ml-auto rounded-xl"
-        >
-          + Create
-        </button>
+            <button
+              onClick={clearSearch}
+              className="btn-secondary flex-1 sm:flex-none"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* TABLE */}
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -280,23 +315,21 @@ export default function VehiclePreferenceList() {
                 <StyledTableCell>{i + 1}</StyledTableCell>
 
                 <StyledTableCell>
-                  <img src={row.image} className="w-10 h-10" />
+                  <img src={row.image} alt={row.name} className="h-10 w-10 rounded-xl object-cover shadow-sm ring-1 ring-black/5" />
                 </StyledTableCell>
 
-                <StyledTableCell>{row.name}</StyledTableCell>
+                <StyledTableCell className="!font-semibold !text-slate-900">{row.name}</StyledTableCell>
 
                 <StyledTableCell>
-                  <span
-                    className={`px-2 py-1 rounded text-white text-xs ${
-                      row.status ? "bg-green-500" : "bg-red-500"
-                    }`}
-                  >
+                  <div className="flex items-center gap-3">
+                  <span className={row.status ? "badge-success" : "badge-danger"}>
                     {row.status ? "Active" : "Inactive"}
                   </span>
                   <Switch
                     checked={row.status}
                     onChange={() => handleToggle(row._id)}
                   />
+                  </div>
                 </StyledTableCell>
 
                 <StyledTableCell>
@@ -348,7 +381,7 @@ export default function VehiclePreferenceList() {
       </TableContainer>
 
       {/* PAGINATION */}
-      <Stack alignItems="center" mt={3}>
+      <Stack alignItems="center" mt={1}>
         <Pagination
           count={totalPages}
           page={page}
@@ -406,7 +439,7 @@ export default function VehiclePreferenceList() {
           <Button
             htmlType="submit"
             type="primary"
-            className="w-full h-11 rounded-lg"
+            className="mt-2 h-11 w-full !rounded-xl"
           >
             Create
           </Button>
@@ -460,7 +493,7 @@ export default function VehiclePreferenceList() {
           <Button
             htmlType="submit"
             type="primary"
-            className="w-full h-11 rounded-lg"
+            className="mt-2 h-11 w-full !rounded-xl"
           >
             Update
           </Button>

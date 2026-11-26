@@ -226,42 +226,67 @@ export default function HourlyBookingList() {
   if (loading && !data.length) return <Loader />;
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-4">
-        <h1 className="text-xl font-bold text-gray-900 font-sans">Hourly Bookings</h1>
-        <p className="text-sm text-gray-500 mt-1">Manage and assign chauffeurs to hourly packages.</p>
+    <div className="page-shell">
+      <Breaker />
+
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Hourly Bookings</h1>
+          <p className="page-subtitle">Manage and assign chauffeurs to hourly packages.</p>
+        </div>
+        <div className="page-actions">
+          <button onClick={exportExcel} className="btn-secondary">
+            {isExporting ? <LoderBtn /> : "Export Excel"}
+          </button>
+        </div>
       </div>
 
       {/* STATS BAR */}
       {stats && (
-        <div className="mb-6 bg-gradient-to-r from-[#0F2027] to-[#2C5364] text-white shadow-md rounded-xl px-5 py-3 text-sm flex items-center gap-4 flex-wrap">
-          <span>Total: <span className="font-bold text-yellow-300">{stats.totalBookings}</span></span>
-          <span className="opacity-40">|</span>
-          <span>Active: <span className="font-bold text-green-300">{stats.activeTripCount}</span></span>
-          <span className="opacity-40">|</span>
-          <span>Completed: <span className="font-bold text-blue-300">{stats.completedCount}</span></span>
-          <span className="opacity-40">|</span>
-          <span>Cancelled: <span className="font-bold text-red-300">{stats.cancelledCount}</span></span>
-          <span className="opacity-40">|</span>
-          <span>Assigned: <span className="font-bold text-purple-300">{stats.assignedCount}</span></span>
-          <span className="opacity-40">|</span>
-          <span>Unassigned: <span className="font-bold text-gray-300">{stats.unassignedCount}</span></span>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-6">
+          <div className="card px-4 py-3">
+            <div className="section-label">Total:</div>
+            <div className="mt-1 text-lg font-semibold text-slate-900">{stats.totalBookings}</div>
+          </div>
+          <div className="card px-4 py-3">
+            <div className="section-label">Active:</div>
+            <div className="mt-1 text-lg font-semibold text-blue-700">{stats.activeTripCount}</div>
+          </div>
+          <div className="card px-4 py-3">
+            <div className="section-label">Completed:</div>
+            <div className="mt-1 text-lg font-semibold text-emerald-700">{stats.completedCount}</div>
+          </div>
+          <div className="card px-4 py-3">
+            <div className="section-label">Cancelled:</div>
+            <div className="mt-1 text-lg font-semibold text-rose-700">{stats.cancelledCount}</div>
+          </div>
+          <div className="card px-4 py-3">
+            <div className="section-label">Assigned:</div>
+            <div className="mt-1 text-lg font-semibold text-slate-900">{stats.assignedCount}</div>
+          </div>
+          <div className="card px-4 py-3">
+            <div className="section-label">Unassigned:</div>
+            <div className="mt-1 text-lg font-semibold text-slate-500">{stats.unassignedCount}</div>
+          </div>
         </div>
       )}
 
       {/* FILTERS */}
-      <div className="bg-white p-5 rounded-xl shadow mb-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">Search & Filters</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="card card-pad">
+        <div className="mb-4">
+          <p className="section-label">Refine results</p>
+          <h3 className="card-title mt-1">Search & Filters</h3>
+        </div>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <input
             type="text"
             placeholder="Search booking number..."
-            className="border p-2 rounded-xl text-sm"
+            className="field !h-10"
             value={filters.search}
             onChange={(e) => handleFilterChange("search", e.target.value)}
           />
           <select
-            className="border p-2 rounded-xl text-sm"
+            className="field !h-10"
             value={filters.paymentStatus}
             onChange={(e) => handleFilterChange("paymentStatus", e.target.value)}
           >
@@ -272,7 +297,7 @@ export default function HourlyBookingList() {
             <option value="refunded">Refunded</option>
           </select>
           <select
-            className="border p-2 rounded-xl text-sm"
+            className="field !h-10"
             value={filters.assignmentStatus}
             onChange={(e) => handleFilterChange("assignmentStatus", e.target.value)}
           >
@@ -282,7 +307,7 @@ export default function HourlyBookingList() {
             <option value="reassigning">Reassigning</option>
           </select>
           <select
-            className="border p-2 rounded-xl text-sm"
+            className="field !h-10"
             value={filters.tripStatus}
             onChange={(e) => handleFilterChange("tripStatus", e.target.value)}
           >
@@ -295,18 +320,15 @@ export default function HourlyBookingList() {
             <option value="cancelled">Cancelled</option>
           </select>
         </div>
-        <div className="flex gap-3 mt-4">
-          <button onClick={handleResetFilters} className="bg-gray-400 text-white px-4 py-1.5 rounded-lg text-sm font-medium">
+        <div className="mt-5 flex flex-col gap-3 border-t border-slate-200/70 pt-5 sm:flex-row sm:justify-end">
+          <button onClick={handleResetFilters} className="btn-secondary w-full sm:w-auto">
             Reset Filters
-          </button>
-          <button onClick={exportExcel} className="bg-green-600 text-white px-4 py-1.5 rounded-lg text-sm font-medium ml-auto">
-            {isExporting ? <LoderBtn /> : "Export Excel"}
           </button>
         </div>
       </div>
 
       {/* TABLE */}
-      <TableContainer component={Paper} className="rounded-xl shadow">
+      <TableContainer component={Paper} className="overflow-hidden">
         <Table>
           <TableHead>
             <TableRow>
@@ -324,7 +346,7 @@ export default function HourlyBookingList() {
           <TableBody>
             {!data.length ? (
               <TableRow>
-                <TableCell colSpan={8} align="center">
+                <TableCell colSpan={9} align="center" className="!py-14 !text-slate-400">
                   No Hourly Bookings Found
                 </TableCell>
               </TableRow>
@@ -332,68 +354,68 @@ export default function HourlyBookingList() {
               data.map((row, index) => (
                 <TableRow key={row._id}>
                   <TableCell>{(page - 1) * rowsPerPage + index + 1}</TableCell>
-                  <TableCell className="font-semibold text-gray-800 break-words">{row.bookingNumber}</TableCell>
+                  <TableCell className="whitespace-nowrap !font-semibold !text-slate-900">{row.bookingNumber}</TableCell>
                   <TableCell>
-                    <div className="font-medium text-gray-800 break-words">{row.user?.name || row.travellerName || "_"}</div>
-                    <div className="text-[10px] sm:text-xs text-gray-500 break-all">{row.user?.phone || row.travellerPhone || "_"}</div>
+                    <div className="font-semibold text-slate-800 break-words">{row.user?.name || row.travellerName || "_"}</div>
+                    <div className="text-xs text-slate-500 break-all">{row.user?.phone || row.travellerPhone || "_"}</div>
                   </TableCell>
                   <TableCell>
-                    <div className="text-[10px] sm:text-xs font-semibold text-blue-600 break-words">Hours: {row.bookedHours} Hrs</div>
-                    <div className="text-[10px] sm:text-xs text-gray-500 mt-1 break-words">Pickup: {row.pickup?.address}</div>
-                    <div className="text-[10px] sm:text-xs text-gray-400 break-words">Scheduled: {row.scheduledAt ? new Date(row.scheduledAt).toLocaleString() : "-"}</div>
+                    <div className="text-xs font-semibold text-slate-700 break-words">Hours: {row.bookedHours} Hrs</div>
+                    <div className="mt-1 text-xs text-slate-500 break-words">Pickup: {row.pickup?.address}</div>
+                    <div className="text-xs text-slate-400 break-words">Scheduled: {row.scheduledAt ? new Date(row.scheduledAt).toLocaleString() : "-"}</div>
                   </TableCell>
                   <TableCell>
                     <span
-                      className={`inline-block max-w-full px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold leading-tight break-words ${
+                      className={`whitespace-nowrap ${
                         row.tripType === "round_trip"
-                          ? "bg-blue-100 text-blue-700"
+                          ? "badge-info"
                           : row.tripType === "one_way"
-                            ? "bg-purple-100 text-purple-700"
-                            : "bg-slate-100 text-slate-700"
+                            ? "badge-warning"
+                            : "badge-neutral"
                       }`}
                     >
                       {formatText(row.tripType)}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <span className={`inline-block max-w-full px-2 py-1 rounded-full text-[10px] sm:text-xs font-semibold uppercase leading-tight ${
-                      row.tripStatus === "completed" ? "bg-green-100 text-green-800" :
-                      row.tripStatus === "cancelled" ? "bg-red-100 text-red-800" :
-                      row.tripStatus === "in_progress" ? "bg-blue-100 text-blue-800" : "bg-yellow-100 text-yellow-800"
+                    <span className={`whitespace-nowrap uppercase ${
+                      row.tripStatus === "completed" ? "badge-success" :
+                      row.tripStatus === "cancelled" ? "badge-danger" :
+                      row.tripStatus === "in_progress" ? "badge-info" : "badge-warning"
                     }`}>
                       {row.tripStatus}
                     </span>
                   </TableCell>
                   <TableCell>
-                    <div className="text-xs font-bold text-gray-800">₹{row.estimatedFare}</div>
-                    <span className={`text-[10px] font-bold uppercase ${row.paymentStatus === "paid" ? "text-green-600" : "text-orange-600"}`}>
+                    <div className="mb-1 text-sm font-bold text-slate-900">₹{row.estimatedFare}</div>
+                    <span className={`whitespace-nowrap uppercase !text-[10px] ${row.paymentStatus === "paid" ? "badge-success" : "badge-warning"}`}>
                       {row.paymentStatus}
                     </span>
                   </TableCell>
                   <TableCell>
                     {row.driver ? (
                       <>
-                        <div className="font-medium text-gray-800">{row.driver.name}</div>
-                        <div className="text-xs text-gray-500">{row.driver.phone}</div>
+                        <div className="font-semibold text-slate-800">{row.driver.name}</div>
+                        <div className="text-xs text-slate-500">{row.driver.phone}</div>
                         {row.tripStatus?.toLowerCase() !== "completed" && (
                           <button
                             onClick={() => handleReassignDriver(row._id)}
-                            className="mt-1 text-[10px] bg-red-500 text-white px-2 py-0.5 rounded"
+                            className="mt-2 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-2.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
                           >
                             Reassign
                           </button>
                         )}
                       </>
                     ) : (
-                      <span className="text-xs text-gray-400 italic">No Chauffeur</span>
+                      <span className="text-xs italic text-slate-400">No Chauffeur</span>
                     )}
                   </TableCell>
                   <TableCell align="center">
-                    <div className="flex flex-col items-center gap-1">
+                    <div className="flex flex-col items-center gap-1.5">
                       {row.assignmentStatus === "unassigned" && row.tripStatus?.toLowerCase() !== "completed" && (
                         <button
                           onClick={() => handleAssignDriver(row._id)}
-                          className="text-xs bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-lg font-medium"
+                          className="btn-primary !h-8 !px-3 !text-xs"
                         >
                           Assign Driver
                         </button>
@@ -416,7 +438,7 @@ export default function HourlyBookingList() {
       </TableContainer>
 
       {totalPages > 1 && (
-        <Stack alignItems="center" mt={5}>
+        <Stack alignItems="center" mt={2}>
           <Pagination count={totalPages} page={page} onChange={handlePageChange} />
         </Stack>
       )}
@@ -432,7 +454,7 @@ export default function HourlyBookingList() {
         onOk={handleAssignSubmit}
       >
         <div className="my-4">
-          <label className="block text-xs font-semibold text-gray-500 mb-2">SELECT AVAILABLE CHAUFFEUR</label>
+          <label className="field-label">SELECT AVAILABLE CHAUFFEUR</label>
           <Select
             showSearch
             placeholder="Search Chauffeur by Name/Phone"

@@ -112,73 +112,86 @@ const UpdateAdmin = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="m-3">
-      <div className="mb-4">
-        <Breaker />
-      </div>
-      <div className="ml-5 mt-8 bg-white p-6 max-w-9xl rounded-xl shadow-xl">
+    <div className="page-shell">
+      <Breaker />
+      <div className="card mx-auto w-full max-w-4xl p-5 sm:p-8">
+        <div className="mb-7 flex flex-col gap-4 border-b border-slate-200/70 pb-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div>
+              <p className="section-label">Update record</p>
+              <h2 className="text-xl font-semibold tracking-tight text-slate-900 sm:text-2xl">Update User</h2>
+            </div>
+          </div>
 
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-semibold text-slate-600">
+              Language:
+            </label>
 
-        <div className="mb-4 flex justify-end items-center gap-2">
-          <label className="text-xl font-medium text-gray-600">
-            Language:
-          </label>
-
-          <select
-            value={selectedLang}
-            onChange={(e) => setSelectedLang(e.target.value)}
-            className="w-24 h-8 text-sm border rounded-md px-2 border-gray-400 focus:outline-none focus:ring-1 focus:ring-blue-500"
-          >
-            <option value="en">English</option>
-            <option value="hi">Hindi</option>
-            <option value="pa">Punjabi</option>
-            <option value="bn">Bengali</option>
-            <option value="ta">Tamil</option>
-            <option value="te">Telugu</option>
-            <option value="gu">Gujarati</option>
-            <option value="mr">Marathi</option>
-          </select>
+            <select
+              value={selectedLang}
+              onChange={(e) => setSelectedLang(e.target.value)}
+              className="field !h-9 w-32"
+            >
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="pa">Punjabi</option>
+              <option value="bn">Bengali</option>
+              <option value="ta">Tamil</option>
+              <option value="te">Telugu</option>
+              <option value="gu">Gujarati</option>
+              <option value="mr">Marathi</option>
+            </select>
+          </div>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <label className="ml-2 font-normal block">Name:</label>
-          <input
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            placeholder="Enter name"
-          />
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div>
+            <label className="field-label">Name:</label>
+            <input
+              name="name"
+              value={formData.name}
+              onChange={handleChange}
+              className="field"
+              type="text"
+              placeholder="Enter name"
+            />
+          </div>
 
-          <label className="ml-2 font-normal block mt-4">Email:</label>
-          <input
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="email"
-            placeholder="Enter email"
-          />
+          <div>
+            <label className="field-label">Email:</label>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="field"
+              type="email"
+              placeholder="Enter email"
+            />
+          </div>
 
-          <label className="ml-2 font-normal block mt-4">Mobile:</label>
-          <input
-            name="mobile"
-            value={formData.mobile}
-            onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="text"
-            placeholder="Enter mobile number"
-          />
+          <div>
+            <label className="field-label">Mobile:</label>
+            <input
+              name="mobile"
+              value={formData.mobile}
+              onChange={handleChange}
+              className="field"
+              type="text"
+              placeholder="Enter mobile number"
+            />
+          </div>
 
-          <label className="ml-2 font-normal block mt-4">Date of Birth:</label>
-          <input
-            name="dob"
-            value={formData.dob}
-            onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-4 border-gray-500"
-            type="date"
-          />
+          <div>
+            <label className="field-label">Date of Birth:</label>
+            <input
+              name="dob"
+              value={formData.dob}
+              onChange={handleChange}
+              className="field"
+              type="date"
+            />
+          </div>
 
           {/* <label className="ml-2 font-normal block mt-4">Profession:</label>
           <input
@@ -190,83 +203,95 @@ const UpdateAdmin = () => {
             placeholder="Enter profession"
           /> */}
 
-          <label className="ml-2 font-normal block mt-4">Profile Image:</label>
-          {imagePreview && (
-            <img
-              src={getImageUrl(imagePreview)}
-              alt="Preview"
-              className="h-16 w-24 object-cover rounded mt-2 mb-2 ml-2 border border-gray-300"
+          <div className="md:col-span-2">
+            <label className="field-label">Profile Image:</label>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              {imagePreview && (
+                <img
+                  src={getImageUrl(imagePreview)}
+                  alt="Preview"
+                  className="h-20 w-28 rounded-xl object-cover ring-1 ring-black/5"
+                />
+              )}
+              <label
+                htmlFor="image-upload"
+                className="flex h-11 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-white/60 px-4 text-sm font-semibold text-slate-600 transition-colors hover:border-gray-400 hover:bg-white"
+              >
+                🖼️ Upload Image
+              </label>
+            </div>
+            <input
+              id="image-upload"
+              className="hidden"
+              type="file"
+              name="profileImage"
+              accept="image/*"
+              onChange={handleImageChange}
             />
-          )}
-          <label
-            htmlFor="image-upload"
-            className="flex items-center justify-center h-10 border border-gray-500 rounded-xl cursor-pointer bg-white hover:bg-gray-100 transition-colors px-4"
-          >
-            🖼️ Upload Image
-          </label>
-          <input
-            id="image-upload"
-            className="hidden"
-            type="file"
-            name="profileImage"
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-          {apiError.profileImage && (
-            <p className="text-red-500 text-sm ml-2">{apiError.profileImage}</p>
-          )}
+            {apiError.profileImage && (
+              <p className="field-error">{apiError.profileImage}</p>
+            )}
+          </div>
 
-          <label className="ml-2 font-normal block mt-4">Gender:</label>
-          <select
-            name="gender"
-            value={formData.gender}
-            onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
-          >
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
+          <div>
+            <label className="field-label">Gender:</label>
+            <select
+              name="gender"
+              value={formData.gender}
+              onChange={handleChange}
+              className="field"
+            >
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
 
           {/* Preferred Language */}
-          <label className="ml-2 mt-4 font-normal block">
-            Preferred Language:
-          </label>
-          <select
-            name="preferredLanguage"
-            value={formData.preferredLanguage}
-            onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
-          >
-            <option value="en">English</option>
-            <option value="hi">Hindi</option>
-            <option value="pa">Punjabi</option>
-            <option value="bn">Bengali</option>
-            <option value="ta">Tamil</option>
-            <option value="te">Telugu</option>
-            <option value="gu">Gujarati</option>
-            <option value="mr">Marathi</option>
-          </select>
+          <div>
+            <label className="field-label">
+              Preferred Language:
+            </label>
+            <select
+              name="preferredLanguage"
+              value={formData.preferredLanguage}
+              onChange={handleChange}
+              className="field"
+            >
+              <option value="en">English</option>
+              <option value="hi">Hindi</option>
+              <option value="pa">Punjabi</option>
+              <option value="bn">Bengali</option>
+              <option value="ta">Tamil</option>
+              <option value="te">Telugu</option>
+              <option value="gu">Gujarati</option>
+              <option value="mr">Marathi</option>
+            </select>
+          </div>
 
-          <label className="ml-2 font-normal block mt-4">Status:</label>
-          <select
-            name="status"
-            value={formData.status}
-            onChange={handleChange}
-            className="w-full h-10 mb-1 border rounded-xl pl-3 pr-10 py-2 border-gray-500"
-          >
-            <option value="">Select Status</option>
-            <option value="true">Active</option>
-            <option value="false">Inactive</option>
-          </select>
+          <div>
+            <label className="field-label">Status:</label>
+            <select
+              name="status"
+              value={formData.status}
+              onChange={handleChange}
+              className="field"
+            >
+              <option value="">Select Status</option>
+              <option value="true">Active</option>
+              <option value="false">Inactive</option>
+            </select>
+          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-l from-[#5F0099] to-[#9F00FF] text-white hover:scale-105 active:scale-95 transition-transform duration-500 py-3 mt-6 rounded-2xl"
-          >
-            {loading ? "Updating..." : "Update Admin"}
-          </button>
+          <div className="flex flex-col-reverse gap-3 border-t border-slate-200/70 pt-6 sm:flex-row sm:justify-end md:col-span-2">
+            <button
+              type="submit"
+              disabled={loading}
+              className="btn-primary w-full px-6 sm:w-auto sm:min-w-[150px]"
+            >
+              {loading ? "Updating..." : "Update Admin"}
+            </button>
+          </div>
         </form>
       </div>
     </div>
