@@ -30,7 +30,6 @@ import BookingFilter from "./BookingFilter";
 
 import { getAllBookings, assignDriver as assignDriverApi, getUnassignedDriversBySegment } from "../../Services/BookingApi";
 import { getAllDrivers } from "../../Services/DriverApi";
-import { reassignCancelRequestApi } from "../../Services/RequestApi";
 import { StyledTableCell } from "../../compoents/TableComponents";
 
 const { Option } = Select;
@@ -60,8 +59,6 @@ export default function BookingList({
   const [totalPages, setTotalPages] = useState(0);
 
   const [selectedSegment, setSelectedSegment] = useState("");
-  const [isReassignModalOpen, setIsReassignModalOpen] = useState(false);
-
   // ✅ FIXED FILTER STATE (IMPORTANT)
   const [filters, setFilters] = useAdminListState("filters", {
     searchQuery: "",
@@ -219,13 +216,6 @@ export default function BookingList({
     setSearchDriver("");
   };
 
-  const handleReassignDriver = (bookingId, segmentId) => {
-    setSelectedRowId(bookingId);
-    setSelectedSegment(segmentId);
-    setIsReassignModalOpen(true);
-    setSelectedDriver("");
-  };
-
   // const handleAssignSubmit = async () => {
   //   if (!selectedDriver) return toast.error("Select driver");
 
@@ -253,27 +243,14 @@ export default function BookingList({
     try {
       setLoading(true);
 
-      let res;
-
-      if (isReassignModalOpen) {
-        // ✅ REASSIGN API
-        res = await reassignCancelRequestApi(selectedRowId, selectedDriver);
-      } else {
-        // ✅ NORMAL ASSIGN
-        res = await assignDriverApi(selectedRowId, selectedDriver);
-      }
+      const res = await assignDriverApi(selectedRowId, selectedDriver);
 
       if (res?.status) {
-        toast.success(
-          isReassignModalOpen
-            ? "Driver reassigned"
-            : "Driver assigned"
-        );
+        toast.success("Driver assigned");
 
         fetchBookings();
 
         setIsAssignModalOpen(false);
-        setIsReassignModalOpen(false);
       }
     } catch {
       toast.error("Error");
@@ -467,41 +444,10 @@ export default function BookingList({
                       <>
                         {row.driver.name || "-"}<br />
                         {row.driver.phone || "-"}<br />
-
-                        {/* ✅ HIDE REASSIGN IF TRIP COMPLETED */}
-                        {row.tripStatus?.toLowerCase() !== "completed" && (
-                          <button
-                            onClick={() =>
-                              handleReassignDriver(
-                                row._id,
-                                row.segment?._id
-                              )
-                            }
-                            className="mt-2 inline-flex h-7 items-center rounded-lg border border-rose-200 bg-rose-50 px-2.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100"
-                          >
-                            Reassign
-                          </button>
-                        )}
                       </>
                     ) : (
                       "-"
                     )}
-                    {/* {row.driver ? (
-                      <>
-                        {row.driver.name || "-"}<br />
-                        {row.driver.phone || "-"}<br />
-
-                       
-                        <button
-                          onClick={() => handleReassignDriver(row._id, row.segment?._id)}
-                          className="mt-1 text-xs bg-red-500 text-white px-2 py-1 rounded"
-                        >
-                          Reassign
-                        </button>
-                      </>
-                    ) : (
-                      "-"
-                    )} */}
                   </TableCell>
 
                   <TableCell align="center">
@@ -567,11 +513,10 @@ export default function BookingList({
 
       {/* MODAL */}
       <Modal
-        title={isReassignModalOpen ? "Reassign Chauffeur" : "Assign Chauffeur"}
-        open={isAssignModalOpen || isReassignModalOpen}
+        title="Assign Chauffeur"
+        open={isAssignModalOpen}
         onCancel={() => {
           setIsAssignModalOpen(false);
-          setIsReassignModalOpen(false);
         }}
         onOk={handleAssignSubmit}
       >

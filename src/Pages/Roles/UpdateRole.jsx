@@ -20,8 +20,8 @@ const UpdateRole = () => {
   const navigate = useNavigate();
 
   const AVAILABLE_SECTIONS = [
-    "Dashboard", "Driver", "Vehicle", "Booking", "User", "Membership", 
-    "Pricing", "HourlyPricing", "WeeklyPricing", "MonthlyPricing", "OutstationPricing", "HourlyPackages",
+    "Dashboard", "Driver", "Vehicle", "VehicleBrand", "VehicleModel", "Booking", "User", "Membership",
+    "Pricing", "PremiumPricing", "HourlyPricing", "WeeklyPricing", "MonthlyPricing", "OutstationPricing", "HourlyPackages",
     "Complaint", "Geography", "State", "City", "Region", "Settings", "Profile", "Role", "AdminStaff", "Config",
     "Feedback", "CancelReason", "Banner", "Segment", "CMS", "FAQ"
   ];

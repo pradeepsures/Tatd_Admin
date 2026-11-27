@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
+import Select from "react-select";
 import Loader from "../../../src/compoents/Loader";
 import LoderBtn from "../../../src/compoents/LoderBtn";
 import Breaker from "../../../src/compoents/Breaker";
@@ -13,16 +14,216 @@ const normalizeSelectValue = (value) => {
   return value;
 };
 
-const normalizeFormData = (data = {}) => {
-  const normalized = { ...data };
+const createInitialItem = (fields) => fields.reduce((item, field) => {
+  item[field.key] = field.defaultValue ?? "";
+  return item;
+}, {});
 
-  Object.keys(normalized).forEach((key) => {
-    if (key === "state" || key === "city") {
-      normalized[key] = normalizeSelectValue(normalized[key]);
-    }
-  });
+const createInitialFormData = (fields) => fields.reduce((data, field) => {
+  if (field.type === "array") {
+    data[field.key] = Array.from(
+      { length: field.initialRows ?? 1 },
+      () => createInitialItem(field.itemFields || [])
+    );
+  } else if (field.type === "object") {
+    data[field.key] = createInitialFormData(field.fields || []);
+  } else if (field.type === "boolean") {
+    data[field.key] = field.defaultValue ?? false;
+  } else {
+    data[field.key] = field.defaultValue ?? "";
+  }
+  return data;
+}, {});
+
+const normalizeFieldData = (data = {}, fields = []) => fields.reduce((normalized, field) => {
+  const value = data[field.key];
+  if (field.type === "array") {
+    normalized[field.key] = Array.isArray(value)
+      ? value.map((item) => normalizeFieldData(item, field.itemFields || []))
+      : [];
+  } else if (field.type === "object") {
+    normalized[field.key] = normalizeFieldData(value || {}, field.fields || []);
+  } else if (field.type === "dynamic_select" || field.type === "state_select") {
+    normalized[field.key] = normalizeSelectValue(value);
+  } else if (value !== undefined) {
+    normalized[field.key] = value;
+  } else {
+    normalized[field.key] = createInitialFormData([field])[field.key];
+  }
+  return normalized;
+}, {});
+
+const getValueAtPath = (value, path) => path.reduce(
+  (current, key) => (current == null ? undefined : current[key]),
+  value
+);
+
+const setValueAtPath = (value, path, nextValue) => {
+  const [key, ...remainingPath] = path;
+  if (remainingPath.length === 0) {
+    return { ...value, [key]: nextValue };
+  }
+  return {
+    ...value,
+    [key]: setValueAtPath(value[key] || {}, remainingPath, nextValue),
+  };
+};
+
+const getFieldValue = (formData, path, field) => getValueAtPath(
+  formData,
+  [...path, field.key]
+);
+
+const getFieldOptions = (field, dynamicOptions) => {
+  if (field.type === "dynamic_select" || field.type === "state_select") {
+    return dynamicOptions[field.key] || [];
+  }
+  return field.options || [];
+};
+
+const getInputValue = (value, field) => {
+  if (field.type === "boolean") return Boolean(value);
+  if (value === null || value === undefined) return "";
+  return value;
+};
+
+const normalizeFieldValue = (value, field) => {
+  if (field.type === "number") {
+    return value === "" ? "" : Number(value);
+  }
+  if (field.type === "dynamic_select" || field.type === "state_select") {
+    return normalizeSelectValue(value);
+  }
+  return value;
+};
+
+const updateNestedValue = (current, path, value) => {
+  if (path.length === 1) {
+    const updated = Array.isArray(current) ? [...current] : { ...current };
+    updated[path[0]] = value;
+    return updated;
+  }
+  const [key, ...rest] = path;
+  const updated = Array.isArray(current) ? [...current] : { ...current };
+  updated[key] = updateNestedValue(current[key], rest, value);
+  return updated;
+};
+
+const normalizeFormData = (data = {}, fields = []) => {
+  const normalized = normalizeFieldData(data, fields);
+  const stateField = fields.find((field) => field.key === "state" && field.submit === false);
+  if (stateField && !normalized.state && data.city && typeof data.city === "object") {
+    normalized.state = normalizeSelectValue(data.city.state);
+  }
 
   return normalized;
+};
+
+const renderField = (
+  field,
+  parentPath,
+  formData,
+  dynamicOptions,
+  handleChange,
+  readOnly,
+  isEditMode,
+  providedOptions
+) => {
+  const value = getFieldValue(formData, parentPath, field);
+  const options = providedOptions || getFieldOptions(field, dynamicOptions);
+  const inputValue = getInputValue(value, field);
+  const fieldName = field.key;
+
+  return (
+    <div key={`${parentPath.join(".")}.${field.key}`}>
+      <label className="field-label">
+        {field.label} {field.required && <span className="text-rose-500">*</span>}
+      </label>
+      {field.description && (
+        <p className="mb-1.5 text-xs leading-5 text-slate-500">{field.description}</p>
+      )}
+      {field.type === "textarea" ? (
+        <textarea
+          name={fieldName}
+          value={inputValue}
+          onChange={(event) => handleChange(event, field, parentPath)}
+          required={field.required}
+          disabled={readOnly}
+          className="w-full rounded-lg border border-gray-300 px-4 py-2.5 transition-all"
+          rows="4"
+        />
+      ) : field.type === "dynamic_select" || field.type === "state_select" ? (
+        <Select
+          options={options}
+          value={options.find((option) => String(option.value) === String(inputValue)) || null}
+          onChange={(option) => handleChange({ target: { name: fieldName, value: option?.value || "", type: "select" } }, field, parentPath)}
+          isDisabled={readOnly}
+          isClearable={!field.required && !readOnly}
+          placeholder={`Search or select ${field.label.toLowerCase()}...`}
+          noOptionsMessage={() => "No matching options"}
+          styles={{
+            control: (base, state) => ({
+              ...base,
+              minHeight: 44,
+              borderRadius: 10,
+              borderColor: state.isFocused ? "#94a3b8" : "#cbd5e1",
+              boxShadow: state.isFocused ? "0 0 0 2px rgba(148,163,184,0.2)" : "none",
+              "&:hover": { borderColor: "#94a3b8" },
+            }),
+            menu: (base) => ({ ...base, zIndex: 30 }),
+          }}
+        />
+      ) : field.type === "select" ? (
+        <select
+          name={fieldName}
+          value={inputValue}
+          onChange={(event) => handleChange(event, field, parentPath)}
+          required={field.required}
+          disabled={readOnly}
+          className="h-11 w-full rounded-lg border border-gray-300 px-3.5"
+        >
+          <option value="">Select {field.label}</option>
+          {options.map((option) => (
+            <option key={option.value} value={option.value}>{option.label}</option>
+          ))}
+        </select>
+      ) : field.type === "boolean" ? (
+        <label className="flex h-10 cursor-pointer items-center gap-2.5">
+          <input
+            type="checkbox"
+            name={fieldName}
+            checked={inputValue}
+            onChange={(event) => handleChange(event, field, parentPath)}
+            disabled={readOnly}
+            className="h-4 w-4 rounded disabled:opacity-50"
+          />
+          <span className="text-sm font-medium text-slate-700">Yes / Active</span>
+        </label>
+      ) : field.type === "file" ? (
+        <input
+          type="file"
+          name={fieldName}
+          onChange={(event) => handleChange(event, field, parentPath)}
+          required={field.required && !isEditMode}
+          disabled={readOnly}
+          className="w-full text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-gray-100 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-gray-700 hover:file:bg-gray-200 file:cursor-pointer disabled:opacity-50"
+        />
+      ) : (
+        <input
+          type={field.type || "text"}
+          name={fieldName}
+          value={inputValue}
+          onChange={(event) => handleChange(event, field, parentPath)}
+          required={field.required}
+          disabled={readOnly}
+          step={field.step ?? (field.type === "number" ? "any" : undefined)}
+          min={field.min}
+          max={field.max}
+          className="h-11 w-full rounded-lg border border-gray-300 px-3.5 transition-all"
+        />
+      )}
+    </div>
+  );
 };
 
 export default function DynamicForm({ config, readOnly = false }) {
@@ -31,7 +232,7 @@ export default function DynamicForm({ config, readOnly = false }) {
   const { id } = useParams();
   const isEditMode = Boolean(id);
 
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState(() => createInitialFormData(fields));
   const [loading, setLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
   
@@ -121,7 +322,7 @@ export default function DynamicForm({ config, readOnly = false }) {
       setLoading(true);
       const result = await GenericApi.fetchDetails(endpoint, id);
       if (result?.status) {
-        setFormData(normalizeFormData(result.data || {}));
+        setFormData(normalizeFormData(result.data || {}, fields));
       } else {
         toast.error(result?.message || `Failed to fetch ${title} details.`);
         navigate(basePath);
@@ -134,37 +335,68 @@ export default function DynamicForm({ config, readOnly = false }) {
     }
   };
 
-  const handleChange = (e, field) => {
+  const handleChange = (e, field, parentPath = []) => {
     const { name, value, type, files, checked } = e.target;
+    const fieldPath = [...parentPath, name];
+    let nextValue;
     if (type === "file") {
-      setFormData({ ...formData, [name]: files[0] });
+      nextValue = files[0];
     } else if (type === "checkbox") {
-      setFormData({ ...formData, [name]: checked });
+      nextValue = checked;
     } else {
-      let newFormData = { ...formData, [name]: value };
-      
-      // Clear dependent fields if parent changes
-      fields.forEach(f => {
-        if (f.dependsOn === name) {
-          newFormData[f.key] = "";
-        }
-      });
-      
-      setFormData(newFormData);
+      nextValue = normalizeFieldValue(value, field);
     }
+    setFormData((previous) => {
+      let updated = updateNestedValue(previous, fieldPath, nextValue);
+      if (parentPath.length === 0) {
+        fields.forEach((dependentField) => {
+          if (dependentField.dependsOn === name) {
+            updated = { ...updated, [dependentField.key]: "" };
+          }
+        });
+      }
+      return updated;
+    });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const missingRequiredField = fields.find(
+      (field) =>
+        field.required &&
+        (formData[field.key] === "" ||
+          formData[field.key] === null ||
+          formData[field.key] === undefined)
+    );
+    if (missingRequiredField) {
+      toast.error(`${missingRequiredField.label} is required.`);
+      return;
+    }
+
+    const incompleteArray = fields.find(
+      (field) =>
+        field.type === "array" &&
+        (formData[field.key] || []).length < (field.minItems || 0)
+    );
+    if (incompleteArray) {
+      toast.error(`${incompleteArray.label} must have at least ${incompleteArray.minItems} item.`);
+      return;
+    }
+
     setSubmitLoading(true);
 
-    const hasFile = fields.some(f => f.type === 'file');
-    let dataToSend = formData;
+    const submittedData = Object.fromEntries(
+      fields
+        .filter((field) => field.submit !== false)
+        .map((field) => [field.key, formData[field.key]])
+    );
+    const hasFile = fields.some((field) => field.type === "file" && field.submit !== false);
+    let dataToSend = submittedData;
     
     if (hasFile) {
       dataToSend = new FormData();
-      Object.keys(formData).forEach(key => {
-        dataToSend.append(key, formData[key]);
+      Object.keys(submittedData).forEach(key => {
+        dataToSend.append(key, submittedData[key]);
       });
     }
 
@@ -202,74 +434,87 @@ export default function DynamicForm({ config, readOnly = false }) {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-6">
             {fields.map((field, index) => {
-              const options = field.type === "dynamic_select" || field.type === "state_select" 
-                ? (dynamicOptions[field.key] || []) 
-                : field.options || [];
+              const value = getFieldValue(formData, [], field);
+              const options = getFieldOptions(field, dynamicOptions);
+              const parentPath = [];
+
+              if (field.type === "array") {
+                const rows = Array.isArray(value) ? value : [];
+                const addRow = () => setFormData((previous) => {
+                  const currentRows = previous[field.key] || [];
+                  return setValueAtPath(previous, [field.key], [
+                    ...currentRows,
+                    createInitialItem(field.itemFields || []),
+                  ]);
+                });
+                const removeRow = (rowIndex) => setFormData((previous) => {
+                  const currentRows = previous[field.key] || [];
+                  return setValueAtPath(previous, [field.key], currentRows.filter((_, i) => i !== rowIndex));
+                });
+
+                return (
+                  <section key={field.key} className="rounded-xl border border-slate-200 p-4 sm:p-5">
+                    <div className="mb-4 flex items-center justify-between gap-3">
+                      <h3 className="card-title">{field.label}</h3>
+                      {!readOnly && (
+                        <button type="button" onClick={addRow} className="btn-secondary">
+                          + Add {field.label.replace(/s$/, "")}
+                        </button>
+                      )}
+                    </div>
+                    <div className="space-y-4">
+                      {rows.map((_, rowIndex) => (
+                        <div key={`${field.key}-${rowIndex}`} className="rounded-lg bg-slate-50 p-4">
+                          <div className="mb-3 flex items-center justify-between">
+                            <span className="text-sm font-semibold text-slate-700">Item {rowIndex + 1}</span>
+                            {!readOnly && (
+                              <button type="button" onClick={() => removeRow(rowIndex)} className="text-sm font-medium text-rose-600">
+                                Remove
+                              </button>
+                            )}
+                          </div>
+                          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            {field.itemFields.map((itemField) => renderField(
+                              itemField,
+                              [field.key, rowIndex],
+                              formData,
+                              dynamicOptions,
+                              handleChange,
+                              readOnly,
+                              isEditMode
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </section>
+                );
+              }
+
+              if (field.type === "object") {
+                return (
+                  <section key={field.key} className="rounded-xl border border-slate-200 p-4 sm:p-5">
+                    <h3 className="card-title mb-4">{field.label}</h3>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                      {field.fields.map((nestedField) => renderField(
+                        nestedField,
+                        [field.key],
+                        formData,
+                        dynamicOptions,
+                        handleChange,
+                        readOnly,
+                        isEditMode
+                      ))}
+                    </div>
+                  </section>
+                );
+              }
 
               return (
-                <div key={index} className={field.fullWidth ? "col-span-1 md:col-span-2" : ""}>
-                  <label className="field-label">
-                    {field.label} {field.required && <span className="text-rose-500">*</span>}
-                  </label>
-
-                  {field.type === "textarea" ? (
-                    <textarea
-                      name={field.key}
-                      value={formData[field.key] || ""}
-                      onChange={(e) => handleChange(e, field)}
-                      required={field.required}
-                      disabled={readOnly}
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-lg transition-all"
-                      rows="4"
-                    />
-                  ) : (field.type === "select" || field.type === "dynamic_select" || field.type === "state_select") ? (
-                    <select
-                      name={field.key}
-                      value={formData[field.key] || ""}
-                      onChange={(e) => handleChange(e, field)}
-                      required={field.required}
-                      disabled={readOnly}
-                      className="h-11 w-full px-3.5 border border-gray-300 rounded-lg"
-                    >
-                      <option value="">Select {field.label}</option>
-                      {options.map(opt => (
-                        <option key={opt.value} value={opt.value}>{opt.label}</option>
-                      ))}
-                    </select>
-                  ) : field.type === "boolean" ? (
-                    <label className="flex h-10 cursor-pointer items-center gap-2.5">
-                      <input
-                        type="checkbox"
-                        name={field.key}
-                        checked={formData[field.key] || false}
-                        onChange={(e) => handleChange(e, field)}
-                        disabled={readOnly}
-                        className="h-4 w-4 rounded disabled:opacity-50"
-                      />
-                      <span className="text-sm font-medium text-slate-700">Yes / Active</span>
-                    </label>
-                  ) : field.type === "file" ? (
-                    <input
-                      type="file"
-                      name={field.key}
-                      onChange={(e) => handleChange(e, field)}
-                      required={field.required && !isEditMode}
-                      disabled={readOnly}
-                      className="w-full text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-gray-100 file:text-gray-700 hover:file:bg-gray-200 file:cursor-pointer disabled:opacity-50"
-                    />
-                  ) : (
-                    <input
-                      type={field.type || "text"}
-                      name={field.key}
-                      value={formData[field.key] || ""}
-                      onChange={(e) => handleChange(e, field)}
-                      required={field.required}
-                      disabled={readOnly}
-                      className="h-11 w-full px-3.5 border border-gray-300 rounded-lg transition-all"
-                    />
-                  )}
+                <div key={index} className={field.fullWidth ? "md:col-span-2" : ""}>
+                  {renderField(field, parentPath, formData, dynamicOptions, handleChange, readOnly, isEditMode, options)}
                 </div>
               );
             })}

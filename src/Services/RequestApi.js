@@ -24,6 +24,24 @@ export const getCancelRequestsApi = async () => {
   }
 };
 
+export const getRejectedAssignmentsApi = async () => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/rejected-assignments`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+  const result = await res.json();
+
+  if (!res.ok || !result?.status) {
+    throw new Error(result?.message || "Failed to fetch rejected assignments");
+  }
+
+  return result;
+};
+
 //approve cancel request
 export const approveCancelRequestApi = async (id, adminNote) => {
   const token = localStorage.getItem("token");

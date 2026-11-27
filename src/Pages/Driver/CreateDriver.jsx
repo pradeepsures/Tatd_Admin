@@ -22,6 +22,8 @@ const CreateDriver = () => {
   const currAddressRef = useRef(null);
   const permAutocompleteRef = useRef(null);
   const currAutocompleteRef = useRef(null);
+  const serviceAreaAddressRefs = useRef([]);
+  const serviceAreaAutocompleteRefs = useRef([]);
   const [scriptLoaded, setScriptLoaded] = useState(false);
 
   // Form state
@@ -46,6 +48,8 @@ const CreateDriver = () => {
     state: "",
     city: "",
     pincode: "",
+    serviceArea: [],
+    serviceRadius: "",
     vehiclePreferences: [],
     vehiclePreferenceCategories: [],
   });
@@ -154,6 +158,46 @@ const CreateDriver = () => {
     }
   }, [scriptLoaded]);
 
+  useEffect(() => {
+    if (!scriptLoaded || !window.google?.maps?.places) return;
+
+    serviceAreaAutocompleteRefs.current = serviceAreaAddressRefs.current.map((input, index) => {
+      if (!input) return null;
+
+      const autocomplete = new window.google.maps.places.Autocomplete(input, { types: ["geocode"] });
+      autocomplete.setFields(["formatted_address", "geometry"]);
+      autocomplete.addListener("place_changed", () => {
+        const place = autocomplete.getPlace();
+        const location = place.geometry?.location;
+        if (!location) return;
+
+        setFormData((previous) => ({
+          ...previous,
+          serviceArea: previous.serviceArea.map((area, areaIndex) =>
+            areaIndex === index
+              ? {
+                  ...area,
+                  address: place.formatted_address || place.name || area.address,
+                  latitude: location.lat(),
+                  longitude: location.lng(),
+                }
+              : area,
+          ),
+        }));
+      });
+
+      return autocomplete;
+    });
+
+    return () => {
+      serviceAreaAutocompleteRefs.current.forEach((autocomplete) => {
+        if (autocomplete && window.google?.maps?.event) {
+          window.google.maps.event.clearInstanceListeners(autocomplete);
+        }
+      });
+    };
+  }, [scriptLoaded, formData.serviceArea.length]);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -201,6 +245,8 @@ const CreateDriver = () => {
       state: "",
       city: "",
       pincode: "",
+      serviceArea: [],
+      serviceRadius: "",
       vehiclePreferences: [],
       vehiclePreferenceCategories: [],
     });
@@ -279,6 +325,8 @@ const CreateDriver = () => {
         "vehiclePreferenceCategories",
         JSON.stringify(formData.vehiclePreferenceCategories),
       );
+      formDataToSend.append("serviceArea", JSON.stringify(formData.serviceArea));
+      formDataToSend.append("serviceRadius", formData.serviceRadius);
 
       const res = await createDriverApi(formDataToSend);
 
@@ -471,6 +519,84 @@ const CreateDriver = () => {
               value={formData.pincode}
               onChange={handleChange}
             />
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="field-label">Service Radius (meters)</label>
+            <input
+              className="field border"
+              type="number"
+              name="serviceRadius"
+              min="0"
+              placeholder="Enter service radius"
+              value={formData.serviceRadius}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="md:col-span-2">
+            <div className="mb-3 flex items-center justify-between">
+              <label className="field-label mb-0">Service Areas</label>
+              <button
+                type="button"
+                className="text-sm font-semibold text-blue-600 hover:text-blue-700"
+                onClick={() =>
+                  setFormData((previous) => ({
+                    ...previous,
+                    serviceArea: [
+                      ...previous.serviceArea,
+                      { address: "", latitude: "", longitude: "" },
+                    ],
+                  }))
+                }
+              >
+                Add service area
+              </button>
+            </div>
+            <div className="space-y-3">
+              {formData.serviceArea.map((area, index) => (
+                <div
+                  key={index}
+                  className="grid grid-cols-1 gap-3 rounded-xl border border-slate-200 p-4 sm:grid-cols-4"
+                >
+                  <input
+                    ref={(element) => {
+                      serviceAreaAddressRefs.current[index] = element;
+                    }}
+                    className="field border sm:col-span-3"
+                    type="text"
+                    placeholder="Search service area address"
+                    aria-label={`Service area ${index + 1} address`}
+                    value={area.address}
+                    onChange={(event) =>
+                      setFormData((previous) => ({
+                        ...previous,
+                        serviceArea: previous.serviceArea.map((item, itemIndex) =>
+                          itemIndex === index
+                            ? { ...item, address: event.target.value, latitude: "", longitude: "" }
+                            : item,
+                        ),
+                      }))
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="rounded-lg px-3 text-sm font-semibold text-rose-600 hover:bg-rose-50"
+                    aria-label={`Remove service area ${index + 1}`}
+                    onClick={() =>
+                      setFormData((previous) => ({
+                        ...previous,
+                        serviceArea: previous.serviceArea.filter(
+                          (_, itemIndex) => itemIndex !== index,
+                        ),
+                      }))
+                    }
+                  >
+                    Remove
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div>

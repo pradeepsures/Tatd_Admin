@@ -63,13 +63,20 @@ export const NAV_SECTIONS = [
           { name: "Preference Categories", link: "/home/VehiclePreferenceCategory", permissionKey: "Vehicle" },
         ],
       },
+      {
+        name: "Vehicle Catalog",
+        icon: MdOutlineDirectionsCar,
+        children: [
+          { name: "Vehicle Brands & Models", link: "/home/vehicleBrands", permissionKey: "VehicleBrand" },
+        ],
+      },
     ],
   },
   {
     label: "Users & Members",
     items: [
       { name: "App Users", link: "/home/users", icon: MdOutlinePerson, permissionKey: "User" },
-      { name: "Membership Plans", link: "/home/membership", icon: MdOutlinePeople, permissionKey: "Membership" },
+      // { name: "Membership Plans", link: "/home/membership", icon: MdOutlinePeople, permissionKey: "Membership" },
     ],
   },
   {
@@ -80,12 +87,11 @@ export const NAV_SECTIONS = [
         icon: MdOutlinePriceChange,
         permissionKey: "Pricing",
         children: [
-          { name: "Standard Pricing", link: "/home/pricing", permissionKey: "Pricing" },
+          { name: "Premium Pricing", link: "/home/premiumPricing", permissionKey: "PremiumPricing" },
           { name: "Hourly Pricing", link: "/home/hourlyPricing", permissionKey: "HourlyPricing" },
           { name: "Weekly Pricing", link: "/home/weeklyPricing", permissionKey: "WeeklyPricing" },
           { name: "Monthly Pricing", link: "/home/monthlyPricing", permissionKey: "MonthlyPricing" },
           { name: "Outstation Pricing", link: "/home/outstationPricing", permissionKey: "OutstationPricing" },
-          { name: "Hourly Packages", link: "/home/hourlyPackages", permissionKey: "HourlyPackages" },
         ],
       },
     ],
@@ -211,6 +217,7 @@ export const MODULE_CONFIGS = {
     permissions: "City",
     columns: [
       { label: "City Name", key: "name" },
+      { label: "State", key: "state.name" },
       { label: "Status", key: "status", type: "boolean" },
     ],
     fields: [
@@ -225,22 +232,85 @@ export const MODULE_CONFIGS = {
     basePath: "/home/hourlyPricing",
     permissions: "HourlyPricing",
     columns: [
-      { label: "State", key: "state.name" },
       { label: "City", key: "city.name" },
-      { label: "Night Fare (₹)", key: "nightFare" },
-      { label: "Round Trip (₹)", key: "roundTripFare" },
-      { label: "One Way (₹)", key: "oneWayFare" },
-      { label: "GST (%)", key: "gstPercent" },
-      { label: "Status", key: "isActive", type: "boolean" },
+      { label: "Night Charge (₹)", key: "nightCharge.amount" },
+      { label: "Waiting Charge / Min (₹)", key: "waitingChargePerMin" },
+      { label: "One Way Hourly Tiers", key: "oneWayHourly", type: "array_count" },
+      { label: "Status", key: "status", type: "boolean" },
     ],
     fields: [
-      { label: "State", key: "state", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/states", labelKey: "name", valueKey: "_id", fullWidth: true },
+      { label: "State", key: "state", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/states", labelKey: "name", valueKey: "_id", fullWidth: true, submit: false },
       { label: "City", key: "city", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/cities", labelKey: "name", valueKey: "_id", fullWidth: true, dependsOn: "state", dependsParam: "state" },
-      { label: "Night Fare", key: "nightFare", required: true, type: "number" },
-      { label: "Round Trip Fare", key: "roundTripFare", required: true, type: "number" },
-      { label: "One Way Fare", key: "oneWayFare", required: true, type: "number" },
-      { label: "GST %", key: "gstPercent", required: true, type: "number" },
-      { label: "Status", key: "isActive", type: "boolean" }
+      {
+        label: "Night Charge",
+        key: "nightCharge",
+        type: "object",
+        fields: [
+          { label: "Amount (₹)", key: "amount", required: true, type: "number" },
+          {
+            label: "Night Charge Starts At (24-hour clock)",
+            key: "fromHour",
+            required: true,
+            type: "number",
+            step: 1,
+            min: 0,
+            max: 23,
+            description: "Enter a whole hour from 0 to 23. For example, 22 means 10:00 PM.",
+          },
+          {
+            label: "Night Charge Ends At (24-hour clock)",
+            key: "toHour",
+            required: true,
+            type: "number",
+            step: 1,
+            min: 0,
+            max: 23,
+            description: "Enter a whole hour from 0 to 23. For example, 6 means 6:00 AM.",
+          },
+        ],
+      },
+      { label: "Waiting Charge Per Minute (₹)", key: "waitingChargePerMin", required: true, type: "number" },
+      {
+        label: "One Way Hourly",
+        key: "oneWayHourly",
+        type: "array",
+        minItems: 1,
+        itemFields: [
+          { label: "Hours", key: "hours", required: true, type: "number" },
+          { label: "Price (₹)", key: "price", required: true, type: "number" },
+        ],
+      },
+      {
+        label: "One Way Distance",
+        key: "oneWayDistance",
+        type: "array",
+        minItems: 1,
+        itemFields: [
+          { label: "Kilometers", key: "km", required: true, type: "number" },
+          { label: "Price (₹)", key: "price", required: true, type: "number" },
+        ],
+      },
+      {
+        label: "Round Trip Hourly",
+        key: "roundTripHourly",
+        type: "array",
+        minItems: 1,
+        itemFields: [
+          { label: "Hours", key: "hours", required: true, type: "number" },
+          { label: "Price (₹)", key: "price", required: true, type: "number" },
+        ],
+      },
+      {
+        label: "Round Trip Distance",
+        key: "roundTripDistance",
+        type: "array",
+        minItems: 1,
+        itemFields: [
+          { label: "Kilometers", key: "km", required: true, type: "number" },
+          { label: "Price (₹)", key: "price", required: true, type: "number" },
+        ],
+      },
+      { label: "Status", key: "status", type: "boolean", defaultValue: true },
     ]
   },
   weeklyPricing: {
@@ -273,20 +343,27 @@ export const MODULE_CONFIGS = {
     basePath: "/home/monthlyPricing",
     permissions: "MonthlyPricing",
     columns: [
-      { label: "State", key: "state.name" },
       { label: "City", key: "city.name" },
-      { label: "Hourly Fare (₹)", key: "hourlyFare" },
-      { label: "Night Fare (₹)", key: "nightFare" },
-      { label: "GST (%)", key: "gstPercent" },
-      { label: "Status", key: "isActive", type: "boolean" },
+      { label: "Plans", key: "plans", type: "array_count" },
+      { label: "Status", key: "status", type: "boolean" },
     ],
     fields: [
-      { label: "State", key: "state", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/states", labelKey: "name", valueKey: "_id", fullWidth: true },
+      { label: "State", key: "state", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/states", labelKey: "name", valueKey: "_id", fullWidth: true, submit: false },
       { label: "City", key: "city", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/cities", labelKey: "name", valueKey: "_id", fullWidth: true, dependsOn: "state", dependsParam: "state" },
-      { label: "Hourly Fare", key: "hourlyFare", required: true, type: "number" },
-      { label: "Night Fare", key: "nightFare", required: true, type: "number" },
-      { label: "GST %", key: "gstPercent", required: true, type: "number" },
-      { label: "Status", key: "isActive", type: "boolean" }
+      {
+        label: "Monthly Plans",
+        key: "plans",
+        type: "array",
+        minItems: 1,
+        itemFields: [
+          { label: "Days Per Month", key: "daysPerMonth", required: true, type: "number" },
+          { label: "Hours Per Day", key: "hoursPerDay", required: true, type: "number" },
+          { label: "Salary (₹)", key: "salary", required: true, type: "number" },
+          { label: "Service Fee (₹)", key: "serviceFee", required: true, type: "number" },
+          { label: "Duration (Months)", key: "durationMonths", required: true, type: "number" },
+        ],
+      },
+      { label: "Status", key: "status", type: "boolean", defaultValue: true }
     ]
   },
   outstationPricing: {
@@ -295,23 +372,35 @@ export const MODULE_CONFIGS = {
     basePath: "/home/outstationPricing",
     permissions: "OutstationPricing",
     columns: [
-      { label: "State", key: "state.name" },
       { label: "City", key: "city.name" },
-      { label: "Round Trip/Day (₹)", key: "roundTripPerDayFare" },
-      { label: "One Way/Km (₹)", key: "oneWayPerKmRate" },
-      { label: "Night Fare (₹)", key: "nightFare" },
-      { label: "Status", key: "isActive", type: "boolean" },
+      { label: "Round Trip Day Rates", key: "roundTripDays", type: "array_count" },
+      { label: "One Way Distance Rates", key: "oneWayKm", type: "array_count" },
+      { label: "Status", key: "status", type: "boolean" },
     ],
     fields: [
-      { label: "State", key: "state", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/states", labelKey: "name", valueKey: "_id", fullWidth: true },
+      { label: "State", key: "state", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/states", labelKey: "name", valueKey: "_id", fullWidth: true, submit: false },
       { label: "City", key: "city", required: true, type: "dynamic_select", optionsEndpoint: "/api/admin/cities", labelKey: "name", valueKey: "_id", fullWidth: true, dependsOn: "state", dependsParam: "state" },
-      { label: "Round Trip Per Day Fare", key: "roundTripPerDayFare", required: true, type: "number" },
-      { label: "One Way Per Km Rate", key: "oneWayPerKmRate", required: true, type: "number" },
-      { label: "One Way Base Fare", key: "oneWayBaseFare", required: true, type: "number" },
-      { label: "Night Fare", key: "nightFare", required: true, type: "number" },
-      { label: "Service Charge", key: "serviceCharge", required: true, type: "number" },
-      { label: "GST %", key: "gstPercent", required: true, type: "number" },
-      { label: "Status", key: "isActive", type: "boolean" }
+      {
+        label: "Round Trip Days",
+        key: "roundTripDays",
+        type: "array",
+        minItems: 1,
+        itemFields: [
+          { label: "Days", key: "days", required: true, type: "number" },
+          { label: "Price (₹)", key: "price", required: true, type: "number" },
+        ],
+      },
+      {
+        label: "One Way Kilometers",
+        key: "oneWayKm",
+        type: "array",
+        minItems: 1,
+        itemFields: [
+          { label: "Kilometers", key: "km", required: true, type: "number" },
+          { label: "Price (₹)", key: "price", required: true, type: "number" },
+        ],
+      },
+      { label: "Status", key: "status", type: "boolean", defaultValue: true }
     ]
   },
   hourlyPackages: {

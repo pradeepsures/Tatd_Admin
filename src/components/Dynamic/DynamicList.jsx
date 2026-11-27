@@ -52,8 +52,18 @@ const getDisplayValue = (row, key) => {
   return value;
 };
 
+const getColumnValue = (row, column) => {
+  const value = getNestedValue(row, column.key);
+  if (column.type === "array_count") {
+    return Array.isArray(value) && value.length ? `${value.length} entries` : "N/A";
+  }
+  return getDisplayValue(row, column.key);
+};
+
 export default function DynamicList({ config }) {
   const { title, endpoint, columns, permissions, basePath } = config;
+  const actions = config.actions || ["create", "read", "update", "delete"];
+  const hasRowActions = actions.some((action) => ["read", "update", "delete"].includes(action));
   const { auth, hasPermission, loading: authLoading } = useAuth();
   const navigate = useNavigate();
 
@@ -133,7 +143,7 @@ export default function DynamicList({ config }) {
     if (data.length < 1) return toast.error(`${title} list is empty!`);
     setIsExporting(true);
     const settings = { fileName: `Dvagoo_${title.replace(/\s+/g, '_')}`, extraLength: 3, writeMode: "writeFile", writeOptions: {}, RTL: false };
-    const exportColumns = columns.map(col => ({ label: col.label, value: (row) => getDisplayValue(row, col.key) === "N/A" ? "" : getDisplayValue(row, col.key) }));
+    const exportColumns = columns.map(col => ({ label: col.label, value: (row) => getColumnValue(row, col) === "N/A" ? "" : getColumnValue(row, col) }));
     exportColumns.unshift({ label: "ID", value: (row) => row._id || "" });
     
     try {
@@ -169,7 +179,7 @@ export default function DynamicList({ config }) {
           >
             {isExporting ? <span className="flex items-center gap-2"><LoderBtn />Exporting...</span> : "Export Excel"}
           </motion.button>
-          {hasPermission(permissions, "create") && (
+          {actions.includes("create") && hasPermission(permissions, "create") && (
             <motion.button
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate(`${basePath}/create`)}
@@ -189,13 +199,13 @@ export default function DynamicList({ config }) {
               {columns.map((col, i) => (
                 <StyledTableCell key={i}>{col.label}</StyledTableCell>
               ))}
-              <StyledTableCell align="center">Actions</StyledTableCell>
+              {hasRowActions && <StyledTableCell align="center">Actions</StyledTableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
             {data.length === 0 ? (
               <StyledTableRow>
-                <StyledTableCell colSpan={columns.length + 2} align="center" className="!py-12 !text-gray-500">
+                <StyledTableCell colSpan={columns.length + 1 + Number(hasRowActions)} align="center" className="!py-12 !text-gray-500">
                   No {title.toLowerCase()} found
                 </StyledTableCell>
               </StyledTableRow>
@@ -212,32 +222,34 @@ export default function DynamicList({ config }) {
                           {Boolean(getNestedValue(row, col.key)) ? "Yes" : "No"}
                         </span>
                       ) : (
-                        getDisplayValue(row, col.key)
+                        getColumnValue(row, col)
                       )}
                     </StyledTableCell>
                   ))}
-                  <StyledTableCell align="center">
-                    <IconButton onClick={(e) => handleMenuOpen(e, row.id)} className="text-gray-500 hover:text-gray-700">
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu anchorEl={anchorEl} open={Boolean(anchorEl) && selectedRowId === row.id} onClose={handleMenuClose}>
-                      {hasPermission(permissions, "read") && (
-                        <MenuItem onClick={() => { navigate(`${basePath}/view/${row.id}`); handleMenuClose(); }} className="flex gap-2">
-                          <EyeIcon className="h-5 w-5 text-blue-600" /> View
-                        </MenuItem>
-                      )}
-                      {hasPermission(permissions, "update") && (
-                        <MenuItem onClick={() => { navigate(`${basePath}/update/${row.id}`); handleMenuClose(); }} className="flex gap-2">
-                          <PencilIcon className="h-5 w-5 text-green-600" /> Edit
-                        </MenuItem>
-                      )}
-                      {hasPermission(permissions, "delete") && (
-                        <MenuItem onClick={() => deleteHandler(row.id)} className="flex gap-2">
-                          <TrashIcon className="h-5 w-5 text-red-600" /> Delete
-                        </MenuItem>
-                      )}
-                    </Menu>
-                  </StyledTableCell>
+                  {hasRowActions && (
+                    <StyledTableCell align="center">
+                      <IconButton onClick={(e) => handleMenuOpen(e, row.id)} className="text-gray-500 hover:text-gray-700">
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu anchorEl={anchorEl} open={Boolean(anchorEl) && selectedRowId === row.id} onClose={handleMenuClose}>
+                        {actions.includes("read") && hasPermission(permissions, "read") && (
+                          <MenuItem onClick={() => { navigate(`${basePath}/view/${row.id}`); handleMenuClose(); }} className="flex gap-2">
+                            <EyeIcon className="h-5 w-5 text-blue-600" /> View
+                          </MenuItem>
+                        )}
+                        {actions.includes("update") && hasPermission(permissions, "update") && (
+                          <MenuItem onClick={() => { navigate(`${basePath}/update/${row.id}`); handleMenuClose(); }} className="flex gap-2">
+                            <PencilIcon className="h-5 w-5 text-green-600" /> Edit
+                          </MenuItem>
+                        )}
+                        {actions.includes("delete") && hasPermission(permissions, "delete") && (
+                          <MenuItem onClick={() => deleteHandler(row.id)} className="flex gap-2">
+                            <TrashIcon className="h-5 w-5 text-red-600" /> Delete
+                          </MenuItem>
+                        )}
+                      </Menu>
+                    </StyledTableCell>
+                  )}
                 </StyledTableRow>
               ))
             )}

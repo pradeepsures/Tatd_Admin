@@ -67,6 +67,62 @@ export const getAllBookings = async ({
   }
 };
 
+export const getAllTripBookings = async (filters = {}) => {
+  const token = localStorage.getItem("token");
+  const params = new URLSearchParams();
+  const query = {
+    page: filters.page || 1,
+    limit: filters.limit || 10,
+    search: filters.search,
+    city: filters.city,
+    status: filters.status,
+    bookingType: filters.bookingType,
+    tripType: filters.tripType,
+    paymentStatus: filters.paymentStatus,
+    paymentMethod: filters.paymentMethod,
+    isPremium: filters.isPremium,
+    startDate: filters.startDate,
+    endDate: filters.endDate,
+    sortBy: filters.sortBy || "createdAt",
+    sortOrder: filters.sortOrder || "desc",
+  };
+
+  Object.entries(query).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      params.append(key, String(value));
+    }
+  });
+
+  const res = await fetch(`${BASE_URL}/api/admin/bookings?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new Error(result.message || "Failed to fetch bookings");
+  }
+
+  return result;
+};
+
+export const getTripBookingDetail = async (id) => {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/api/admin/bookings/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const result = await res.json();
+
+  if (!res.ok) {
+    throw new Error(result.message || "Failed to fetch booking details");
+  }
+
+  return result;
+};
+
 
 // GET SINGLE BOOKING DETAILS
 export const getSingleBooking = async (id) => {
@@ -178,6 +234,70 @@ export const getUnassignedDriversBySegment = async (segmentId, search = "") => {
     toast.error("Failed to fetch unassigned drivers");
     throw err;
   }
+};
+
+const requestBookingDriverEndpoint = async (bookingId, endpoint, options = {}) => {
+  if (!bookingId) throw new Error("Booking ID is required");
+
+  const token = localStorage.getItem("token");
+  const res = await fetch(
+    `${BASE_URL}/api/admin/bookings/${encodeURIComponent(bookingId)}/${endpoint}`,
+    {
+      ...options,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(options.body ? { "Content-Type": "application/json" } : {}),
+        ...options.headers,
+      },
+    }
+  );
+  const result = await res.json();
+
+  if (!res.ok || result?.status === false) {
+    throw new Error(result?.message || `Request failed: ${endpoint}`);
+  }
+
+  return result;
+};
+
+export const getAvailableDriversForBooking = (bookingId, search = "") => {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  const query = params.toString();
+
+  return requestBookingDriverEndpoint(
+    bookingId,
+    `available-drivers${query ? `?${query}` : ""}`
+  );
+};
+
+export const getNearbyDriversForBooking = (bookingId, search = "") => {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  const query = params.toString();
+
+  return requestBookingDriverEndpoint(
+    bookingId,
+    `nearby-drivers${query ? `?${query}` : ""}`
+  );
+};
+
+export const assignDriverToBooking = (bookingId, driverId) => {
+  if (!driverId) throw new Error("driverId is required");
+
+  return requestBookingDriverEndpoint(bookingId, "assign-driver", {
+    method: "PATCH",
+    body: JSON.stringify({ driverId }),
+  });
+};
+
+export const unassignDriverFromBooking = (bookingId, driverId) => {
+  if (!driverId) throw new Error("driverId is required");
+
+  return requestBookingDriverEndpoint(bookingId, "unassign-driver", {
+    method: "PATCH",
+    body: JSON.stringify({ driverId }),
+  });
 };
 
 export const getTripCancelRequests = async ({ page = 1, limit = 10, status = "" } = {}) => {

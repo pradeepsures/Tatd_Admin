@@ -39,6 +39,7 @@ import VehicleDetails from "./Pages/Vehicle/VehicleDetails";
 import CreateVehicle from "./Pages/Vehicle/VehicleCreate";
 import UpdateVehicle from "./Pages/Vehicle/VehicleUpdate";
 import VehicleBookingDetails from "./Pages/Vehicle/VehicleBookingDetails";
+import VehicleCatalogPage from "./Pages/Vehicle/VehicleCatalogPage";
 
 // Bookings / Trips
 import BookingList from "./Pages/Booking/BookingList";
@@ -56,6 +57,7 @@ import PricingList from "./Pages/Pricing/PricingList";
 import PricingDetails from "./Pages/Pricing/PricingDetails";
 import PricingCreate from "./Pages/Pricing/PricingCreate";
 import PricingUpdate from "./Pages/Pricing/PricingUpdate";
+import PremiumPricingPage from "./Pages/Pricing/PremiumPricingPage";
 
 // Support / Complaints
 import ComplaintList from "./Pages/Complaint/ComplaintList";
@@ -261,6 +263,7 @@ const router = createBrowserRouter([
       { path: "vehicle/vehicledetails/:id", element: <VehicleDetails /> },
       { path: "vehicle/updateVehicle/:id", element: <UpdateVehicle /> },
       { path: "vehicle/vehicleBooking/:id", element: <VehicleBookingDetails /> },
+      { path: "vehicleBrands", element: <VehicleCatalogPage /> },
       
       // Trips
       { path: "booking", element: <BookingList /> },
@@ -277,6 +280,7 @@ const router = createBrowserRouter([
       { path: "pricing/create", element: <PricingCreate /> },
       { path: "pricing/pricingview/:id", element: <PricingDetails /> },
       { path: "pricing/update/:id", element: <PricingUpdate /> },
+      { path: "premiumPricing", element: <PremiumPricingPage /> },
       
       // Support
       { path: "complaint", element: <ComplaintList /> },
@@ -360,11 +364,12 @@ const router = createBrowserRouter([
       ...Object.values(MODULE_CONFIGS).flatMap(config => {
         // Strip "/home/" from basePath for react-router children path
         const pathBase = config.basePath.replace("/home/", "");
+        const actions = config.actions || ["create", "read", "update", "delete"];
         return [
           { path: pathBase, element: <DynamicList config={config} /> },
-          { path: `${pathBase}/create`, element: <DynamicForm config={config} /> },
-          { path: `${pathBase}/update/:id`, element: <DynamicForm config={config} /> },
-          { path: `${pathBase}/view/:id`, element: <DynamicForm config={config} readOnly={true} /> },
+          ...(actions.includes("create") ? [{ path: `${pathBase}/create`, element: <DynamicForm config={config} /> }] : []),
+          ...(actions.includes("update") ? [{ path: `${pathBase}/update/:id`, element: <DynamicForm config={config} /> }] : []),
+          ...(actions.includes("read") ? [{ path: `${pathBase}/view/:id`, element: <DynamicForm config={config} readOnly={true} /> }] : []),
         ];
       })
     ],
